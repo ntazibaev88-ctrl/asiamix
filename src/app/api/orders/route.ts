@@ -6,12 +6,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const supabase = await createClient()
 
-    const { data: customer } = await supabase
-      .from('customers')
-      .upsert({ name: body.name, phone: body.phone }, { onConflict: 'phone' })
-      .select()
-      .single()
-
     const { data: order, error } = await supabase
       .from('orders')
       .insert({
@@ -22,12 +16,34 @@ export async function POST(req: NextRequest) {
         payment: body.payment,
         total: body.total,
         items: body.items,
-        note: body.note,
       })
       .select()
       .single()
 
     if (error) throw error
+
+    // Telegram уведомление
+    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+    const CHAT_ID = process.env.TELEGRAM_CHAT_ID
+
+    if (BOT_TOKEN && CHAT_ID) {
+      const itemsText = body.items
+        .map((i: {name_ru: string; qty: number; price: number}) => 
+          `• ${i.name_ru} × ${i.qty} = ${(i.price * i.qty).toLocaleString()} ₸`)
+        .join('\n')
+
+      const msg = `🔥 *ASIA MIX — НОВЫЙ ЗАКАЗ #${order.num}*\n\n👤 ${body.name}\n📞 ${body.phone}\n${body.address ? `📍 ${body.address}` : '🏃 Самовывоз'}\n💳 ${body.payment}\n\n${itemsText}\n\n💰 *Итого: ${body.total.toLocaleString()} ₸*`
+
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: msg,
+          parse_mode: 'Markdown',
+        }),
+      })
+    }
 
     return NextResponse.json({ success: true, order })
   } catch (err) {
