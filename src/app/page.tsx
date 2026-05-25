@@ -66,7 +66,7 @@ const reviews = [
 ]
 
 interface CartItem { id: number; name_ru: string; price: number; qty: number; emoji: string }
-return (
+export default function Home() {return (
     <div style={{ background: '#0A0A0A', minHeight: '100vh', color: '#F5F5F5', fontFamily: 'Manrope, sans-serif' }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');`}</style>
 
