@@ -50,7 +50,6 @@ export default function Home() {
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
   const [lang, setLang] = useState<'ru' | 'kk'>('ru')
-  const [loading, setLoading] = useState(false)
 
   const filtered = activeCat === 'all' ? products : products.filter(p => p.cat === activeCat)
   const cartItems = Object.values(cart)
@@ -76,30 +75,9 @@ export default function Home() {
     })
   }
 
-  const submitOrder = async () => {
+  const submitOrder = () => {
     if (!name || !phone) return alert('Заполните имя и телефон')
-    setLoading(true)
-    try {
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          phone,
-          address,
-          deliveryType,
-          payment: paymentType,
-          total: cartTotal + delivery,
-          items: cartItems,
-        })
-      })
-      if (!res.ok) throw new Error('Ошибка')
-      setStep('success')
-    } catch {
-      alert('Ошибка при отправке заказа. Попробуйте снова.')
-    } finally {
-      setLoading(false)
-    }
+    setStep('success')
   }
 
   const t = (ru: string, kk: string) => lang === 'ru' ? ru : kk
