@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<title>ASIA MIX STREET FOOD 🔥</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0A0A0A;--black2:#121212;--surface:#161616;--card:#1A1A1A;
+  --yellow:#FFD60A;--yellow2:#FFC300;--yellow-glow:rgba(255,214,10,0.4);
+  --white:#F5F5F5;--gray:#8A8A8A;--gray2:#5A5A5A;
+  --border:rgba(255,214,10,0.12);--green:#25D366;
+  --safe-bottom:env(safe-area-inset-bottom,0px);--nav-h:66px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{background:var(--black);color:var(--white);font-family:'Manrope',sans-serif;overflow-x:hidden;}
+img{max-width:100%;display:block;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--black);}
+::-webkit-scrollbar-thumb{background:var(--yellow);border-radius:4px;}
+
+/* ===== NEON / GLASS UTILITIES ===== */
+.glass{background:rgba(26,26,26,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);}
+.neon-text{color:var(--yellow);text-shadow:0 0 20px var(--yellow-glow);}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:rgba(10,10,10,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;color:var(--white);line-height:0.9;}
+.logo b{color:var(--yellow);}
+.logo small{display:block;font-family:'Space Grotesk',sans-serif;font-size:0.5rem;letter-spacing:3px;color:var(--gray);font-weight:600;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--gray);text-decoration:none;font-size:0.85rem;font-weight:600;transition:color 0.2s;}
+.nav-links a:hover{color:var(--yellow);}
+.nav-right{display:flex;align-items:center;gap:0.8rem;}
+.lang-switch{display:flex;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:50px;overflow:hidden;}
+.lang-btn{padding:0.35rem 0.7rem;font-family:'Space Grotesk',sans-serif;font-size:0.7rem;font-weight:700;color:var(--gray);background:transparent;border:none;cursor:pointer;transition:all 0.2s;}
+.lang-btn.active{background:var(--yellow);color:#000;}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:7rem 1.5rem 3rem;position:relative;overflow:hidden;max-width:1280px;margin:0 auto;}
+.hero-glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle,var(--yellow-glow) 0%,transparent 70%);top:-10%;right:-10%;filter:blur(60px);opacity:0.3;animation:float 6s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(30px)}}
+.hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,214,10,0.1);border:1px solid var(--border);padding:0.4rem 1rem;border-radius:50px;font-size:0.75rem;font-weight:700;color:var(--yellow);width:fit-content;margin-bottom:1.5rem;animation:slideDown 0.8s ease both;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,13vw,8rem);line-height:0.88;letter-spacing:1px;margin-bottom:1.5rem;animation:slideUp 0.9s 0.1s ease both;}
+.hero h1 span{color:var(--yellow);text-shadow:0 0 40px var(--yellow-glow);display:block;}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.hero-desc{font-size:1.05rem;color:var(--gray);max-width:480px;line-height:1.7;margin-bottom:2.5rem;font-weight:300;animation:slideUp 0.9s 0.2s ease both;}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;animation:slideUp 0.9s 0.3s ease both;}
+.btn-yellow{display:inline-flex;align-items:center;gap:0.6rem;background:var(--yellow);color:#000;padding:1rem 2rem;border-radius:50px;font-weight:800;font-size:0.95rem;text-decoration:none;border:none;cursor:pointer;transition:all 0.3s;box-shadow:0 0 0 var(--yellow-glow);}
+.btn-yellow:hover{transform:translateY(-3px);box-shadow:0 10px 40px var(--yellow-glow);}
+.btn-wa{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(37,211,102,0.15);color:var(--green);border:1px solid rgba(37,211,102,0.3);padding:1rem 2rem;border-radius:50px;font-weight:700;font-size:0.95rem;text-decoration:none;cursor:pointer;transition:all 0.3s;}
+.btn-wa:hover{background:rgba(37,211,102,0.25);transform:translateY(-3px);}
+
+/* HERO FOOD CARDS */
+.hero-foods{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:3.5rem;animation:slideUp 0.9s 0.4s ease both;}
+.food-chip{aspect-ratio:1;border-radius:20px;overflow:hidden;position:relative;cursor:pointer;transition:all 0.4s;border:1px solid var(--border);}
+.food-chip img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s;}
+.food-chip::after{content:attr(data-name);position:absolute;bottom:0;left:0;right:0;padding:1rem 0.8rem 0.7rem;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px;color:var(--white);}
+.food-chip:hover{transform:translateY(-6px);border-color:var(--yellow);box-shadow:0 12px 40px var(--yellow-glow);}
+.food-chip:hover img{transform:scale(1.1);}
+
+/* ===== STATS BAR ===== */
+.delivery-bar{background:var(--yellow);color:#000;padding:1rem;overflow:hidden;white-space:nowrap;}
+.delivery-track{display:inline-flex;gap:3rem;animation:scroll 20s linear infinite;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9rem;}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.delivery-track span{display:inline-flex;align-items:center;gap:0.5rem;}
+
+/* ===== SECTION ===== */
+.section{padding:5rem 1.5rem;max-width:1280px;margin:0 auto;}
+.section-label{font-family:'Space Grotesk',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:0.8rem;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,7vw,4.5rem);line-height:0.95;letter-spacing:1px;margin-bottom:2.5rem;}
+.section-title span{color:var(--yellow);}
+
+/* ===== MENU ===== */
+.cat-tabs{display:flex;gap:0.6rem;overflow-x:auto;padding-bottom:0.5rem;margin-bottom:2rem;scrollbar-width:none;}
+.cat-tabs::-webkit-scrollbar{display:none;}
+.cat-tab{flex-shrink:0;display:flex;align-items:center;gap:0.5rem;padding:0.7rem 1.3rem;background:var(--card);border:1px solid var(--border);border-radius:50px;color:var(--gray);font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.25s;white-space:nowrap;}
+.cat-tab.active,.cat-tab:hover{background:var(--yellow);border-color:var(--yellow);color:#000;}
+.cat-tab .emoji{font-size:1.1rem;}
+
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;}
+.product{background:var(--card);border:1px solid var(--border);border-radius:24px;overflow:hidden;transition:all 0.4s;cursor:pointer;display:none;position:relative;}
+.product.show{display:block;animation:popIn 0.4s ease both;}
+@keyframes popIn{from{opacity:0;transform:scale(0.94) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.product:hover{border-color:var(--yellow);transform:translateY(-6px);box-shadow:0 16px 50px rgba(0,0,0,0.6),0 0 30px rgba(255,214,10,0.15);}
+.product-img{aspect-ratio:4/3;overflow:hidden;position:relative;background:var(--surface);}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s;}
+.product:hover .product-img img{transform:scale(1.08);}
+.product-tag{position:absolute;top:0.8rem;left:0.8rem;background:var(--yellow);color:#000;padding:0.25rem 0.7rem;border-radius:50px;font-size:0.68rem;font-weight:800;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;letter-spacing:0.5px;}
+.product-tag.hot{background:#FF4444;color:#fff;}
+.product-body{padding:1.3rem;}
+.product-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:0.4rem;}
+.product-desc{font-size:0.82rem;color:var(--gray);line-height:1.6;margin-bottom:1rem;font-weight:300;min-height:2.6rem;}
+.product-footer{display:flex;align-items:center;justify-content:space-between;}
+.product-price{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:1px;color:var(--yellow);}
+.add-cart-btn{display:flex;align-items:center;gap:0.4rem;background:var(--yellow);color:#000;border:none;padding:0.6rem 1.1rem;border-radius:50px;font-weight:800;font-size:0.82rem;cursor:pointer;transition:all 0.25s;font-family:'Manrope',sans-serif;}
+.add-cart-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px var(--yellow-glow);}
+.add-cart-btn.added{background:var(--green);color:#fff;}
+
+/* ===== PROMOS ===== */
+.promo-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
+.promo{position:relative;border-radius:24px;overflow:hidden;padding:2rem;min-height:200px;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid var(--border);transition:all 0.3s;}
+.promo:hover{transform:translateY(-4px);border-color:var(--yellow);}
+.promo.p1{background:linear-gradient(135deg,#1a1a1a,#2a2200);}
+.promo.p2{background:linear-gradient(135deg,#1a1a1a,#2a1500);}
+.promo.p3{background:linear-gradient(135deg,#1a1a1a,#002a1a);}
+.promo-emoji{position:absolute;top:1.5rem;right:1.5rem;font-size:3rem;opacity:0.9;}
+.promo-discount{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--yellow);line-height:1;letter-spacing:1px;}
+.promo-text{font-weight:700;font-size:1.1rem;margin:0.3rem 0;}
+.promo-sub{font-size:0.82rem;color:var(--gray);font-weight:300;}
+
+/* ===== REVIEWS ===== */
+.reviews-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
+.review{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.8rem;transition:all 0.3s;}
+.review:hover{border-color:var(--yellow);}
+.review-stars{color:var(--yellow);font-size:1rem;margin-bottom:0.8rem;letter-spacing:2px;}
+.review-text{font-size:0.9rem;color:var(--white);line-height:1.7;margin-bottom:1.2rem;font-weight:300;}
+.review-author{display:flex;align-items:center;gap:0.8rem;}
+.review-avatar{width:42px;height:42px;border-radius:50%;background:var(--yellow);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:'Space Grotesk',sans-serif;}
+.review-name{font-weight:700;font-size:0.88rem;}
+.review-role{font-size:0.75rem;color:var(--gray);}
+
+/* ===== CONTACT ===== */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+.contact-info{display:flex;flex-direction:column;gap:1.2rem;}
+.contact-item{display:flex;align-items:center;gap:1rem;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem;transition:all 0.3s;}
+.contact-item:hover{border-color:var(--yellow);}
+.contact-icon{width:48px;height:48px;border-radius:12px;background:rgba(255,214,10,0.12);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.contact-label{font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px;}
+.contact-val{font-weight:700;font-size:0.95rem;margin-top:0.2rem;}
+.map-box{border-radius:20px;overflow:hidden;border:1px solid var(--border);min-height:300px;background:var(--surface);position:relative;}
+.map-box iframe{width:100%;height:100%;min-height:300px;border:0;filter:invert(0.9) hue-rotate(180deg);}
+
+/* ===== FOOTER ===== */
+footer{border-top:1px solid var(--border);padding:3rem 1.5rem 8rem;text-align:center;background:var(--black2);}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:1px;margin-bottom:1rem;}
+.footer-logo b{color:var(--yellow);}
+.footer-socials{display:flex;gap:1rem;justify-content:center;margin:1.5rem 0;}
+.social-btn{width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;color:var(--white);text-decoration:none;font-size:1.2rem;}
+.social-btn:hover{background:var(--yellow);color:#000;transform:translateY(-3px);}
+.footer-copy{font-size:0.8rem;color:var(--gray2);margin-top:1rem;}
+
+/* ===== CART BAR ===== */
+.cart-fab{position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 1rem);left:50%;transform:translateX(-50%) translateY(150px);background:var(--yellow);color:#000;padding:1rem 1.8rem;border-radius:50px;display:flex;align-items:center;gap:1rem;cursor:pointer;z-index:400;box-shadow:0 10px 40px var(--yellow-glow);font-weight:800;transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;}
+.cart-fab.visible{transform:translateX(-50%) translateY(0);}
+.cart-fab-count{background:#000;color:var(--yellow);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+
+/* ===== MODALS ===== */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);}
+.overlay.open{display:flex;}
+.sheet{background:var(--black2);border-radius:28px 28px 0 0;border-top:1px solid var(--border);padding:2rem 1.5rem;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:sheetUp 0.4s cubic-bezier(0.34,1.56,0.64,1) both;-webkit-overflow-scrolling:touch;}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.sheet-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:1px;}
+.close-btn{width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--gray);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.close-btn:hover{color:var(--white);}
+
+.cart-item{display:flex;align-items:center;gap:1rem;padding:0.9rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.cart-item-img{width:56px;height:56px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--surface);}
+.cart-item-info{flex:1;}
+.cart-item-name{font-weight:700;font-size:0.9rem;}
+.cart-item-price{color:var(--yellow);font-size:0.82rem;margin-top:0.2rem;font-weight:600;}
+.qty-control{display:flex;align-items:center;gap:0.7rem;}
+.qty-btn{width:30px;height:30px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--yellow);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.qty-btn:hover{background:var(--yellow);color:#000;}
+.qty-val{min-width:20px;text-align:center;font-weight:700;}
+
+.summary-row{display:flex;justify-content:space-between;padding:0.6rem 0;font-size:0.9rem;color:var(--gray);}
+.summary-row.total{border-top:1px solid var(--border);margin-top:0.5rem;padding-top:1rem;font-size:1.2rem;color:var(--white);font-weight:800;}
+.summary-row.total b{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--yellow);letter-spacing:1px;}
+
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:0.75rem;color:var(--gray);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.field input,.field textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0.9rem 1rem;color:var(--white);font-family:'Manrope',sans-serif;font-size:0.95rem;outline:none;transition:border-color 0.2s;}
+.field input:focus,.field textarea:focus{border-color:var(--yellow);}
+.field textarea{resize:vertical;min-height:70px;}
+
+/* PAYMENT */
+.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin:1rem 0;}
+.pay-method{display:flex;align-items:center;gap:0.7rem;padding:1rem;background:var(--card);border:2px solid var(--border);border-radius:14px;cursor:pointer;transition:all 0.2s;font-weight:700;font-size:0.85rem;}
+.pay-method:hover{border-color:rgba(255,214,10,0.4);}
+.pay-method.selected{border-color:var(--yellow);background:rgba(255,214,10,0.08);}
+.pay-method .pic{font-size:1.5rem;}
+.pay-kaspi.selected{border-color:#FF3B30;}
+.pay-halyk.selected{border-color:#00B956;}
+
+/* ===== KASPI GOLD PAY ===== */
+.kaspi-sheet{max-width:440px;}
+.kaspi-box{display:flex;flex-direction:column;gap:0.6rem;padding-top:0.5rem;}
+.kaspi-logo{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:800;color:#FF3B30;text-align:center;margin-bottom:0.8rem;letter-spacing:-0.5px;}
+.kaspi-logo span{color:var(--white);}
+.kaspi-label{font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:0.6rem;}
+.kaspi-sum{font-family:'Space Grotesk',sans-serif;font-size:2.4rem;font-weight:800;color:var(--yellow);line-height:1;}
+.kaspi-num-row{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;}
+.kaspi-num{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;color:var(--white);letter-spacing:0.5px;flex:1;min-width:160px;}
+.kaspi-copy{background:var(--card);border:1px solid var(--border);color:var(--yellow);padding:0.6rem 1rem;border-radius:12px;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:'Manrope',sans-serif;transition:all 0.2s;white-space:nowrap;}
+.kaspi-copy:hover{border-color:var(--yellow);}
+.kaspi-hint{font-size:0.85rem;color:var(--gray);line-height:1.5;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:0.9rem 1rem;margin-top:0.4rem;}
+.kaspi-open-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;background:#FF3B30;color:#fff;border:none;padding:1.1rem;border-radius:14px;font-weight:800;font-size:1rem;cursor:pointer;margin-top:0.8rem;font-family:'Manrope',sans-serif;transition:all 0.2s;}
+.kaspi-open-btn:hover{filter:brightness(1.1);}
+.kaspi-done-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;background:var(--card);color:var(--white);border:1px solid var(--border);padding:1rem;border-radius:14px;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:'Manrope',sans-serif;transition:all 0.2s;}
+.kaspi-done-btn:hover{border-color:var(--yellow);}
+
+.delivery-toggle{display:flex;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1rem;}
+.dt-btn{flex:1;padding:0.9rem;border:none;background:transparent;color:var(--gray);font-weight:700;font-size:0.88rem;cursor:pointer;transition:all 0.2s;}
+.dt-btn.active{background:var(--yellow);color:#000;}
+
+.checkout-btn{width:100%;background:var(--yellow);color:#000;border:none;padding:1.2rem;border-radius:16px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.3s;margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+.checkout-btn:hover{box-shadow:0 10px 40px var(--yellow-glow);transform:translateY(-2px);}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);background:rgba(18,18,18,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:space-around;z-index:450;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:var(--gray);font-size:0.62rem;font-weight:600;cursor:pointer;position:relative;transition:color 0.2s;font-family:'Manrope',sans-serif;}
+.bn-item.active{color:var(--yellow);}
+.bn-icon{font-size:1.3rem;}
+.bn-badge{position:absolute;top:6px;right:calc(50% - 20px);background:#FF4444;color:#fff;min-width:16px;height:16px;padding:0 4px;border-radius:8px;font-size:0.6rem;font-weight:800;display:none;align-items:center;justify-content:center;}
+.bn-badge.show{display:flex;}
+
+/* ===== CLIENT PANEL ===== */
+.panel-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;}
+.panel-tabs::-webkit-scrollbar{display:none;}
+.panel-tab{flex-shrink:0;padding:0.6rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:50px;color:var(--gray);font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
+.panel-tab.active{background:var(--yellow);border-color:var(--yellow);color:#000;}
+.bonus-card{background:linear-gradient(135deg,#2a2200,#1a1a1a);border:1px solid var(--yellow);border-radius:20px;padding:1.8rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.bonus-card::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;background:radial-gradient(circle,var(--yellow-glow),transparent 70%);}
+.bonus-label{font-size:0.72rem;color:var(--gray);letter-spacing:2px;text-transform:uppercase;}
+.bonus-amount{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--yellow);line-height:1;margin:0.3rem 0;text-shadow:0 0 30px var(--yellow-glow);}
+.history-item{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;margin-bottom:0.7rem;}
+.history-info{display:flex;flex-direction:column;gap:0.2rem;}
+.history-id{font-weight:700;font-size:0.88rem;}
+.history-date{font-size:0.72rem;color:var(--gray);}
+.history-status{padding:0.25rem 0.7rem;border-radius:50px;font-size:0.68rem;font-weight:800;text-transform:uppercase;}
+.hs-done{background:rgba(37,211,102,0.15);color:var(--green);}
+.hs-progress{background:rgba(255,214,10,0.15);color:var(--yellow);}
+
+/* TOAST */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--card);border:1px solid var(--yellow);color:var(--white);padding:0.9rem 1.5rem;border-radius:50px;font-weight:700;font-size:0.88rem;z-index:9999;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ===== AUTH BUTTON ===== */
+.auth-nav-btn{display:flex;align-items:center;gap:0.4rem;background:rgba(255,214,10,0.1);border:1px solid var(--border);color:var(--yellow);padding:0.45rem 1rem;border-radius:50px;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;font-family:'Manrope',sans-serif;white-space:nowrap;}
+.auth-nav-btn:hover{background:var(--yellow);color:#000;}
+
+/* ===== AUTH MODAL ===== */
+.auth-tabs{display:flex;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:0.9rem;border:none;background:transparent;color:var(--gray);font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.2s;font-family:'Manrope',sans-serif;}
+.auth-tab.active{background:var(--yellow);color:#000;}
+.auth-form{display:none;}
+.auth-form.active{display:block;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* PROFILE HEADER (logged in) */
+.profile-header{display:flex;align-items:center;gap:1rem;background:linear-gradient(135deg,#2a2200,#1a1a1a);border:1px solid var(--yellow);border-radius:20px;padding:1.5rem;margin-bottom:1.5rem;}
+.profile-avatar{width:60px;height:60px;border-radius:50%;background:var(--yellow);color:#000;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.8rem;flex-shrink:0;}
+.profile-name{font-weight:800;font-size:1.1rem;}
+.profile-phone{font-size:0.82rem;color:var(--gray);margin-top:0.2rem;}
+
+/* STAR RATING */
+.star-rating{display:flex;gap:0.4rem;justify-content:center;margin:1rem 0;}
+.star{font-size:2.2rem;color:var(--gray2);cursor:pointer;transition:all 0.15s;}
+.star.active{color:var(--yellow);transform:scale(1.1);text-shadow:0 0 15px var(--yellow-glow);}
+.star:hover{transform:scale(1.2);}
+
+.review-empty{grid-column:1/-1;text-align:center;padding:3rem;color:var(--gray);}
+
+@media(max-width:768px){
+  .nav-links{display:none;}
+  .hero-foods{grid-template-columns:repeat(2,1fr);}
+  .contact-grid{grid-template-columns:1fr;}
+  .section{padding:3.5rem 1.2rem;}
+  nav{padding:0.9rem 1.2rem;}
+}
+@media(min-width:769px){
+  .bottom-nav{display:none;}
+  .cart-fab{bottom:2rem;}
+  footer{padding-bottom:3rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">ASIA <b>MIX</b><small>STREET FOOD</small></div>
+  <ul class="nav-links">
+    <li><a href="#menu" data-i="nav_menu">Меню</a></li>
+    <li><a href="#promos" data-i="nav_promo">Акциялар</a></li>
+    <li><a href="#reviews" data-i="nav_reviews">Пікірлер</a></li>
+    <li><a href="#contact" data-i="nav_contact">Байланыс</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('kk')">ҚАЗ</button>
+      <button class="lang-btn" onclick="setLang('ru')">РУС</button>
+    </div>
+    <button class="auth-nav-btn" id="authNavBtn" onclick="handleAuthClick()">👤 <span data-i="login_btn">Кіру</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">🔥 <span data-i="hero_badge">Қарағандыдағы №1 street food</span></div>
+  <h1 data-i="hero_title">НАҒЫЗ ДӘМ<span>ASIA MIX</span></h1>
+  <p class="hero-desc" data-i="hero_desc">Донер, тандыр, самса, кофе — бәрі бір жерде. Ыстық, дәмді, жылдам жеткіземіз! 30 минут ішінде үйіңізде.</p>
+  <div class="hero-cta">
+    <a href="#menu" class="btn-yellow">🛒 <span data-i="hero_order">Онлайн заказ</span></a>
+    <a href="#" onclick="orderWhatsApp();return false;" class="btn-wa">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.557 4.127 1.527 5.865L.057 23.082a.5.5 0 0 0 .614.665l5.427-1.424A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+      WhatsApp
+    </a>
+  </div>
+  <div class="hero-foods">
+    <div class="food-chip" data-name="Донер" onclick="goCat('doner')"><img src="https://images.unsplash.com/photo-1633321088355-d0f81134ca3b?w=400&q=80" alt="Донер"></div>
+    <div class="food-chip" data-name="Бургер" onclick="goCat('burger')"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80" alt="Бургер"></div>
+    <div class="food-chip" data-name="Плов" onclick="goCat('plov')"><img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&q=80" alt="Плов"></div>
+    <div class="food-chip" data-name="Кофе" onclick="goCat('coffee')"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80" alt="Кофе"></div>
+  </div>
+</section>
+
+<!-- DELIVERY BAR -->
+<div class="delivery-bar">
+  <div class="delivery-track">
+    <span>🛵 30 МИНУТ ЖЕТКІЗУ</span><span>🔥 ЫСТЫҚ ТАҒАМ</span><span>💛 5000₸-ДАН ТЕГІН ЖЕТКІЗУ</span><span>⭐ 4.9 РЕЙТИНГ</span><span>📍 ҚАРАҒАНДЫ</span>
+    <span>🛵 30 МИНУТ ЖЕТКІЗУ</span><span>🔥 ЫСТЫҚ ТАҒАМ</span><span>💛 5000₸-ДАН ТЕГІН ЖЕТКІЗУ</span><span>⭐ 4.9 РЕЙТИНГ</span><span>📍 ҚАРАҒАНДЫ</span>
+  </div>
+</div>
+
+<!-- MENU -->
+<section class="section" id="menu">
+  <div class="section-label" data-i="menu_label">— Біздің мәзір</div>
+  <h2 class="section-title" data-i="menu_title">ТОЛЫҚ <span>МӘЗІР</span></h2>
+  <div class="cat-tabs" id="catTabs">
+    <button class="cat-tab active" data-cat="doner" onclick="filterCat('doner',this)"><span class="emoji">🌯</span> Донер</button>
+    <button class="cat-tab" data-cat="combo" onclick="filterCat('combo',this)"><span class="emoji">🍱</span> Комбо</button>
+    <button class="cat-tab" data-cat="burger" onclick="filterCat('burger',this)"><span class="emoji">🍔</span> Бургер / Закуски</button>
+    <button class="cat-tab" data-cat="plov" onclick="filterCat('plov',this)"><span class="emoji">🍚</span> Плов / Тандыр</button>
+    <button class="cat-tab" data-cat="coffee" onclick="filterCat('coffee',this)"><span class="emoji">☕</span> Кофе</button>
+    <button class="cat-tab" data-cat="tea" onclick="filterCat('tea',this)"><span class="emoji">🍵</span> Чай</button>
+    <button class="cat-tab" data-cat="cold" onclick="filterCat('cold',this)"><span class="emoji">🥤</span> Холодные напитки</button>
+  </div>
+  <div class="menu-grid" id="menuGrid"></div>
+</section>
+
+<!-- PROMOS -->
+<section class="section" id="promos">
+  <div class="section-label" data-i="promo_label">— Акциялар</div>
+  <h2 class="section-title" data-i="promo_title">ЫСТЫҚ <span>ҰСЫНЫСТАР</span></h2>
+  <div class="promo-row">
+    <div class="promo p1"><div class="promo-emoji">🎁</div><div class="promo-discount">2+1</div><div class="promo-text" data-i="promo1_t">Донер акциясы</div><div class="promo-sub" data-i="promo1_s">2 донер ал — 3-шісі тегін! Күн сайын 12:00-16:00</div></div>
+    <div class="promo p2"><div class="promo-emoji">🛵</div><div class="promo-discount">0₸</div><div class="promo-text" data-i="promo2_t">Тегін жеткізу</div><div class="promo-sub" data-i="promo2_s">5000₸-дан жоғары тапсырыста жеткізу тегін</div></div>
+    <div class="promo p3"><div class="promo-emoji">⭐</div><div class="promo-discount">15%</div><div class="promo-text" data-i="promo3_t">Бонус жүйесі</div><div class="promo-sub" data-i="promo3_s">Әр тапсырыстан бонус жина, келесіде қолдан</div></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section" id="reviews">
+  <div class="page-head" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2.5rem;">
+    <div>
+      <div class="section-label" data-i="rev_label" style="margin-bottom:0.8rem;">— Пікірлер</div>
+      <h2 class="section-title" data-i="rev_title" style="margin-bottom:0;">КЛИЕНТ <span>ПІКІРЛЕРІ</span></h2>
+    </div>
+    <button class="btn-yellow" onclick="handleWriteReview()" style="padding:0.8rem 1.5rem;" id="writeReviewBtn"><span data-i="write_review">✍️ Пікір жазу</span></button>
+  </div>
+  <!-- Рейтинг жолағы -->
+  <div id="reviewStats" style="display:flex;align-items:center;gap:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.5rem;margin-bottom:2rem;flex-wrap:wrap;">
+    <div style="text-align:center;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:4rem;color:var(--yellow);line-height:1;" id="avgRating">5.0</div>
+      <div style="color:var(--yellow);font-size:1.1rem;margin:0.3rem 0;" id="avgStars">★★★★★</div>
+      <div style="font-size:0.75rem;color:var(--gray);" id="reviewCount">3 пікір</div>
+    </div>
+    <div style="flex:1;min-width:160px;" id="ratingBars"></div>
+  </div>
+  <div class="reviews-row" id="reviewsRow"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-label" data-i="con_label">— Байланыс</div>
+  <h2 class="section-title" data-i="con_title">БІЗГЕ <span>КЕЛІҢІЗ</span></h2>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="contact-item"><div class="contact-icon">📍</div><div><div class="contact-label" data-i="con_addr">Мекенжай</div><div class="contact-val">Қарағанды, Нуркена Абдирова 38/2</div></div></div>
+      <div class="contact-item"><div class="contact-icon">📞</div><div><div class="contact-label" data-i="con_phone">Телефон</div><div class="contact-val">+7 707 492 74 02</div></div></div>
+      <div class="contact-item"><div class="contact-icon">🕐</div><div><div class="contact-label" data-i="con_hours">Жұмыс уақыты</div><div class="contact-val" data-i="con_hours_v">Күн сайын 09:00 — 23:00</div></div></div>
+      <div class="contact-item" onclick="window.open('https://instagram.com','_blank')" style="cursor:pointer;"><div class="contact-icon">📸</div><div><div class="contact-label">Instagram</div><div class="contact-val">@asiamix_streetfood</div></div></div>
+    </div>
+    <div class="map-box">
+      <iframe src="https://www.google.com/maps?q=Karaganda+Nurkena+Abdirova+38&output=embed" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">ASIA <b>MIX</b></div>
+  <div style="color:var(--gray);font-size:0.85rem;" data-i="footer_tag">Қарағандыдағы №1 street food</div>
+  <div class="footer-socials">
+    <a href="https://instagram.com" target="_blank" class="social-btn">📸</a>
+    <a href="#" onclick="orderWhatsApp();return false;" class="social-btn">💬</a>
+    <a href="tel:+77074927402" class="social-btn">📞</a>
+  </div>
+  <div class="footer-copy">© 2026 ASIA MIX STREET FOOD · Барлық құқықтар қорғалған</div>
+</footer>
+
+<!-- CART FAB -->
+<div class="cart-fab" id="cartFab" onclick="openCart()">
+  <div class="cart-fab-count" id="cartFabCount">0</div>
+  <span data-i="cart_label">Себет</span>
+  <span id="cartFabTotal">0 ₸</span>
+</div>
+
+<!-- CART SHEET -->
+<div class="overlay" id="cartOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="sheet-title" data-i="cart_title">СЕБЕТ</div>
+      <button class="close-btn" onclick="closeCart()">✕</button>
+    </div>
+    <div id="cartItems"></div>
+    <div id="cartSummary"></div>
+    <button class="checkout-btn" onclick="goCheckout()" id="checkoutBtn">
+      <span data-i="checkout_btn">Тапсырысқа өту</span> →
+    </button>
+  </div>
+</div>
+
+<!-- CHECKOUT SHEET -->
+<div class="overlay" id="checkoutOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="sheet-title" data-i="checkout_title">ТАПСЫРЫС</div>
+      <button class="close-btn" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="delivery-toggle">
+      <button class="dt-btn active" onclick="setDelivery('delivery',this)" data-i="dt_delivery">🛵 Жеткізу</button>
+      <button class="dt-btn" onclick="setDelivery('pickup',this)" data-i="dt_pickup">🏃 Өзім аламын</button>
+    </div>
+    <div class="field"><label data-i="f_name">Аты</label><input type="text" id="coName" placeholder="Аты-жөніңіз"></div>
+    <div class="field"><label data-i="f_phone">Телефон</label><input type="tel" id="coPhone" placeholder="+7 (___) ___-__-__"></div>
+    <div class="field" id="addrField"><label data-i="f_addr">Мекенжай</label><textarea id="coAddr" placeholder="Көше, үй, пәтер"></textarea></div>
+    <div style="font-size:0.75rem;color:var(--gray);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:1px;font-weight:600;" data-i="pay_label">Төлем тәсілі</div>
+    <div class="pay-methods">
+      <div class="pay-method pay-kaspi" onclick="setPay('kaspi',this)"><span class="pic">🔴</span> Kaspi</div>
+      <div class="pay-method pay-halyk" onclick="setPay('halyk',this)"><span class="pic">🟢</span> Halyk</div>
+      <div class="pay-method" onclick="setPay('card',this)"><span class="pic">💳</span> Карта</div>
+      <div class="pay-method" onclick="setPay('cash',this)"><span class="pic">💵</span> Қолма-қол</div>
+    </div>
+    <div id="coSummary"></div>
+    <button class="checkout-btn" onclick="submitOrder()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.557 4.127 1.527 5.865L.057 23.082a.5.5 0 0 0 .614.665l5.427-1.424A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+      <span data-i="submit_btn">Тапсырыс беру</span>
+    </button>
+  </div>
+</div>
+
+<!-- KASPI GOLD PAY OVERLAY -->
+<div class="overlay" id="kaspiOverlay">
+  <div class="sheet kaspi-sheet">
+    <div class="sheet-header">
+      <div class="sheet-title">💳 KASPI GOLD</div>
+      <button class="close-btn" onclick="closeKaspi()">✕</button>
+    </div>
+    <div class="kaspi-box">
+      <div class="kaspi-logo">Kaspi&nbsp;<span>Gold</span></div>
+      <div class="kaspi-label" data-i="kaspi_sum_lbl">Төлем сомасы</div>
+      <div class="kaspi-sum" id="kaspiSum">0 ₸</div>
+      <div class="kaspi-label" data-i="kaspi_num_lbl">Аударым нөмірі</div>
+      <div class="kaspi-num-row">
+        <div class="kaspi-num" id="kaspiNum">+7 700 000 00 00</div>
+        <button class="kaspi-copy" onclick="kaspiCopyNum()" data-i="kaspi_copy">📋 Көшіру</button>
+      </div>
+      <div class="kaspi-hint" data-i="kaspi_hint">Kaspi қосымшасын ашып, осы нөмірге көрсетілген соманы аударыңыз. Аударғаннан кейін чекті WhatsApp-қа жіберіңіз.</div>
+      <button class="kaspi-open-btn" onclick="kaspiOpenApp()" data-i="kaspi_open">🔴 Kaspi қосымшасын ашу</button>
+      <button class="kaspi-done-btn" onclick="closeKaspi()" data-i="kaspi_done">✅ Төледім</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT PANEL SHEET -->
+<div class="overlay" id="panelOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="sheet-title" data-i="panel_title">МЕНІҢ КАБИНЕТ</div>
+      <button class="close-btn" onclick="closePanel()">✕</button>
+    </div>
+    <div class="bonus-card">
+      <div class="bonus-label" data-i="bonus_label">Сіздің бонусыңыз</div>
+      <div class="bonus-amount" id="bonusAmount">0 ⭐</div>
+      <div style="font-size:0.8rem;color:var(--gray);position:relative;" data-i="bonus_hint">100 бонус = 100 ₸ жеңілдік</div>
+    </div>
+    <div class="panel-tabs">
+      <button class="panel-tab active" onclick="panelTab('history',this)" data-i="pt_history">📋 Тарих</button>
+      <button class="panel-tab" onclick="panelTab('favorites',this)" data-i="pt_fav">❤️ Таңдаулы</button>
+    </div>
+    <div id="panelContent"></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL (тіркелу/кіру) -->
+<div class="overlay" id="authOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="sheet-title" data-i="auth_title">КІРУ</div>
+      <button class="close-btn" onclick="closeAuth()">✕</button>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuth('login',this)" data-i="tab_login">Кіру</button>
+      <button class="auth-tab" onclick="switchAuth('register',this)" data-i="tab_register">Тіркелу</button>
+    </div>
+    <!-- LOGIN -->
+    <div class="auth-form active" id="loginForm">
+      <div class="field"><label data-i="f_phone2">Телефон</label><input type="tel" id="loginPhone" placeholder="+7 (___) ___-__-__"></div>
+      <div class="field"><label data-i="f_pass">Құпиясөз</label><input type="password" id="loginPassword" placeholder="••••••"></div>
+      <button class="checkout-btn" onclick="doClientLogin()"><span data-i="login_submit">Кіру</span> →</button>
+    </div>
+    <!-- REGISTER -->
+    <div class="auth-form" id="registerForm">
+      <div class="field"><label data-i="f_name2">Аты-жөні</label><input type="text" id="regName" placeholder="Аты-жөніңіз"></div>
+      <div class="field"><label data-i="f_phone2">Телефон</label><input type="tel" id="regPhone" placeholder="+7 (___) ___-__-__"></div>
+      <div class="field"><label data-i="f_pass">Құпиясөз</label><input type="password" id="regPassword" placeholder="••••••"></div>
+      <button class="checkout-btn" onclick="doClientRegister()"><span data-i="reg_submit">Тіркелу</span> →</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW MODAL (пікір жазу) -->
+<div class="overlay" id="reviewOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="sheet-title" data-i="review_title">ПІКІР ЖАЗУ</div>
+      <button class="close-btn" onclick="closeReviewModal()">✕</button>
+    </div>
+    <!-- Кіру сұрау (тіркелмеген болса) -->
+    <div id="reviewLoginPrompt" style="display:none;text-align:center;padding:1.5rem 0;">
+      <div style="font-size:3rem;margin-bottom:1rem;">🔐</div>
+      <div style="font-weight:700;font-size:1rem;margin-bottom:0.5rem;" data-i="rev_login_title">Пікір жазу үшін тіркелу керек</div>
+      <div style="font-size:0.85rem;color:var(--gray);margin-bottom:1.5rem;" data-i="rev_login_desc">Тіркелген клиенттер ғана пікір қалдыра алады</div>
+      <button class="checkout-btn" onclick="closeReviewModal();openAuth()">👤 <span data-i="rev_login_btn">Тіркелу / Кіру</span></button>
+    </div>
+    <!-- Пікір формасы (кіргеннен кейін) -->
+    <div id="reviewFormContent">
+      <div style="display:flex;align-items:center;gap:1rem;background:linear-gradient(135deg,#2a2200,#1a1a1a);border:1px solid var(--border);border-radius:16px;padding:1rem 1.2rem;margin-bottom:1.2rem;" id="reviewUserInfo"></div>
+      <div style="text-align:center;color:var(--gray);font-size:0.85rem;margin-bottom:0.3rem;" data-i="rate_us">Бізді бағалаңыз</div>
+      <div class="star-rating" id="starRating">
+        <span class="star" data-v="1" onclick="setStar(1)">★</span>
+        <span class="star" data-v="2" onclick="setStar(2)">★</span>
+        <span class="star" data-v="3" onclick="setStar(3)">★</span>
+        <span class="star" data-v="4" onclick="setStar(4)">★</span>
+        <span class="star" data-v="5" onclick="setStar(5)">★</span>
+      </div>
+      <div id="starLabel" style="text-align:center;font-size:0.8rem;color:var(--yellow);min-height:1.2rem;margin-bottom:0.8rem;font-weight:700;"></div>
+      <div class="field"><label data-i="f_review">Пікіріңіз</label><textarea id="revText" placeholder="Тағам мен қызмет туралы пікіріңіз..." rows="4"></textarea></div>
+      <button class="checkout-btn" onclick="submitReview()"><span data-i="send_review">📨 Пікір жіберу</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bn-item active" onclick="scrollTo2('home',this)"><span class="bn-icon">🏠</span><span data-i="bn_home">Басты</span></button>
+  <button class="bn-item" onclick="scrollTo2('menu',this)"><span class="bn-icon">🍽️</span><span data-i="bn_menu">Меню</span></button>
+  <button class="bn-item" onclick="openCart();setBn(this)"><span class="bn-icon">🛒</span><span data-i="bn_cart">Себет</span><div class="bn-badge" id="bnCartBadge">0</div></button>
+  <button class="bn-item" onclick="openPanel();setBn(this)"><span class="bn-icon">👤</span><span data-i="bn_profile">Кабинет</span></button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WHATSAPP="77074927402";
+// ⬇️⬇️⬇️ МҰНДА ӨЗ KASPI GOLD НӨМІРІҢДІ ЖАЗ (тек цифр, +/бос орынсыз) ⬇️⬇️⬇️
+const KASPI_PHONE="77000000000"; // мысалы: 77074927402
+// ⬆️⬆️⬆️ ------------------------------------------------- ⬆️⬆️⬆️
+const TG_TOKEN="8909010299:AAGFEDSTFjffWx1Xm9kZY9dOMN7euXjgm4Y";
+const TG_CHAT="1248306372";
+const DELIVERY_COST=1000, FREE_MIN=5000;
+
+// ===== PRODUCTS =====
+const PRODUCTS=[
+  // ===== ДОНЕР =====
+  {id:'d1',cat:'doner',name:'Super Big',name_ru:'Super Big',price:2550,tag:'hot',desc:'Тауық, фри, маринадталған қияр, пияз, фирмалық ақ және қызыл соус',desc_ru:'Курица, фри, огурчики маринованные, лук, фирменный белый и красный соусы',img:'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=500&q=80'},
+  {id:'d2',cat:'doner',name:'Classic / Fresh',name_ru:'Classic / Fresh',price:1700,tag:'hot',desc:'S — 1700₸ / M — 1990₸. Тауық, фри, қияр, помидор, пияз, көк, фирмалық соус (Fresh — жаңа көкөніс, фриcіз)',desc_ru:'S — 1700₸ / M — 1990₸. Курица, фри, огурчики, помидоры, лук, зелень, фирменный соус (Fresh — свежие овощи, без фри)',img:'https://images.unsplash.com/photo-1633321088355-d0f81134ca3b?w=500&q=80'},
+  {id:'d3',cat:'doner',name:'Nan лепёшкеде',name_ru:'NAN в лепёшке',price:2300,tag:'',desc:'Classic немесе Fresh құрамы (Classic құрамында фри жоқ)',desc_ru:'Состав Classic или Fresh (в составе Classic нет фри)',img:'https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=500&q=80'},
+  {id:'d4',cat:'doner',name:'Kebab / Kebab Nan',name_ru:'Kebab / Kebab Nan',price:1990,tag:'new',desc:'Тауық — 1990₸ / сиыр — 2300₸. Люля кебаб, помидор, пияз, көк, жаңа қияр, фирмалық соус (Nan құрамында жаңа қияр жоқ)',desc_ru:'Курица — 1990₸ / говядина — 2300₸. Люля кебаб, помидоры, лук, зелень, свежие огурцы, фирменный соус (в Nan нет свежих огурцов)',img:'https://images.unsplash.com/photo-1561651823-34da81a30f0a?w=500&q=80'},
+  {id:'d5',cat:'doner',name:'Фирмалық соус',name_ru:'Соус фирменный',price:250,tag:'',desc:'Қосымша фирмалық ақ соус',desc_ru:'Дополнительный фирменный белый соус',img:'https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=500&q=80'},
+  {id:'d6',cat:'doner',name:'Heinz соус',name_ru:'Heinz соус',price:300,tag:'',desc:'Сырлы соус немесе кетчуп',desc_ru:'Сырный или кетчуп',img:'https://images.unsplash.com/photo-1608039755401-742074f0548d?w=500&q=80'},
+  {id:'d7',cat:'doner',name:'Ащы Ланджан',name_ru:'Острый Ланджан',price:250,tag:'',desc:'Ащы ланджан соусы',desc_ru:'Острый соус ланджан',img:'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&q=80'},
+  {id:'d8',cat:'doner',name:'Халапеньо',name_ru:'Халапеньо',price:250,tag:'',desc:'Маринадталған ащы халапеньо',desc_ru:'Маринованный острый халапеньо',img:'https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?w=500&q=80'},
+
+  // ===== КОМБО =====
+  {id:'k1',cat:'combo',name:'Хит 5 / Хит 10',name_ru:'Хит 5 / Хит 10',price:1950,tag:'new',desc:'1950₸ / 2450₸. Тауық стрипс 5 / 10 дана, фри, фирмалық соус',desc_ru:'1950₸ / 2450₸. Куриные стрипсы 5/10 шт, фри, соус фирменный',img:'https://images.unsplash.com/photo-1562967914-608f82629710?w=500&q=80'},
+  {id:'k2',cat:'combo',name:'Сытный',name_ru:'Сытный',price:4200,tag:'new',desc:'Бургер, стрипс 5 дана, фри, фирмалық соус, 0,5 L сусын',desc_ru:'Бургер, стрипсы 5 шт, фри, соус фирменный, напиток на выбор 0,5 L',img:'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=500&q=80'},
+  {id:'k3',cat:'combo',name:'Дуэт',name_ru:'Дуэт',price:7700,tag:'',desc:'Бургер 2 дана, стрипс 10 дана, фри 2 порция, фирмалық соус 2 дана, 1 L сусын',desc_ru:'Бургер 2 шт, стрипсы 10 шт, фри 2 порции, соус фирменный 2 шт, напиток на выбор 1 L',img:'https://images.unsplash.com/photo-1610614819513-58e34989848b?w=500&q=80'},
+  {id:'k4',cat:'combo',name:'Комбо Super Big',name_ru:'Комбо «Super Big»',price:3300,tag:'',desc:'Doner Super Big, жидек морс 0,5 L, фирмалық соус',desc_ru:'Doner Super Big, морс ягодный 0,5 L, соус фирменный',img:'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=500&q=80'},
+  {id:'k5',cat:'combo',name:'Medium Хит',name_ru:'Medium Хит',price:3690,tag:'hot',desc:'Doner Medium Classic, фри, жидек морс 0,5 L, фирмалық соус',desc_ru:'Doner Medium Classic, фри, морс ягодный 0,5 L, соус фирменный',img:'https://images.unsplash.com/photo-1633321088355-d0f81134ca3b?w=500&q=80'},
+  {id:'k6',cat:'combo',name:'Kebab Хит',name_ru:'Kebab Хит',price:4100,tag:'',desc:'Doner Kebab сиыр (лаваш/лепёшке), жидек морс 0,5 L, фри, фирмалық соус',desc_ru:'Doner Kebab говядина (в лаваше/лепёшке), морс ягодный 0,5 L, фри, соус фирменный',img:'https://images.unsplash.com/photo-1561651823-34da81a30f0a?w=500&q=80'},
+
+  // ===== БУРГЕР / ЗАКУСКИ =====
+  {id:'b1',cat:'burger',name:'Бургер',name_ru:'Бургер',price:1650,tag:'hot',desc:'Тоқаш, төш филесі, айсберг, помидор, маринадталған қияр, пияз, қыша соус',desc_ru:'Булочка, филе грудки, айсберг, помидоры, огурчики маринованные, лук, горчичный соус',img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80'},
+  {id:'b2',cat:'burger',name:'Чизбургер',name_ru:'Чизбургер',price:1990,tag:'',desc:'Бургер құрамы + 2 тілім Чеддер сыры',desc_ru:'Состав бургера + 2 ломтика сыра Чеддер',img:'https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&q=80'},
+  {id:'b3',cat:'burger',name:'Стрипсы 5 дана',name_ru:'Стрипсы 5 шт',price:800,tag:'new',desc:'Тауық стрипс 5 дана (10 дана — 1300₸)',desc_ru:'Куриные стрипсы 5 шт (10 шт — 1300₸)',img:'https://images.unsplash.com/photo-1562967914-608f82629710?w=500&q=80'},
+  {id:'b4',cat:'burger',name:'Фри / Дольки',name_ru:'Фри / Дольки',price:900,tag:'',desc:'S — 900₸ / M — 1100₸',desc_ru:'S — 900₸ / M — 1100₸',img:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=500&q=80'},
+
+  // ===== ПЛОВ / ТАНДЫР =====
+  {id:'p1',cat:'plov',name:'Ташкент палауы',name_ru:'Ташкентский плов',price:2100,tag:'hot',desc:'Сиыр еті, жоғары сұрыпты күріш, сары және қызыл сәбіз, бұршақ, мейіз, дәмдеуіш, жұмыртқа. Контейнер +100₸',desc_ru:'Говядина, рис высшего сорта, морковь жёлтая и красная, нут, изюм, специи, яйцо. Контейнер +100₸',img:'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=500&q=80'},
+  {id:'p2',cat:'plov',name:'Самса тандыр',name_ru:'Самса тандыр',price:650,tag:'',desc:'Тауық/сиыр — 650₸, сиыр-картоп — 700₸. Қытырлақ қатпарлы қамыр, туралған ет, пияз, дәмдеуіш',desc_ru:'Курица/говядина — 650₸, говядина-картошка — 700₸. Песочно-слоёное тесто, рубленое мясо, лук, специи',img:'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&q=80'},
+  {id:'p3',cat:'plov',name:'Тандыр лепёшка',name_ru:'Тандыр лепёшка',price:200,tag:'',desc:'200₸ / 300₸. Жаңа піскен тандыр наны',desc_ru:'200₸ / 300₸. Свежеиспечённая тандырная лепёшка',img:'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=500&q=80'},
+  {id:'p4',cat:'plov',name:'Ачи-чук салаты',name_ru:'Салат ачи-чук',price:650,tag:'',desc:'Помидор, пияз — дәстүрлі салат',desc_ru:'Помидоры, лук — традиционный салат',img:'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80'},
+
+  // ===== КОФЕ / HOT DRINKS =====
+  {id:'c1',cat:'coffee',name:'Эспрессо',name_ru:'Эспрессо',price:500,tag:'',desc:'Қою классикалық эспрессо',desc_ru:'Крепкий классический эспрессо',img:'https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=500&q=80'},
+  {id:'c2',cat:'coffee',name:'Флэт Уайт',name_ru:'Флэт Уайт',price:750,tag:'',desc:'Эспрессо, нәзік сүт',desc_ru:'Эспрессо, нежное молоко',img:'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=500&q=80'},
+  {id:'c3',cat:'coffee',name:'Американо',name_ru:'Американо',price:700,tag:'',desc:'350/450 мл — 700/800₸. Эспрессо, ыстық су',desc_ru:'350/450 мл — 700/800₸. Эспрессо, горячая вода',img:'https://images.unsplash.com/photo-1551030173-122aabc4489c?w=500&q=80'},
+  {id:'c4',cat:'coffee',name:'Американо сүтпен',name_ru:'Американо с молоком',price:700,tag:'',desc:'350/450 мл — 700/800₸',desc_ru:'350/450 мл — 700/800₸',img:'https://images.unsplash.com/photo-1572286258217-215cf8e667d7?w=500&q=80'},
+  {id:'c5',cat:'coffee',name:'Латте Макиато',name_ru:'Латте Макиато',price:850,tag:'',desc:'350/450 мл — 850/890₸',desc_ru:'350/450 мл — 850/890₸',img:'https://images.unsplash.com/photo-1561882468-9110e03e0f78?w=500&q=80'},
+  {id:'c6',cat:'coffee',name:'Латте',name_ru:'Латте',price:850,tag:'hot',desc:'350/450 мл — 850/890₸. Жұмсақ сүтті кофе',desc_ru:'350/450 мл — 850/890₸. Мягкий кофе с молоком',img:'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=500&q=80'},
+  {id:'c7',cat:'coffee',name:'Капучино',name_ru:'Капучино',price:850,tag:'hot',desc:'350/450 мл — 850/890₸. Эспрессо, бу сүті, көбік',desc_ru:'350/450 мл — 850/890₸. Эспрессо, паровое молоко, пенка',img:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=500&q=80'},
+  {id:'c8',cat:'coffee',name:'Тайша кофе',name_ru:'Кофе по-тайски',price:900,tag:'',desc:'350/450 мл — 900/950₸',desc_ru:'350/450 мл — 900/950₸',img:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=500&q=80'},
+  {id:'c9',cat:'coffee',name:'Раф',name_ru:'Раф',price:1000,tag:'new',desc:'350/450 мл — 1000/1200₸. Кілегей, ваниль, эспрессо',desc_ru:'350/450 мл — 1000/1200₸. Сливки, ваниль, эспрессо',img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&q=80'},
+  {id:'c10',cat:'coffee',name:'Какао',name_ru:'Какао',price:800,tag:'',desc:'350/450 мл — 800/900₸',desc_ru:'350/450 мл — 800/900₸',img:'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=500&q=80'},
+  {id:'c11',cat:'coffee',name:'Ыстық шоколад',name_ru:'Горячий шоколад',price:1400,tag:'',desc:'Қою ыстық шоколад',desc_ru:'Густой горячий шоколад',img:'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=500&q=80'},
+  {id:'c12',cat:'coffee',name:'Айс Латте / Капучино',name_ru:'Айс Латте / Капучино',price:750,tag:'',desc:'750/850/950₸. Мұзды латте немесе капучино',desc_ru:'750/850/950₸. Ледяной латте или капучино',img:'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&q=80'},
+  {id:'c13',cat:'coffee',name:'Айс Американо',name_ru:'Айс Американо',price:650,tag:'',desc:'650/850/950₸. Мұзды американо',desc_ru:'650/850/950₸. Ледяной американо',img:'https://images.unsplash.com/photo-1521302200778-33500795e128?w=500&q=80'},
+
+  // ===== ЧАЙ =====
+  {id:'h1',cat:'tea',name:'Qazaq шай тарымен',name_ru:'Qazaq чай с тары',price:1690,tag:'hot',desc:'0,8/1,3 л — 1690/2390₸. Қара шай, сүт, тары, қант',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай чёрный, молоко, тары, сахар',img:'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&q=80'},
+  {id:'h2',cat:'tea',name:'Имбирлі шай',name_ru:'Имбирный чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Жасыл шай, апельсин, лимон, зімбір, даршын, бадиан, бал, сироп',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай зелёный, апельсин, лимон, имбирь, корица, бадьян, мёд, сироп',img:'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=500&q=80'},
+  {id:'h3',cat:'tea',name:'Ташкент шайы',name_ru:'Ташкентский чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Қара шай, жасыл шай, апельсин, лимон, жалбыз, бал',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай чёрный, зелёный, апельсин, лимон, мята, мёд',img:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&q=80'},
+  {id:'h4',cat:'tea',name:'Шырғанақ шайы',name_ru:'Облепиховый чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Қара шай, шырғанақ жидегі, маракуйя сиропы',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай чёрный, ягоды облепихи, сироп маракуйя',img:'https://images.unsplash.com/photo-1597318181409-cf64d0b5d8a2?w=500&q=80'},
+  {id:'h5',cat:'tea',name:'Марокко шайы',name_ru:'Марокканский чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Қара шай, апельсин, лайм, даршын, бадиан, қалампыр, жалбыз, анар сиропы',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай чёрный, апельсин, лайм, корица, бадьян, гвоздика, мята, сироп гранат',img:'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=500&q=80'},
+  {id:'h6',cat:'tea',name:'Жеміс шайы',name_ru:'Фруктовый чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Жеміс шайы, апельсин, лимон, шие, бадам сиропы',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай фруктовый, апельсин, лимон, вишня, сироп миндаль',img:'https://images.unsplash.com/photo-1563911892437-1feda0179e1b?w=500&q=80'},
+  {id:'h7',cat:'tea',name:'Шәйнектегі шай',name_ru:'Чай чайник',price:900,tag:'',desc:'Қара/жасыл — 900/1050₸',desc_ru:'Чёрный/зелёный — 900/1050₸',img:'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=500&q=80'},
+  {id:'h8',cat:'tea',name:'Шай (стақан)',name_ru:'Чай (стакан)',price:300,tag:'',desc:'350/450 мл — қара/жасыл — 300/350₸, сүтпен/лимонмен — 350/400₸',desc_ru:'350/450 мл — чёрный/зелёный — 300/350₸, с молоком/лимоном — 350/400₸',img:'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&q=80'},
+  {id:'h9',cat:'tea',name:'Орех тоғыша майымен',name_ru:'Орешки со сгущёнкой',price:200,tag:'',desc:'Тоғыша майы құйылған тәтті орех',desc_ru:'Орешки со сгущёнкой',img:'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&q=80'},
+
+  // ===== ХОЛОДНЫЕ НАПИТКИ =====
+  {id:'i1',cat:'cold',name:'Мохито',name_ru:'Мохито',price:790,tag:'new',desc:'300/400/500 мл — 790/890/990₸. Лайм, жалбыз, газды су, қант сиропы',desc_ru:'300/400/500 мл — 790/890/990₸. Лайм, мята, газированная вода, сахарный сироп',img:'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=500&q=80'},
+  {id:'i2',cat:'cold',name:'Лимонад',name_ru:'Лимонад',price:790,tag:'hot',desc:'300/400/500 мл — 790/890/990₸ (графин — 2100₸). Апельсин, жалбыз, газды су, мұз, сироп',desc_ru:'300/400/500 мл — 790/890/990₸ (графин — 2100₸). Апельсин, мята, газированная вода, лёд, сироп',img:'https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=500&q=80'},
+  {id:'i3',cat:'cold',name:'Милкшейк Ванильді',name_ru:'Милкшейк Ванильный',price:1200,tag:'',desc:'300/400/500 мл — 1200/1400/1600₸. Балмұздақ, ваниль, сүт',desc_ru:'300/400/500 мл — 1200/1400/1600₸. Мороженое, ваниль, молоко',img:'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500&q=80'},
+  {id:'i4',cat:'cold',name:'Милкшейк Шоколадты',name_ru:'Милкшейк Шоколадный',price:1200,tag:'',desc:'300/400/500 мл — 1200/1400/1600₸. Шоколад балмұздағы, сүт',desc_ru:'300/400/500 мл — 1200/1400/1600₸. Шоколадное мороженое, молоко',img:'https://images.unsplash.com/photo-1568901839119-631418a3910d?w=500&q=80'},
+  {id:'i5',cat:'cold',name:'Милкшейк Oreo',name_ru:'Милкшейк Oreo',price:1200,tag:'new',desc:'300/400/500 мл — 1200/1400/1600₸. Балмұздақ, Oreo, сүт',desc_ru:'300/400/500 мл — 1200/1400/1600₸. Мороженое, Oreo, молоко',img:'https://images.unsplash.com/photo-1626202373152-8db1760c8f57?w=500&q=80'},
+  {id:'i6',cat:'cold',name:'Милкшейк Банан',name_ru:'Милкшейк Банановый',price:1200,tag:'',desc:'300/400/500 мл — 1200/1400/1600₸. Балмұздақ, банан, сүт',desc_ru:'300/400/500 мл — 1200/1400/1600₸. Мороженое, банан, молоко',img:'https://images.unsplash.com/photo-1553787499-6f9133860278?w=500&q=80'},
+  {id:'i7',cat:'cold',name:'Смузи Жасыл',name_ru:'Смузи Зелёный',price:890,tag:'',desc:'300/400/500 мл — 890/990/1090₸. Банан, шпинат, лимон, мұз, су',desc_ru:'300/400/500 мл — 890/990/1090₸. Банан, шпинат, лимон, лёд, вода',img:'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=500&q=80'},
+  {id:'i8',cat:'cold',name:'Смузи Клубничка',name_ru:'Смузи Клубничка',price:890,tag:'',desc:'300/400/500 мл — 890/990/1090₸. Құлпынай, таңқурай, банан, мұз, сүт',desc_ru:'300/400/500 мл — 890/990/1090₸. Клубника, малина, банан, лёд, молоко',img:'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=500&q=80'},
+  {id:'i9',cat:'cold',name:'Pepsi',name_ru:'Pepsi',price:700,tag:'',desc:'0,5/1 L — 700/990₸',desc_ru:'0,5/1 L — 700/990₸',img:'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=500&q=80'},
+  {id:'i10',cat:'cold',name:'Mirinda / 7up',name_ru:'Mirinda / 7up',price:700,tag:'',desc:'0,5/1 L — 700/990₸',desc_ru:'0,5/1 L — 700/990₸',img:'https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500&q=80'},
+  {id:'i11',cat:'cold',name:'Lipton',name_ru:'Lipton',price:700,tag:'',desc:'0,5/1 L — 700/990₸',desc_ru:'0,5/1 L — 700/990₸',img:'https://images.unsplash.com/photo-1499638673689-79a0b5115d87?w=500&q=80'},
+  {id:'i12',cat:'cold',name:'Tassay',name_ru:'Tassay',price:400,tag:'',desc:'0,5/1 L — 400/600₸ (дәмді — 500/700₸)',desc_ru:'0,5/1 L — 400/600₸ (вкусовая — 500/700₸)',img:'https://images.unsplash.com/photo-1616118132534-381148898bb4?w=500&q=80'},
+  {id:'i13',cat:'cold',name:'Gorilla',name_ru:'Gorilla',price:850,tag:'',desc:'Энергетик сусыны',desc_ru:'Энергетический напиток',img:'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=500&q=80'},
+  {id:'i14',cat:'cold',name:'Айран',name_ru:'Айран',price:400,tag:'',desc:'Дәстүрлі ашытылған сүт сусыны',desc_ru:'Традиционный кисломолочный напиток',img:'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=500&q=80'},
+  {id:'i15',cat:'cold',name:'Red Bull',name_ru:'Red Bull',price:1090,tag:'',desc:'1090/1290/1590₸. Энергетик',desc_ru:'1090/1290/1590₸. Энергетик',img:'https://images.unsplash.com/photo-1613214150384-4c0e6e8c1b4f?w=500&q=80'},
+  {id:'i16',cat:'cold',name:'Компот',name_ru:'Компот',price:650,tag:'',desc:'Кептірілген жемістерден жасалған компот',desc_ru:'Компот из сухофруктов',img:'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=500&q=80'},
+  {id:'i17',cat:'cold',name:'Жидек морсы',name_ru:'Морс ягодный',price:700,tag:'',desc:'Мүкжидек морсы',desc_ru:'Ягодный (клюквенный) морс',img:'https://images.unsplash.com/photo-1560508180-03f285f67ded?w=500&q=80'},
+];
+
+// ===== TRANSLATIONS =====
+const T={
+  kk:{nav_menu:'Меню',nav_promo:'Акциялар',nav_reviews:'Пікірлер',nav_contact:'Байланыс',
+    hero_badge:'Қарағандыдағы №1 street food',hero_title:'НАҒЫЗ ДӘМ',hero_desc:'Донер, тандыр, самса, кофе — бәрі бір жерде. Ыстық, дәмді, жылдам жеткіземіз! 30 минут ішінде үйіңізде.',hero_order:'Онлайн заказ',
+    menu_label:'— Біздің мәзір',menu_title:'ТОЛЫҚ ',
+    promo_label:'— Акциялар',promo_title:'ЫСТЫҚ ',promo1_t:'Донер акциясы',promo1_s:'2 донер ал — 3-шісі тегін! Күн сайын 12:00-16:00',promo2_t:'Тегін жеткізу',promo2_s:'5000₸-дан жоғары тапсырыста жеткізу тегін',promo3_t:'Бонус жүйесі',promo3_s:'Әр тапсырыстан бонус жина, келесіде қолдан',
+    rev_label:'— Пікірлер',rev_title:'КЛИЕНТ ',rev1:'«Донері керемет! Ыстық, дәмді, тез жеткізді. Қарағандыдағы ең үздік street food!»',rev2:'«Тандыр еті мен самса тіл үйірерлік. Бағасы да тиімді. Ұсынамын!»',rev3:'«Кофесі де керемет екен! Енді күнде осыдан тапсырыс беремін. Рахмет!»',rev_role:'Тұрақты клиент',rev_role2:'Клиент',rev_role3:'Жаңа клиент',
+    con_label:'— Байланыс',con_title:'БІЗГЕ ',con_addr:'Мекенжай',con_phone:'Телефон',con_hours:'Жұмыс уақыты',con_hours_v:'Күн сайын 09:00 — 23:00',
+    footer_tag:'Қарағандыдағы №1 street food',cart_label:'Себет',cart_title:'СЕБЕТ',checkout_btn:'Тапсырысқа өту',checkout_title:'ТАПСЫРЫС',
+    dt_delivery:'🛵 Жеткізу',dt_pickup:'🏃 Өзім аламын',f_name:'Аты',f_phone:'Телефон',f_addr:'Мекенжай',pay_label:'Төлем тәсілі',submit_btn:'Тапсырыс беру',
+    panel_title:'МЕНІҢ КАБИНЕТ',bonus_label:'Сіздің бонусыңыз',bonus_hint:'100 бонус = 100 ₸ жеңілдік',pt_history:'📋 Тарих',pt_fav:'❤️ Таңдаулы',
+    bn_home:'Басты',bn_menu:'Меню',bn_cart:'Себет',bn_profile:'Кабинет',
+    add:'Қосу',empty_cart:'Себет бос',sub:'Тауар сомасы',delivery:'Жеткізу',free:'ТЕГІН',total:'Жалпы',
+    no_history:'Тапсырыс тарихы бос',no_fav:'Таңдаулы тағамдар жоқ',added:'қосылды!',fill_form:'Аты мен телефонды толтырыңыз!',order_sent:'Тапсырыс жіберілді! 🎉',
+    login_btn:'Кіру',write_review:'✍️ Пікір жазу',auth_title:'КІРУ',tab_login:'Кіру',tab_register:'Тіркелу',f_phone2:'Телефон',f_pass:'Құпиясөз',login_submit:'Кіру',f_name2:'Аты-жөні',reg_submit:'Тіркелу',review_title:'ПІКІР ЖАЗУ',rate_us:'Бізді бағалаңыз',f_review:'Пікіріңіз',send_review:'📨 Пікір жіберу',rev_login_title:'Пікір жазу үшін тіркелу керек',rev_login_desc:'Тіркелген клиенттер ғана пікір қалдыра алады',rev_login_btn:'Тіркелу / Кіру',
+    kaspi_sum_lbl:'Төлем сомасы',kaspi_num_lbl:'Аударым нөмірі',kaspi_copy:'📋 Көшіру',kaspi_hint:'Kaspi қосымшасын ашып, осы нөмірге көрсетілген соманы аударыңыз. Аударғаннан кейін чекті WhatsApp-қа жіберіңіз.',kaspi_open:'🔴 Kaspi қосымшасын ашу',kaspi_done:'✅ Төледім'},
+  ru:{nav_menu:'Меню',nav_promo:'Акции',nav_reviews:'Отзывы',nav_contact:'Контакты',
+    hero_badge:'street food №1 в Караганде',hero_title:'НАСТОЯЩИЙ ВКУС',hero_desc:'Донер, тандыр, самса, кофе — всё в одном месте. Горячее, вкусное, доставим быстро! За 30 минут у вас дома.',hero_order:'Онлайн заказ',
+    menu_label:'— Наше меню',menu_title:'ПОЛНОЕ ',
+    promo_label:'— Акции',promo_title:'ГОРЯЧИЕ ',promo1_t:'Акция на донер',promo1_s:'2 донера — 3-й бесплатно! Каждый день 12:00-16:00',promo2_t:'Бесплатная доставка',promo2_s:'При заказе от 5000₸ доставка бесплатно',promo3_t:'Бонусная система',promo3_s:'Копи бонусы с каждого заказа, трать в следующий раз',
+    rev_label:'— Отзывы',rev_title:'ОТЗЫВЫ ',rev1:'«Донер супер! Горячий, вкусный, привезли быстро. Лучший street food в Караганде!»',rev2:'«Мясо тандыр и самса — пальчики оближешь. И цена приятная. Рекомендую!»',rev3:'«Кофе тоже отличный! Теперь каждый день заказываю здесь. Спасибо!»',rev_role:'Постоянный клиент',rev_role2:'Клиент',rev_role3:'Новый клиент',
+    con_label:'— Контакты',con_title:'ПРИХОДИТЕ ',con_addr:'Адрес',con_phone:'Телефон',con_hours:'Время работы',con_hours_v:'Ежедневно 09:00 — 23:00',
+    footer_tag:'street food №1 в Караганде',cart_label:'Корзина',cart_title:'КОРЗИНА',checkout_btn:'Оформить заказ',checkout_title:'ЗАКАЗ',
+    dt_delivery:'🛵 Доставка',dt_pickup:'🏃 Самовывоз',f_name:'Имя',f_phone:'Телефон',f_addr:'Адрес',pay_label:'Способ оплаты',submit_btn:'Заказать',
+    panel_title:'МОЙ КАБИНЕТ',bonus_label:'Ваши бонусы',bonus_hint:'100 бонусов = 100 ₸ скидка',pt_history:'📋 История',pt_fav:'❤️ Избранное',
+    bn_home:'Главная',bn_menu:'Меню',bn_cart:'Корзина',bn_profile:'Кабинет',
+    add:'Добавить',empty_cart:'Корзина пуста',sub:'Сумма товаров',delivery:'Доставка',free:'БЕСПЛАТНО',total:'Итого',
+    no_history:'История заказов пуста',no_fav:'Нет избранных блюд',added:'добавлено!',fill_form:'Заполните имя и телефон!',order_sent:'Заказ отправлен! 🎉',
+    login_btn:'Войти',write_review:'✍️ Оставить отзыв',auth_title:'ВХОД',tab_login:'Вход',tab_register:'Регистрация',f_phone2:'Телефон',f_pass:'Пароль',login_submit:'Войти',f_name2:'Имя',reg_submit:'Регистрация',review_title:'ОСТАВИТЬ ОТЗЫВ',rate_us:'Оцените нас',f_review:'Ваш отзыв',send_review:'📨 Отправить отзыв',rev_login_title:'Нужно войти в аккаунт',rev_login_desc:'Только зарегистрированные клиенты могут оставлять отзывы',rev_login_btn:'Войти / Регистрация',
+    kaspi_sum_lbl:'Сумма к оплате',kaspi_num_lbl:'Номер для перевода',kaspi_copy:'📋 Копировать',kaspi_hint:'Откройте приложение Kaspi и переведите указанную сумму на этот номер. После оплаты отправьте чек в WhatsApp.',kaspi_open:'🔴 Открыть приложение Kaspi',kaspi_done:'✅ Я оплатил'}
+};
+
+let lang='kk';
+function L(k){return T[lang][k]||T.kk[k]||k;}
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',(l==='kk'&&b.textContent==='ҚАЗ')||(l==='ru'&&b.textContent==='РУС')));
+  document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(T[l][k]!==undefined)el.innerHTML=T[l][k];});
+  document.querySelector('[data-i="menu_title"]').innerHTML=L('menu_title')+'<span>'+(l==='kk'?'МӘЗІР':'МЕНЮ')+'</span>';
+  document.querySelector('[data-i="promo_title"]').innerHTML=L('promo_title')+'<span>'+(l==='kk'?'ҰСЫНЫСТАР':'ПРЕДЛОЖЕНИЯ')+'</span>';
+  document.querySelector('[data-i="rev_title"]').innerHTML=L('rev_title')+'<span>'+(l==='kk'?'ПІКІРЛЕРІ':'КЛИЕНТОВ')+'</span>';
+  document.querySelector('[data-i="con_title"]').innerHTML=L('con_title')+'<span>'+(l==='kk'?'КЕЛІҢІЗ':'К НАМ')+'</span>';
+  renderMenu();
+}
+
+// ===== MENU =====
+let activeCat='doner';
+function renderMenu(){
+  const grid=document.getElementById('menuGrid');
+  grid.innerHTML=PRODUCTS.map(p=>{
+    const tagHtml=p.tag==='hot'?`<div class="product-tag hot">🔥 ${lang==='kk'?'Хит':'Хит'}</div>`:p.tag==='new'?`<div class="product-tag">✨ ${lang==='kk'?'Жаңа':'Новинка'}</div>`:'';
+    return `<div class="product ${p.cat===activeCat?'show':''}" data-cat="${p.cat}">
+      <div class="product-img"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80'">${tagHtml}</div>
+      <div class="product-body">
+        <div class="product-name">${lang==='kk'?p.name:p.name_ru}</div>
+        <div class="product-desc">${lang==='kk'?p.desc:p.desc_ru}</div>
+        <div class="product-footer">
+          <div class="product-price">${p.price.toLocaleString()} ₸</div>
+          <button class="add-cart-btn" onclick="addCart('${p.id}',this)">+ ${L('add')}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterCat(cat,btn){
+  activeCat=cat;
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.product').forEach((p,i)=>{const show=p.dataset.cat===cat;p.classList.toggle('show',show);if(show)p.style.animationDelay=(i%6)*0.05+'s';});
+}
+function goCat(cat){document.getElementById('menu').scrollIntoView({behavior:'smooth'});const btn=document.querySelector(`.cat-tab[data-cat="${cat}"]`);if(btn)filterCat(cat,btn);}
+
+// ===== CART =====
+let cart=[];
+let favorites=JSON.parse(localStorage.getItem('am_fav')||'[]');
+let bonus=parseInt(localStorage.getItem('am_bonus')||'0');
+let history=JSON.parse(localStorage.getItem('am_history')||'[]');
+let deliveryType='delivery',payMethod='';
+
+function addCart(id,btn){
+  const p=PRODUCTS.find(x=>x.id===id);
+  const ex=cart.find(i=>i.id===id);
+  if(ex)ex.qty++;else cart.push({...p,qty:1});
+  updateCart();
+  if(btn){btn.classList.add('added');btn.textContent='✓';setTimeout(()=>{btn.classList.remove('added');btn.textContent='+ '+L('add');},800);}
+  toast((lang==='kk'?p.name:p.name_ru)+' '+L('added'));
+}
+function updateCart(){
+  const count=cart.reduce((s,i)=>s+i.qty,0);
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('cartFabCount').textContent=count;
+  document.getElementById('cartFabTotal').textContent=total.toLocaleString()+' ₸';
+  document.getElementById('cartFab').classList.toggle('visible',count>0);
+  const bb=document.getElementById('bnCartBadge');bb.textContent=count;bb.classList.toggle('show',count>0);
+}
+function openCart(){renderCart();document.getElementById('cartOverlay').classList.add('open');}
+function closeCart(){document.getElementById('cartOverlay').classList.remove('open');}
+function renderCart(){
+  const c=document.getElementById('cartItems');
+  if(cart.length===0){c.innerHTML=`<div style="text-align:center;padding:3rem;color:var(--gray);">🛒<br><br>${L('empty_cart')}</div>`;document.getElementById('cartSummary').innerHTML='';document.getElementById('checkoutBtn').style.display='none';return;}
+  document.getElementById('checkoutBtn').style.display='flex';
+  c.innerHTML=cart.map((item,idx)=>`<div class="cart-item">
+    <img class="cart-item-img" src="${item.img}" onerror="this.style.opacity=0">
+    <div class="cart-item-info"><div class="cart-item-name">${lang==='kk'?item.name:item.name_ru}</div><div class="cart-item-price">${item.price.toLocaleString()} ₸</div></div>
+    <div class="qty-control"><button class="qty-btn" onclick="chgQty(${idx},-1)">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="chgQty(${idx},1)">+</button></div>
+  </div>`).join('');
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('cartSummary').innerHTML=`<div class="summary-row total"><span>${L('total')}</span><b>${total.toLocaleString()} ₸</b></div>`;
+}
+function chgQty(idx,d){cart[idx].qty+=d;if(cart[idx].qty<=0)cart.splice(idx,1);updateCart();if(cart.length===0){closeCart();return;}renderCart();}
+
+// ===== CHECKOUT =====
+function goCheckout(){closeCart();if(currentUser){document.getElementById('coName').value=currentUser.name;document.getElementById('coPhone').value=currentUser.phone;}renderCoSummary();document.getElementById('checkoutOverlay').classList.add('open');}
+function closeCheckout(){document.getElementById('checkoutOverlay').classList.remove('open');}
+function setDelivery(t,btn){deliveryType=t;document.querySelectorAll('.dt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('addrField').style.display=t==='delivery'?'block':'none';renderCoSummary();}
+function setPay(m,btn){payMethod=m;document.querySelectorAll('.pay-method').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
+function renderCoSummary(){
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const dc=deliveryType==='delivery'?(sub>=FREE_MIN?0:DELIVERY_COST):0;
+  document.getElementById('coSummary').innerHTML=`
+    <div class="summary-row"><span>${L('sub')}</span><span>${sub.toLocaleString()} ₸</span></div>
+    ${deliveryType==='delivery'?`<div class="summary-row"><span>${L('delivery')}</span><span style="color:${dc===0?'var(--green)':'var(--white)'}">${dc===0?L('free'):dc.toLocaleString()+' ₸'}</span></div>`:''}
+    <div class="summary-row total"><span>${L('total')}</span><b>${(sub+dc).toLocaleString()} ₸</b></div>`;
+}
+async function submitOrder(){
+  const name=document.getElementById('coName').value.trim();
+  const phone=document.getElementById('coPhone').value.trim();
+  const addr=document.getElementById('coAddr').value.trim();
+  if(!name||!phone){toast(L('fill_form'));return;}
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const dc=deliveryType==='delivery'?(sub>=FREE_MIN?0:DELIVERY_COST):0;
+  const total=sub+dc;
+  const items=cart.map(i=>`• ${i.name} × ${i.qty} = ${(i.price*i.qty).toLocaleString()} ₸`).join('\n');
+  const payMap={kaspi:'Kaspi',halyk:'Halyk',card:'Карта',cash:'Қолма-қол'};
+
+  // ===== 1) АДМИН ПАНЕЛЬГЕ ТІКЕЛЕЙ ЖАЗУ (бір құрылғыда — бірден көрінеді) =====
+  const oid='o'+Date.now()+Math.floor(Math.random()*1000);
+  try{
+    let orders=JSON.parse(localStorage.getItem('am_orders')||'[]');
+    let lastNum=orders.length?Math.max(...orders.map(o=>o.num||0)):0;
+    const orderItems=cart.map(i=>({name:i.name,qty:i.qty,price:i.price}));
+    orders.unshift({
+      num:lastNum+1,
+      oid,
+      name,phone,
+      address:addr,
+      deliveryType,
+      payment:payMethod?payMap[payMethod]:'',
+      total,
+      items:orderItems,
+      status:'new',
+      ts:Date.now(),
+      timeStr:new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})
+    });
+    localStorage.setItem('am_orders',JSON.stringify(orders));
+  }catch(e){}
+
+  // ===== 2) TELEGRAM АРҚЫЛЫ ЖІБЕРУ (басқа құрылғыдағы админ панельге) =====
+  const msg=`🔥 *ASIA MIX — ЖАҢА ТАПСЫРЫС*\n\n👤 ${name}\n📞 ${phone}\n🛵 ${deliveryType==='delivery'?'Жеткізу':'Өзі алады'}\n${addr?'📍 '+addr+'\n':''}${payMethod?'💳 '+payMap[payMethod]+'\n':''}\n🛒 Тапсырыс:\n${items}\n${dc>0?'🛵 Жеткізу: '+dc.toLocaleString()+' ₸\n':dc===0&&deliveryType==='delivery'?'🛵 Жеткізу: ТЕГІН\n':''}\n💰 *Жалпы: ${total.toLocaleString()} ₸*\n🆔 ${oid}\n🕐 ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
+  try{await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:msg,parse_mode:'Markdown'})});}catch(e){}
+
+  // Bonus + history
+  bonus+=Math.floor(total/100*5);localStorage.setItem('am_bonus',bonus);
+  if(currentUser){const users=getUsers();const u=users.find(x=>x.phone===currentUser.phone);if(u){u.bonus=bonus;saveUsers(users);}}
+  history.unshift({id:'#'+Date.now().toString().slice(-5),date:new Date().toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}),total,status:'progress'});
+  localStorage.setItem('am_history',JSON.stringify(history));
+
+  cart=[];updateCart();closeCheckout();
+  document.getElementById('coName').value='';document.getElementById('coPhone').value='';document.getElementById('coAddr').value='';
+
+  // ===== 3) ТӨЛЕМ: Kaspi таңдалса — Kaspi Gold аударымын ашу =====
+  if(payMethod==='kaspi'){
+    openKaspiPay(total,'#'+Date.now().toString().slice(-5));
+  }else{
+    toast(L('order_sent'));
+  }
+}
+
+// ===== KASPI GOLD ТӨЛЕМ ТЕРЕЗЕСІ =====
+function openKaspiPay(total,orderId){
+  const ov=document.getElementById('kaspiOverlay');
+  document.getElementById('kaspiSum').textContent=total.toLocaleString()+' ₸';
+  document.getElementById('kaspiNum').textContent='+'+KASPI_PHONE.replace(/(\d)(\d{3})(\d{3})(\d{2})(\d{2})/,'$1 $2 $3 $4 $5');
+  ov.dataset.sum=total;
+  ov.classList.add('open');
+}
+function closeKaspi(){document.getElementById('kaspiOverlay').classList.remove('open');toast(L('order_sent'));}
+function kaspiCopyNum(){
+  navigator.clipboard&&navigator.clipboard.writeText('+'+KASPI_PHONE);
+  toast(lang==='kk'?'Нөмір көшірілді ✅':'Номер скопирован ✅');
+}
+function kaspiOpenApp(){
+  // Kaspi қосымшасын ашуға тырысу (телефонда жұмыс істейді)
+  window.location.href='kaspi://';
+  setTimeout(()=>{window.open('https://kaspi.kz/','_blank');},800);
+}
+
+// ===== WHATSAPP DIRECT =====
+function orderWhatsApp(){window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Сәлеметсіз бе! ASIA MIX-тен тапсырыс бергім келеді 🔥')}`,'_blank');}
+
+// ===== CLIENT PANEL =====
+function openPanel(){
+  if(!currentUser){openAuth();return;}
+  document.getElementById('bonusAmount').textContent=bonus+' ⭐';
+  // профиль тақырыбын қосу
+  const sheet=document.querySelector('#panelOverlay .sheet');
+  let ph=document.getElementById('profileHeader');
+  if(!ph){
+    ph=document.createElement('div');ph.id='profileHeader';ph.className='profile-header';
+    const bonusCard=sheet.querySelector('.bonus-card');
+    sheet.insertBefore(ph,bonusCard);
+  }
+  ph.innerHTML=`<div class="profile-avatar">${currentUser.name.charAt(0)}</div>
+    <div style="flex:1;"><div class="profile-name">${currentUser.name}</div><div class="profile-phone">📞 ${currentUser.phone}</div></div>
+    <button class="logout-mini" onclick="clientLogout()" style="background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.25);color:#FF4444;border-radius:10px;padding:0.5rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;">${lang==='kk'?'Шығу':'Выйти'}</button>`;
+  renderPanelTab('history');
+  document.getElementById('panelOverlay').classList.add('open');
+}
+function closePanel(){document.getElementById('panelOverlay').classList.remove('open');}
+let panelActiveTab='history';
+function panelTab(t,btn){panelActiveTab=t;document.querySelectorAll('.panel-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPanelTab(t);}
+function renderPanelTab(t){
+  const c=document.getElementById('panelContent');
+  if(t==='history'){
+    if(history.length===0){c.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--gray);">📋<br><br>${L('no_history')}</div>`;return;}
+    c.innerHTML=history.map(h=>`<div class="history-item"><div class="history-info"><div class="history-id">${h.id} · ${h.total.toLocaleString()} ₸</div><div class="history-date">${h.date}</div></div><div class="history-status ${h.status==='done'?'hs-done':'hs-progress'}">${h.status==='done'?(lang==='kk'?'Орындалды':'Выполнен'):(lang==='kk'?'Жолда':'В пути')}</div></div>`).join('');
+  }else{
+    const favProducts=PRODUCTS.filter(p=>favorites.includes(p.id));
+    if(favProducts.length===0){c.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--gray);">❤️<br><br>${L('no_fav')}</div>`;return;}
+    c.innerHTML=favProducts.map(p=>`<div class="history-item"><div class="history-info"><div class="history-id">${lang==='kk'?p.name:p.name_ru}</div><div class="history-date">${p.price.toLocaleString()} ₸</div></div><button class="add-cart-btn" onclick="addCart('${p.id}')">+ ${L('add')}</button></div>`).join('');
+  }
+}
+
+// ===== HELPERS =====
+function scrollTo2(id,btn){document.getElementById(id).scrollIntoView({behavior:'smooth'});setBn(btn);}
+function setBn(btn){document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ===== CLIENT AUTH (тіркелу/кіру) =====
+let currentUser=JSON.parse(localStorage.getItem('am_user')||'null');
+
+function updateAuthBtn(){
+  const btn=document.getElementById('authNavBtn');
+  if(currentUser){btn.innerHTML='👤 '+currentUser.name.split(' ')[0];}
+  else{btn.innerHTML='👤 <span>'+(lang==='kk'?'Кіру':'Войти')+'</span>';}
+}
+function handleAuthClick(){
+  if(currentUser)openPanel();
+  else openAuth();
+}
+function openAuth(){document.getElementById('authOverlay').classList.add('open');}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('open');}
+function switchAuth(type,btn){
+  document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('loginForm').classList.toggle('active',type==='login');
+  document.getElementById('registerForm').classList.toggle('active',type==='register');
+  document.querySelector('[data-i="auth_title"]').textContent=type==='login'?(lang==='kk'?'КІРУ':'ВХОД'):(lang==='kk'?'ТІРКЕЛУ':'РЕГИСТРАЦИЯ');
+}
+function getUsers(){return JSON.parse(localStorage.getItem('am_users')||'[]');}
+function saveUsers(u){localStorage.setItem('am_users',JSON.stringify(u));}
+
+function doClientRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const phone=document.getElementById('regPhone').value.trim();
+  const pass=document.getElementById('regPassword').value;
+  if(!name||!phone||!pass){toast(lang==='kk'?'Барлық өрісті толтырыңыз!':'Заполните все поля!');return;}
+  const users=getUsers();
+  if(users.find(u=>u.phone===phone)){toast(lang==='kk'?'Бұл нөмір тіркелген!':'Номер уже зарегистрирован!');return;}
+  const user={name,phone,pass,bonus:0,joined:Date.now()};
+  users.push(user);saveUsers(users);
+  currentUser={name,phone};localStorage.setItem('am_user',JSON.stringify(currentUser));
+  bonus=0;
+  updateAuthBtn();closeAuth();
+  toast((lang==='kk'?'Қош келдіңіз, ':'Добро пожаловать, ')+name.split(' ')[0]+'! 🎉');
+  document.getElementById('regName').value='';document.getElementById('regPhone').value='';document.getElementById('regPassword').value='';
+}
+function doClientLogin(){
+  const phone=document.getElementById('loginPhone').value.trim();
+  const pass=document.getElementById('loginPassword').value;
+  if(!phone||!pass){toast(lang==='kk'?'Телефон мен парольді толтырыңыз!':'Введите телефон и пароль!');return;}
+  const users=getUsers();
+  const user=users.find(u=>u.phone===phone&&u.pass===pass);
+  if(!user){toast(lang==='kk'?'Қате телефон немесе пароль!':'Неверный телефон или пароль!');return;}
+  currentUser={name:user.name,phone:user.phone};localStorage.setItem('am_user',JSON.stringify(currentUser));
+  bonus=user.bonus||0;localStorage.setItem('am_bonus',bonus);
+  updateAuthBtn();closeAuth();
+  toast((lang==='kk'?'Қайта оралуыңызбен, ':'С возвращением, ')+user.name.split(' ')[0]+'! 👋');
+  document.getElementById('loginPhone').value='';document.getElementById('loginPassword').value='';
+}
+function clientLogout(){
+  currentUser=null;localStorage.removeItem('am_user');
+  updateAuthBtn();closePanel();
+  toast(lang==='kk'?'Шықтыңыз':'Вы вышли');
+}
+
+// ===== REVIEWS (пікірлер) =====
+const DEFAULT_REVIEWS=[
+  {name:'Айдос Қ.',rating:5,text:'Донері керемет! Ыстық, дәмді, тез жеткізді. Қарағандыдағы ең үздік street food!',role:'Тұрақты клиент',ts:Date.now()-86400000*3},
+  {name:'Динара М.',rating:5,text:'Тандыр еті мен самса тіл үйірерлік. Бағасы да тиімді. Ұсынамын!',role:'Клиент',ts:Date.now()-86400000*2},
+  {name:'Ерлан Т.',rating:5,text:'Кофесі де керемет екен! Енді күнде осыдан тапсырыс беремін. Рахмет!',role:'Жаңа клиент',ts:Date.now()-86400000},
+];
+let reviews=JSON.parse(localStorage.getItem('am_reviews')||'null')||DEFAULT_REVIEWS;
+let starValue=0;
+const STAR_LABELS={kk:{1:'Өте нашар',2:'Нашар',3:'Орта',4:'Жақсы',5:'Тамаша!'},ru:{1:'Очень плохо',2:'Плохо',3:'Нормально',4:'Хорошо',5:'Отлично!'}};
+
+function renderReviewStats(){
+  if(!reviews.length)return;
+  const avg=(reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1);
+  const fullStars=Math.round(avg);
+  document.getElementById('avgRating').textContent=avg;
+  document.getElementById('avgStars').textContent='★'.repeat(fullStars)+'☆'.repeat(5-fullStars);
+  document.getElementById('reviewCount').textContent=reviews.length+' '+(lang==='kk'?'пікір':'отзывов');
+  // рейтинг жолақтары
+  const bars=document.getElementById('ratingBars');
+  if(!bars)return;
+  const counts=[5,4,3,2,1].map(s=>({s,n:reviews.filter(r=>r.rating===s).length}));
+  const max=Math.max(...counts.map(c=>c.n),1);
+  bars.innerHTML=counts.map(c=>`<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.4rem;">
+    <span style="font-size:0.75rem;color:var(--gray);min-width:12px;">${c.s}</span>
+    <span style="color:var(--yellow);font-size:0.75rem;">★</span>
+    <div style="flex:1;height:8px;background:var(--surface);border-radius:4px;overflow:hidden;">
+      <div style="height:100%;width:${c.n/max*100}%;background:var(--yellow);border-radius:4px;transition:width 0.8s ease;"></div>
+    </div>
+    <span style="font-size:0.72rem;color:var(--gray);min-width:16px;">${c.n}</span>
+  </div>`).join('');
+}
+
+function renderReviews(){
+  const row=document.getElementById('reviewsRow');
+  renderReviewStats();
+  if(!reviews.length){row.innerHTML=`<div class="review-empty">💬<br><br>${lang==='kk'?'Әзірге пікір жоқ. Бірінші болыңыз!':'Пока нет отзывов. Будьте первым!'}</div>`;return;}
+  row.innerHTML=reviews.map(r=>{
+    const date=r.ts?new Date(r.ts).toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+    return `<div class="review">
+      <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+      <div class="review-text">«${r.text}»</div>
+      <div class="review-author">
+        <div class="review-avatar">${r.name.charAt(0)}</div>
+        <div><div class="review-name">${r.name}</div><div class="review-role">${r.role||(lang==='kk'?'Клиент':'Клиент')}${date?' · '+date:''}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Пікір жазу — тіркелу тексеру
+function handleWriteReview(){
+  if(!currentUser){
+    // Кіруге шақыру — алдымен review modal ашу, кіру ұсыну
+    openReviewModal();
+  } else {
+    openReviewModal();
+  }
+}
+
+function openReviewModal(){
+  const prompt=document.getElementById('reviewLoginPrompt');
+  const form=document.getElementById('reviewFormContent');
+  if(!currentUser){
+    prompt.style.display='block';
+    form.style.display='none';
+  } else {
+    prompt.style.display='none';
+    form.style.display='block';
+    // Пайдаланушы ақпаратын көрсету
+    const ui=document.getElementById('reviewUserInfo');
+    if(ui)ui.innerHTML=`<div class="review-avatar" style="width:38px;height:38px;font-size:1rem;flex-shrink:0;">${currentUser.name.charAt(0)}</div><div><div style="font-weight:700;font-size:0.9rem;">${currentUser.name}</div><div style="font-size:0.75rem;color:var(--gray);">📞 ${currentUser.phone}</div></div>`;
+  }
+  // Аударма
+  const t=lang==='kk';
+  const loginTitle=document.querySelector('[data-i="rev_login_title"]');
+  const loginDesc=document.querySelector('[data-i="rev_login_desc"]');
+  const loginBtn=document.querySelector('[data-i="rev_login_btn"]');
+  if(loginTitle)loginTitle.textContent=t?'Пікір жазу үшін тіркелу керек':'Нужно войти в аккаунт';
+  if(loginDesc)loginDesc.textContent=t?'Тіркелген клиенттер ғана пікір қалдыра алады':'Только зарегистрированные клиенты могут оставлять отзывы';
+  if(loginBtn)loginBtn.textContent=t?'Тіркелу / Кіру':'Войти / Регистрация';
+  document.getElementById('reviewOverlay').classList.add('open');
+}
+function closeReviewModal(){document.getElementById('reviewOverlay').classList.remove('open');}
+function setStar(v){
+  starValue=v;
+  document.querySelectorAll('#starRating .star').forEach(s=>s.classList.toggle('active',parseInt(s.dataset.v)<=v));
+  const lbl=document.getElementById('starLabel');
+  if(lbl)lbl.textContent=STAR_LABELS[lang][v]||'';
+}
+async function submitReview(){
+  const text=document.getElementById('revText').value.trim();
+  if(!currentUser){toast(lang==='kk'?'Алдымен тіркеліңіз!':'Сначала войдите в аккаунт!');return;}
+  if(!text){toast(lang==='kk'?'Пікіріңізді жазыңыз!':'Напишите отзыв!');return;}
+  if(!starValue){toast(lang==='kk'?'Жұлдыз қойыңыз!':'Поставьте оценку!');return;}
+  const review={name:currentUser.name,rating:starValue,text,role:lang==='kk'?'Клиент':'Клиент',ts:Date.now(),verified:true};
+  reviews.unshift(review);
+  localStorage.setItem('am_reviews',JSON.stringify(reviews));
+  renderReviews();
+  // Telegram
+  const msg=`⭐ *ASIA MIX — ЖАҢА ПІКІР*\n\n👤 ${currentUser.name} (${currentUser.phone})\n${'★'.repeat(starValue)}${'☆'.repeat(5-starValue)} (${starValue}/5)\n\n💬 ${text}\n🕐 ${new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
+  try{await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:msg,parse_mode:'Markdown'})});}catch(e){}
+  toast(lang==='kk'?'Пікіріңіз үшін рахмет! ❤️':'Спасибо за отзыв! ❤️');
+  closeReviewModal();
+  starValue=0;
+  document.querySelectorAll('#starRating .star').forEach(s=>s.classList.remove('active'));
+  document.getElementById('revText').value='';
+  const lbl=document.getElementById('starLabel');if(lbl)lbl.textContent='';
+}
+
+document.getElementById('cartOverlay').addEventListener('click',e=>{if(e.target.id==='cartOverlay')closeCart();});
+document.getElementById('checkoutOverlay').addEventListener('click',e=>{if(e.target.id==='checkoutOverlay')closeCheckout();});
+document.getElementById('panelOverlay').addEventListener('click',e=>{if(e.target.id==='panelOverlay')closePanel();});
+document.getElementById('authOverlay').addEventListener('click',e=>{if(e.target.id==='authOverlay')closeAuth();});
+document.getElementById('reviewOverlay').addEventListener('click',e=>{if(e.target.id==='reviewOverlay')closeReviewModal();});
+
+renderMenu();
+renderReviews();
+updateAuthBtn();
+setLang('kk');
+</script>
+</body>
+</html>

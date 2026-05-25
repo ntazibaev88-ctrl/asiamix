@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<title>ASIA MIX — Админ панель 🔥</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0A0A0A;--black2:#121212;--surface:#161616;--card:#1A1A1A;--card2:#222;
+  --yellow:#FFD60A;--yellow2:#FFC300;--yellow-glow:rgba(255,214,10,0.4);
+  --white:#F5F5F5;--gray:#8A8A8A;--gray2:#5A5A5A;
+  --border:rgba(255,214,10,0.12);--green:#25D366;--red:#FF4444;--orange:#FF9F0A;--blue:#0A84FF;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{-webkit-text-size-adjust:100%;}
+body{background:var(--black);color:var(--white);font-family:'Manrope',sans-serif;overflow-x:hidden;min-height:100vh;}
+::-webkit-scrollbar{width:8px;height:8px;}::-webkit-scrollbar-track{background:var(--black);}::-webkit-scrollbar-thumb{background:var(--yellow);border-radius:4px;}
+
+/* LOGIN */
+.login{position:fixed;inset:0;z-index:1000;background:var(--black);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+.login-glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,var(--yellow-glow),transparent 70%);filter:blur(60px);opacity:0.2;animation:pulse 4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:0.2}50%{transform:scale(1.2);opacity:0.35}}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:3rem 2.5rem;width:100%;max-width:400px;text-align:center;position:relative;z-index:2;}
+.login-logo{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:1px;line-height:0.9;margin-bottom:0.3rem;}
+.login-logo b{color:var(--yellow);}
+.login-sub{font-family:'Space Grotesk',sans-serif;font-size:0.7rem;letter-spacing:3px;color:var(--gray);text-transform:uppercase;margin-bottom:2.5rem;}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;color:var(--white);font-family:'Manrope',sans-serif;font-size:1rem;outline:none;margin-bottom:1rem;transition:border-color 0.2s;}
+.login-input:focus{border-color:var(--yellow);}
+.login-btn{width:100%;background:var(--yellow);color:#000;border:none;border-radius:14px;padding:1.1rem;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.3s;}
+.login-btn:hover{box-shadow:0 10px 40px var(--yellow-glow);transform:translateY(-2px);}
+.login-err{color:var(--red);font-size:0.85rem;margin-top:1rem;display:none;}
+.login-hint{margin-top:1.5rem;font-size:0.75rem;color:var(--gray);}
+.login-hint b{color:var(--yellow);}
+
+/* APP */
+.app{display:none;min-height:100vh;}
+.app.visible{display:block;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.tb-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;line-height:0.9;}
+.tb-logo b{color:var(--yellow);}
+.tb-logo small{display:block;font-family:'Space Grotesk',sans-serif;font-size:0.5rem;letter-spacing:2px;color:var(--gray);}
+.tb-right{display:flex;align-items:center;gap:0.8rem;}
+.live-dot{display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--green);font-weight:700;}
+.live-dot .dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:ping 1.5s infinite;}
+@keyframes ping{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:0.5}}
+.icon-btn{width:38px;height:38px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--yellow);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.icon-btn:hover{background:var(--yellow);color:#000;}
+.logout-btn{background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.25);color:var(--red);border-radius:10px;padding:0.5rem 1rem;font-weight:700;font-size:0.78rem;cursor:pointer;transition:all 0.2s;}
+.logout-btn:hover{background:rgba(255,68,68,0.2);}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);}
+.stat{background:var(--surface);padding:1.5rem 1rem;text-align:center;}
+.stat-icon{font-size:1.3rem;margin-bottom:0.4rem;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:1px;color:var(--yellow);line-height:1;}
+.stat-lbl{font-size:0.65rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:0.3rem;}
+
+/* TABS */
+.tabs{display:flex;background:var(--black2);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex-shrink:0;padding:1rem 1.3rem;border:none;background:transparent;color:var(--gray);font-family:'Manrope',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;position:relative;white-space:nowrap;}
+.tab.active{color:var(--yellow);border-bottom-color:var(--yellow);}
+.tab-badge{position:absolute;top:8px;right:8px;background:var(--red);color:#fff;min-width:16px;height:16px;padding:0 4px;border-radius:8px;font-size:0.6rem;font-weight:800;display:none;align-items:center;justify-content:center;}
+.tab-badge.show{display:flex;}
+
+/* CONTENT */
+.content{padding:1.5rem;max-width:1100px;margin:0 auto;}
+.page{display:none;}
+.page.active{display:block;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:1px;}
+.page-title span{color:var(--yellow);}
+
+/* FILTERS */
+.filters{display:flex;gap:0.4rem;flex-wrap:wrap;}
+.filter{padding:0.45rem 1rem;border:1px solid var(--border);background:transparent;color:var(--gray);border-radius:50px;font-weight:700;font-size:0.75rem;cursor:pointer;transition:all 0.2s;}
+.filter.active{background:var(--yellow);border-color:var(--yellow);color:#000;}
+
+/* ORDERS */
+.orders{display:flex;flex-direction:column;gap:1rem;}
+.order{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.3rem;position:relative;transition:all 0.2s;}
+.order:hover{border-color:rgba(255,214,10,0.3);}
+.order.s-new{border-left:4px solid var(--yellow);}
+.order.s-cooking{border-left:4px solid var(--orange);}
+.order.s-delivering{border-left:4px solid var(--blue);}
+.order.s-done{border-left:4px solid var(--green);opacity:0.75;}
+.order.s-cancelled{border-left:4px solid var(--red);opacity:0.5;}
+.order.is-fresh{animation:freshPulse 0.6s ease;}
+@keyframes freshPulse{0%{transform:scale(1);box-shadow:0 0 0 var(--yellow-glow)}50%{transform:scale(1.015);box-shadow:0 0 30px var(--yellow-glow)}100%{transform:scale(1)}}
+.order-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:0.8rem;}
+.order-num{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1px;color:var(--yellow);}
+.order-meta{font-size:0.72rem;color:var(--gray);margin-top:0.2rem;}
+.order-badge{padding:0.3rem 0.8rem;border-radius:50px;font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;}
+.b-new{background:rgba(255,214,10,0.15);color:var(--yellow);}
+.b-cooking{background:rgba(255,159,10,0.15);color:var(--orange);}
+.b-delivering{background:rgba(10,132,255,0.15);color:var(--blue);}
+.b-done{background:rgba(37,211,102,0.15);color:var(--green);}
+.b-cancelled{background:rgba(255,68,68,0.15);color:var(--red);}
+.order-client{font-weight:700;font-size:0.95rem;margin-bottom:0.2rem;}
+.order-phone{font-size:0.82rem;color:var(--gray);}
+.order-phone a{color:var(--yellow);text-decoration:none;}
+.order-deliv{font-size:0.78rem;color:var(--gray);margin-top:0.4rem;}
+.order-items{background:var(--surface);border-radius:12px;padding:0.9rem;margin:0.9rem 0;font-size:0.82rem;line-height:1.9;color:var(--white);}
+.order-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.7rem;}
+.order-total{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;color:var(--yellow);}
+.order-pay{font-size:0.72rem;color:var(--gray);}
+.order-actions{display:flex;gap:0.4rem;flex-wrap:wrap;}
+.oa{padding:0.4rem 0.8rem;border-radius:8px;border:1px solid;font-weight:700;font-size:0.7rem;cursor:pointer;transition:all 0.2s;font-family:'Manrope',sans-serif;}
+.oa-cook{background:rgba(255,159,10,0.1);border-color:rgba(255,159,10,0.3);color:var(--orange);}
+.oa-cook:hover{background:var(--orange);color:#fff;}
+.oa-deliver{background:rgba(10,132,255,0.1);border-color:rgba(10,132,255,0.3);color:var(--blue);}
+.oa-deliver:hover{background:var(--blue);color:#fff;}
+.oa-done{background:rgba(37,211,102,0.1);border-color:rgba(37,211,102,0.3);color:var(--green);}
+.oa-done:hover{background:var(--green);color:#fff;}
+.oa-cancel{background:rgba(255,68,68,0.1);border-color:rgba(255,68,68,0.3);color:var(--red);}
+.oa-cancel:hover{background:var(--red);color:#fff;}
+.order-timer{font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:700;color:var(--gray);}
+.order-timer.warn{color:var(--orange);}
+.order-timer.urgent{color:var(--red);}
+
+.empty{text-align:center;padding:4rem 2rem;color:var(--gray);}
+.empty-icon{font-size:3.5rem;display:block;margin-bottom:1rem;}
+
+/* MENU MANAGEMENT */
+.menu-add-btn{background:var(--yellow);color:#000;border:none;border-radius:12px;padding:0.7rem 1.3rem;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.5rem;}
+.menu-add-btn:hover{box-shadow:0 6px 20px var(--yellow-glow);}
+.menu-cat-filter{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.prod-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.prod-row{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem;display:flex;gap:1rem;align-items:center;transition:all 0.2s;}
+.prod-row:hover{border-color:rgba(255,214,10,0.3);}
+.prod-row.disabled{opacity:0.4;}
+.prod-thumb{width:60px;height:60px;border-radius:12px;object-fit:cover;background:var(--surface);flex-shrink:0;}
+.prod-info{flex:1;min-width:0;}
+.prod-name{font-weight:700;font-size:0.9rem;}
+.prod-cat{font-size:0.7rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;}
+.prod-price{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--yellow);letter-spacing:1px;}
+.prod-actions{display:flex;flex-direction:column;gap:0.3rem;}
+.pa-btn{padding:0.3rem 0.6rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--gray);font-size:0.68rem;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.pa-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+.pa-btn.del:hover{border-color:var(--red);color:var(--red);}
+
+/* ANALYTICS */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.2rem;}
+.chart-title{font-weight:700;font-size:0.95rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem;}
+.chart-bars{display:flex;align-items:flex-end;gap:0.5rem;height:140px;}
+.cbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:0.4rem;}
+.cbar{width:100%;background:linear-gradient(to top,var(--yellow2),var(--yellow));border-radius:4px 4px 0 0;min-height:4px;transition:height 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+.cbar-val{font-size:0.65rem;color:var(--gray);font-weight:700;}
+.cbar-lbl{font-size:0.62rem;color:var(--gray2);}
+.top-list{display:flex;flex-direction:column;gap:0.6rem;}
+.top-row{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.top-row:last-child{border:none;}
+.top-name{font-size:0.88rem;display:flex;align-items:center;gap:0.6rem;}
+.top-bar-bg{flex:1;height:6px;background:var(--surface);border-radius:3px;margin:0 1rem;overflow:hidden;}
+.top-bar-fill{height:100%;background:var(--yellow);border-radius:3px;}
+.top-count{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.82rem;color:var(--yellow);white-space:nowrap;}
+
+/* PROMO */
+.promo-create{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.5rem;}
+.promo-list{display:flex;flex-direction:column;gap:0.8rem;}
+.promo-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+.promo-code-badge{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:var(--yellow);background:rgba(255,214,10,0.1);border:1px dashed rgba(255,214,10,0.3);padding:0.4rem 1rem;border-radius:8px;letter-spacing:1px;}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.field{margin-bottom:1rem;}
+.field.full{grid-column:1/-1;}
+.field label{display:block;font-size:0.72rem;color:var(--gray);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1rem;color:var(--white);font-family:'Manrope',sans-serif;font-size:0.92rem;outline:none;transition:border-color 0.2s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--yellow);}
+.save-btn{background:var(--yellow);color:#000;border:none;border-radius:12px;padding:1rem;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s;width:100%;}
+.save-btn:hover{box-shadow:0 8px 30px var(--yellow-glow);}
+
+/* SETTINGS */
+.setting-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.2rem;}
+.setting-card h3{font-size:0.95rem;margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--border);}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;gap:1rem;}
+.setting-row label{font-size:0.85rem;color:var(--gray);}
+.setting-row input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.9rem;color:var(--white);font-size:0.85rem;outline:none;width:200px;}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:800;display:none;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(8px);}
+.modal-ov.open{display:flex;}
+.modal-box{background:var(--black2);border:1px solid var(--border);border-radius:24px;padding:2rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:modalIn 0.3s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;}
+.close-x{width:34px;height:34px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--gray);font-size:1rem;cursor:pointer;}
+
+/* TOAST */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--card);border:1px solid var(--yellow);color:var(--white);padding:0.9rem 1.5rem;border-radius:50px;font-weight:700;font-size:0.88rem;z-index:9999;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 30px rgba(0,0,0,0.5);max-width:90vw;text-align:center;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.green{border-color:var(--green);}
+.toast.red{border-color:var(--red);}
+
+.flash{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--yellow2),var(--yellow));z-index:9998;transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+.flash.show{transform:scaleX(1);}
+
+@media(max-width:600px){
+  .stats{grid-template-columns:1fr 1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .content{padding:1rem;}
+  .setting-row input{width:140px;}
+}
+</style>
+</head>
+<body>
+
+<div class="flash" id="flash"></div>
+
+<!-- LOGIN -->
+<div class="login" id="login">
+  <div class="login-glow"></div>
+  <div class="login-box">
+    <div class="login-logo">ASIA <b>MIX</b></div>
+    <div class="login-sub">Admin Panel</div>
+    <input class="login-input" type="password" id="loginPass" placeholder="Құпиясөз" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Кіру →</button>
+    <div class="login-err" id="loginErr">❌ Қате құпиясөз!</div>
+    <div class="login-hint">Әдепкі пароль: <b>admin123</b></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="tb-logo">ASIA <b>MIX</b><small>ADMIN PANEL</small></div>
+    <div class="tb-right">
+      <div class="live-dot"><div class="dot"></div>Live</div>
+      <button class="icon-btn" id="soundBtn" onclick="toggleSound()" title="Дыбыс">🔔</button>
+      <button class="logout-btn" onclick="logout()">Шығу</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-icon">📦</div><div class="stat-num" id="stTotal">0</div><div class="stat-lbl">Барлық заказ</div></div>
+    <div class="stat"><div class="stat-icon">🔥</div><div class="stat-num" id="stNew">0</div><div class="stat-lbl">Жаңа</div></div>
+    <div class="stat"><div class="stat-icon">✅</div><div class="stat-num" id="stDone">0</div><div class="stat-lbl">Орындалды</div></div>
+    <div class="stat"><div class="stat-icon">💰</div><div class="stat-num" id="stRevenue">0</div><div class="stat-lbl">Түсім ₸</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPage('orders',this)">🛒 Заказтар<span class="tab-badge" id="ordersBadge">0</span></button>
+    <button class="tab" onclick="showPage('menu',this)">🍽️ Меню</button>
+    <button class="tab" onclick="showPage('analytics',this)">📊 Статистика</button>
+    <button class="tab" onclick="showPage('promos',this)">🎁 Промокод</button>
+    <button class="tab" onclick="showPage('customers',this)">👥 Клиенттер</button>
+    <button class="tab" onclick="showPage('reviews',this)">⭐ Пікірлер<span class="tab-badge" id="reviewsBadge">0</span></button>
+    <button class="tab" onclick="showPage('settings',this)">⚙️ Баптау</button>
+  </div>
+
+  <div class="content">
+
+    <!-- ORDERS -->
+    <div class="page active" id="page-orders">
+      <div class="page-head">
+        <div class="page-title">ЗАКАЗ<span>ТАР</span></div>
+        <div class="filters">
+          <button class="filter active" onclick="filterOrders('all',this)">Бәрі</button>
+          <button class="filter" onclick="filterOrders('new',this)">🔥 Жаңа</button>
+          <button class="filter" onclick="filterOrders('cooking',this)">👨‍🍳 Дайын</button>
+          <button class="filter" onclick="filterOrders('delivering',this)">🛵 Жолда</button>
+          <button class="filter" onclick="filterOrders('done',this)">✅ Берілді</button>
+        </div>
+      </div>
+      <div class="orders" id="ordersList"></div>
+    </div>
+
+    <!-- MENU -->
+    <div class="page" id="page-menu">
+      <div class="page-head">
+        <div class="page-title">МЕНЮ <span>БАСҚАРУ</span></div>
+        <button class="menu-add-btn" onclick="openProductModal()">+ Тағам қосу</button>
+      </div>
+      <div class="menu-cat-filter" id="menuCatFilter"></div>
+      <div class="prod-list" id="prodList"></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="page" id="page-analytics">
+      <div class="page-head"><div class="page-title">СТАТИС<span>ТИКА</span></div></div>
+      <div class="chart-card">
+        <div class="chart-title">📈 Соңғы 7 күн (заказ саны)</div>
+        <div class="chart-bars" id="weekChart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🏆 Топ тағамдар</div>
+        <div class="top-list" id="topItems"><div style="color:var(--gray);font-size:0.85rem;">Деректер жоқ...</div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">💳 Төлем тәсілдері</div>
+        <div class="top-list" id="payStats"><div style="color:var(--gray);font-size:0.85rem;">Деректер жоқ...</div></div>
+      </div>
+    </div>
+
+    <!-- PROMOS -->
+    <div class="page" id="page-promos">
+      <div class="page-head"><div class="page-title">ПРОМО<span>КОДТАР</span></div></div>
+      <div class="promo-create">
+        <div class="chart-title">➕ Жаңа промокод</div>
+        <div class="form-grid">
+          <div class="field"><label>Код</label><input id="pcCode" placeholder="ASIA20" style="text-transform:uppercase;"></div>
+          <div class="field"><label>Жеңілдік түрі</label><select id="pcType"><option value="percent">% Пайыз</option><option value="fixed">₸ Тұрақты</option></select></div>
+          <div class="field"><label>Мөлшері</label><input id="pcValue" type="number" placeholder="20"></div>
+          <div class="field"><label>Мин. заказ (₸)</label><input id="pcMin" type="number" placeholder="3000"></div>
+        </div>
+        <button class="save-btn" onclick="createPromo()">🎁 Промокод жасау</button>
+      </div>
+      <div class="promo-list" id="promoList"></div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div class="page" id="page-customers">
+      <div class="page-head"><div class="page-title">КЛИ<span>ЕНТТЕР</span></div></div>
+      <div class="orders" id="customersList"></div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="page" id="page-reviews">
+      <div class="page-head">
+        <div class="page-title">ПІКІр<span>ЛЕР</span></div>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <div id="reviewAvgBadge" style="background:rgba(255,214,10,0.15);border:1px solid var(--yellow);color:var(--yellow);padding:0.4rem 1rem;border-radius:50px;font-weight:800;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px;">★ 5.0</div>
+          <button class="menu-add-btn" onclick="clearAllReviews()" style="background:rgba(255,68,68,0.12);color:var(--red);border:1px solid rgba(255,68,68,0.3);">🗑️ Барлығын өшіру</button>
+        </div>
+      </div>
+      <!-- Статистика жолақтары -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.8rem;margin-bottom:1.5rem;" id="reviewStatCards"></div>
+      <!-- Пікірлер тізімі -->
+      <div id="adminReviewsList" style="display:flex;flex-direction:column;gap:1rem;"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="page-head"><div class="page-title">БАП<span>ТАУЛАР</span></div></div>
+      <div class="setting-card">
+        <h3>🔧 Негізгі</h3>
+        <div class="setting-row"><label>WhatsApp нөмірі</label><input id="setWA" value="77074927402"></div>
+        <div class="setting-row"><label>Telegram Chat ID</label><input id="setTG" value="1248306372"></div>
+        <div class="setting-row"><label>Жеткізу бағасы (₸)</label><input id="setDel" type="number" value="1000"></div>
+        <div class="setting-row"><label>Тегін жеткізу (₸)</label><input id="setFree" type="number" value="5000"></div>
+        <button class="save-btn" style="margin-top:1rem;" onclick="showToast('✅ Сақталды!','green')">💾 Сақтау</button>
+      </div>
+      <div class="setting-card">
+        <h3>🔑 Пароль</h3>
+        <div class="setting-row"><label>Жаңа пароль</label><input id="np1" type="password"></div>
+        <div class="setting-row"><label>Растау</label><input id="np2" type="password"></div>
+        <button class="save-btn" style="margin-top:1rem;" onclick="changePass()">🔑 Өзгерту</button>
+      </div>
+      <div class="setting-card">
+        <h3>🗑️ Деректер</h3>
+        <button class="save-btn" style="background:rgba(255,68,68,0.15);color:var(--red);border:1px solid rgba(255,68,68,0.3);" onclick="clearAll()">🗑️ Барлық заказды өшіру</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-ov" id="prodModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="prodModalTitle">ТАҒАМ ҚОСУ</div>
+      <button class="close-x" onclick="closeProductModal()">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field full"><label>Аты (қазақша)</label><input id="pmName" placeholder="Классик Донер"></div>
+      <div class="field full"><label>Аты (орысша)</label><input id="pmNameRu" placeholder="Классический Донер"></div>
+      <div class="field"><label>Категория</label><select id="pmCat"><option value="doner">🌯 Донер</option><option value="combo">🍱 Комбо</option><option value="burger">🍔 Бургер / Закуски</option><option value="plov">🍚 Плов / Тандыр</option><option value="coffee">☕ Кофе</option><option value="tea">🍵 Чай</option><option value="cold">🥤 Холодные напитки</option></select></div>
+      <div class="field"><label>Баға (₸)</label><input id="pmPrice" type="number" placeholder="1500"></div>
+      <div class="field full"><label>Сипаттама</label><textarea id="pmDesc" rows="2" placeholder="Тауық еті, көкөніс, соус"></textarea></div>
+      <div class="field full"><label>Сурет URL (міндетті емес)</label><input id="pmImg" placeholder="https://..."></div>
+      <div class="field"><label>Белгі</label><select id="pmTag"><option value="">Жоқ</option><option value="hot">🔥 Хит</option><option value="new">✨ Жаңа</option></select></div>
+    </div>
+    <button class="save-btn" onclick="saveProduct()">💾 Сақтау</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BOT_TOKEN="8909010299:AAGFEDSTFjffWx1Xm9kZY9dOMN7euXjgm4Y";
+let ADMIN_PASS=localStorage.getItem('am_pass')||'admin123';
+let soundOn=localStorage.getItem('am_sound')!=='off';
+let orders=JSON.parse(localStorage.getItem('am_orders')||'[]');
+let products=JSON.parse(localStorage.getItem('am_products')||'null')||defaultProducts();
+let promos=JSON.parse(localStorage.getItem('am_promos')||'[]');
+let curFilter='all',menuCatFilter='all',editingId=null;
+let lastUpd=parseInt(localStorage.getItem('am_lastupd')||'0');
+let orderCnt=orders.length?Math.max(...orders.map(o=>o.num||0)):0;
+let timers={};
+
+function defaultProducts(){
+  return [
+    // ===== ДОНЕР =====
+    {id:'d1',cat:'doner',name:'Super Big',name_ru:'Super Big',price:2550,tag:'hot',desc:'Тауық, фри, маринадталған қияр, пияз, фирмалық ақ және қызыл соус',desc_ru:'Курица, фри, огурчики маринованные, лук, фирменный белый и красный соусы',img:'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=300&q=80',on:true},
+    {id:'d2',cat:'doner',name:'Classic / Fresh',name_ru:'Classic / Fresh',price:1700,tag:'hot',desc:'S — 1700₸ / M — 1990₸. Тауық, фри, қияр, помидор, пияз, көк, фирмалық соус (Fresh — жаңа көкөніс, фриcіз)',desc_ru:'S — 1700₸ / M — 1990₸. Курица, фри, огурчики, помидоры, лук, зелень, фирменный соус (Fresh — свежие овощи, без фри)',img:'https://images.unsplash.com/photo-1633321088355-d0f81134ca3b?w=300&q=80',on:true},
+    {id:'d3',cat:'doner',name:'Nan лепёшкеде',name_ru:'NAN в лепёшке',price:2300,tag:'',desc:'Classic немесе Fresh құрамы (Classic құрамында фри жоқ)',desc_ru:'Состав Classic или Fresh (в составе Classic нет фри)',img:'https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=300&q=80',on:true},
+    {id:'d4',cat:'doner',name:'Kebab / Kebab Nan',name_ru:'Kebab / Kebab Nan',price:1990,tag:'new',desc:'Тауық — 1990₸ / сиыр — 2300₸. Люля кебаб, помидор, пияз, көк, жаңа қияр, фирмалық соус (Nan құрамында жаңа қияр жоқ)',desc_ru:'Курица — 1990₸ / говядина — 2300₸. Люля кебаб, помидоры, лук, зелень, свежие огурцы, фирменный соус (в Nan нет свежих огурцов)',img:'https://images.unsplash.com/photo-1561651823-34da81a30f0a?w=300&q=80',on:true},
+    {id:'d5',cat:'doner',name:'Фирмалық соус',name_ru:'Соус фирменный',price:250,tag:'',desc:'Қосымша фирмалық ақ соус',desc_ru:'Дополнительный фирменный белый соус',img:'https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=300&q=80',on:true},
+    {id:'d6',cat:'doner',name:'Heinz соус',name_ru:'Heinz соус',price:300,tag:'',desc:'Сырлы соус немесе кетчуп',desc_ru:'Сырный или кетчуп',img:'https://images.unsplash.com/photo-1608039755401-742074f0548d?w=300&q=80',on:true},
+    {id:'d7',cat:'doner',name:'Ащы Ланджан',name_ru:'Острый Ланджан',price:250,tag:'',desc:'Ащы ланджан соусы',desc_ru:'Острый соус ланджан',img:'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&q=80',on:true},
+    {id:'d8',cat:'doner',name:'Халапеньо',name_ru:'Халапеньо',price:250,tag:'',desc:'Маринадталған ащы халапеньо',desc_ru:'Маринованный острый халапеньо',img:'https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?w=300&q=80',on:true},
+
+    // ===== КОМБО =====
+    {id:'k1',cat:'combo',name:'Хит 5 / Хит 10',name_ru:'Хит 5 / Хит 10',price:1950,tag:'new',desc:'1950₸ / 2450₸. Тауық стрипс 5 / 10 дана, фри, фирмалық соус',desc_ru:'1950₸ / 2450₸. Куриные стрипсы 5/10 шт, фри, соус фирменный',img:'https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80',on:true},
+    {id:'k2',cat:'combo',name:'Сытный',name_ru:'Сытный',price:4200,tag:'new',desc:'Бургер, стрипс 5 дана, фри, фирмалық соус, 0,5 L сусын',desc_ru:'Бургер, стрипсы 5 шт, фри, соус фирменный, напиток на выбор 0,5 L',img:'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&q=80',on:true},
+    {id:'k3',cat:'combo',name:'Дуэт',name_ru:'Дуэт',price:7700,tag:'',desc:'Бургер 2 дана, стрипс 10 дана, фри 2 порция, фирмалық соус 2 дана, 1 L сусын',desc_ru:'Бургер 2 шт, стрипсы 10 шт, фри 2 порции, соус фирменный 2 шт, напиток на выбор 1 L',img:'https://images.unsplash.com/photo-1610614819513-58e34989848b?w=300&q=80',on:true},
+    {id:'k4',cat:'combo',name:'Комбо Super Big',name_ru:'Комбо «Super Big»',price:3300,tag:'',desc:'Doner Super Big, жидек морс 0,5 L, фирмалық соус',desc_ru:'Doner Super Big, морс ягодный 0,5 L, соус фирменный',img:'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=300&q=80',on:true},
+    {id:'k5',cat:'combo',name:'Medium Хит',name_ru:'Medium Хит',price:3690,tag:'hot',desc:'Doner Medium Classic, фри, жидек морс 0,5 L, фирмалық соус',desc_ru:'Doner Medium Classic, фри, морс ягодный 0,5 L, соус фирменный',img:'https://images.unsplash.com/photo-1633321088355-d0f81134ca3b?w=300&q=80',on:true},
+    {id:'k6',cat:'combo',name:'Kebab Хит',name_ru:'Kebab Хит',price:4100,tag:'',desc:'Doner Kebab сиыр (лаваш/лепёшке), жидек морс 0,5 L, фри, фирмалық соус',desc_ru:'Doner Kebab говядина (в лаваше/лепёшке), морс ягодный 0,5 L, фри, соус фирменный',img:'https://images.unsplash.com/photo-1561651823-34da81a30f0a?w=300&q=80',on:true},
+
+    // ===== БУРГЕР / ЗАКУСКИ =====
+    {id:'b1',cat:'burger',name:'Бургер',name_ru:'Бургер',price:1650,tag:'hot',desc:'Тоқаш, төш филесі, айсберг, помидор, маринадталған қияр, пияз, қыша соус',desc_ru:'Булочка, филе грудки, айсберг, помидоры, огурчики маринованные, лук, горчичный соус',img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80',on:true},
+    {id:'b2',cat:'burger',name:'Чизбургер',name_ru:'Чизбургер',price:1990,tag:'',desc:'Бургер құрамы + 2 тілім Чеддер сыры',desc_ru:'Состав бургера + 2 ломтика сыра Чеддер',img:'https://images.unsplash.com/photo-1550547660-d9450f859349?w=300&q=80',on:true},
+    {id:'b3',cat:'burger',name:'Стрипсы 5 дана',name_ru:'Стрипсы 5 шт',price:800,tag:'new',desc:'Тауық стрипс 5 дана (10 дана — 1300₸)',desc_ru:'Куриные стрипсы 5 шт (10 шт — 1300₸)',img:'https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80',on:true},
+    {id:'b4',cat:'burger',name:'Фри / Дольки',name_ru:'Фри / Дольки',price:900,tag:'',desc:'S — 900₸ / M — 1100₸',desc_ru:'S — 900₸ / M — 1100₸',img:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&q=80',on:true},
+
+    // ===== ПЛОВ / ТАНДЫР =====
+    {id:'p1',cat:'plov',name:'Ташкент палауы',name_ru:'Ташкентский плов',price:2100,tag:'hot',desc:'Сиыр еті, жоғары сұрыпты күріш, сары және қызыл сәбіз, бұршақ, мейіз, дәмдеуіш, жұмыртқа. Контейнер +100₸',desc_ru:'Говядина, рис высшего сорта, морковь жёлтая и красная, нут, изюм, специи, яйцо. Контейнер +100₸',img:'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=300&q=80',on:true},
+    {id:'p2',cat:'plov',name:'Самса тандыр',name_ru:'Самса тандыр',price:650,tag:'',desc:'Тауық/сиыр — 650₸, сиыр-картоп — 700₸. Қытырлақ қатпарлы қамыр, туралған ет, пияз, дәмдеуіш',desc_ru:'Курица/говядина — 650₸, говядина-картошка — 700₸. Песочно-слоёное тесто, рубленое мясо, лук, специи',img:'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300&q=80',on:true},
+    {id:'p3',cat:'plov',name:'Тандыр лепёшка',name_ru:'Тандыр лепёшка',price:200,tag:'',desc:'200₸ / 300₸. Жаңа піскен тандыр наны',desc_ru:'200₸ / 300₸. Свежеиспечённая тандырная лепёшка',img:'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=300&q=80',on:true},
+    {id:'p4',cat:'plov',name:'Ачи-чук салаты',name_ru:'Салат ачи-чук',price:650,tag:'',desc:'Помидор, пияз — дәстүрлі салат',desc_ru:'Помидоры, лук — традиционный салат',img:'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=80',on:true},
+
+    // ===== КОФЕ / HOT DRINKS =====
+    {id:'c1',cat:'coffee',name:'Эспрессо',name_ru:'Эспрессо',price:500,tag:'',desc:'Қою классикалық эспрессо',desc_ru:'Крепкий классический эспрессо',img:'https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=300&q=80',on:true},
+    {id:'c2',cat:'coffee',name:'Флэт Уайт',name_ru:'Флэт Уайт',price:750,tag:'',desc:'Эспрессо, нәзік сүт',desc_ru:'Эспрессо, нежное молоко',img:'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=300&q=80',on:true},
+    {id:'c3',cat:'coffee',name:'Американо',name_ru:'Американо',price:700,tag:'',desc:'350/450 мл — 700/800₸. Эспрессо, ыстық су',desc_ru:'350/450 мл — 700/800₸. Эспрессо, горячая вода',img:'https://images.unsplash.com/photo-1551030173-122aabc4489c?w=300&q=80',on:true},
+    {id:'c4',cat:'coffee',name:'Американо сүтпен',name_ru:'Американо с молоком',price:700,tag:'',desc:'350/450 мл — 700/800₸',desc_ru:'350/450 мл — 700/800₸',img:'https://images.unsplash.com/photo-1572286258217-215cf8e667d7?w=300&q=80',on:true},
+    {id:'c5',cat:'coffee',name:'Латте Макиато',name_ru:'Латте Макиато',price:850,tag:'',desc:'350/450 мл — 850/890₸',desc_ru:'350/450 мл — 850/890₸',img:'https://images.unsplash.com/photo-1561882468-9110e03e0f78?w=300&q=80',on:true},
+    {id:'c6',cat:'coffee',name:'Латте',name_ru:'Латте',price:850,tag:'hot',desc:'350/450 мл — 850/890₸. Жұмсақ сүтті кофе',desc_ru:'350/450 мл — 850/890₸. Мягкий кофе с молоком',img:'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=300&q=80',on:true},
+    {id:'c7',cat:'coffee',name:'Капучино',name_ru:'Капучино',price:850,tag:'hot',desc:'350/450 мл — 850/890₸. Эспрессо, бу сүті, көбік',desc_ru:'350/450 мл — 850/890₸. Эспрессо, паровое молоко, пенка',img:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&q=80',on:true},
+    {id:'c8',cat:'coffee',name:'Тайша кофе',name_ru:'Кофе по-тайски',price:900,tag:'',desc:'350/450 мл — 900/950₸',desc_ru:'350/450 мл — 900/950₸',img:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300&q=80',on:true},
+    {id:'c9',cat:'coffee',name:'Раф',name_ru:'Раф',price:1000,tag:'new',desc:'350/450 мл — 1000/1200₸. Кілегей, ваниль, эспрессо',desc_ru:'350/450 мл — 1000/1200₸. Сливки, ваниль, эспрессо',img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=300&q=80',on:true},
+    {id:'c10',cat:'coffee',name:'Какао',name_ru:'Какао',price:800,tag:'',desc:'350/450 мл — 800/900₸',desc_ru:'350/450 мл — 800/900₸',img:'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=300&q=80',on:true},
+    {id:'c11',cat:'coffee',name:'Ыстық шоколад',name_ru:'Горячий шоколад',price:1400,tag:'',desc:'Қою ыстық шоколад',desc_ru:'Густой горячий шоколад',img:'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=300&q=80',on:true},
+    {id:'c12',cat:'coffee',name:'Айс Латте / Капучино',name_ru:'Айс Латте / Капучино',price:750,tag:'',desc:'750/850/950₸. Мұзды латте немесе капучино',desc_ru:'750/850/950₸. Ледяной латте или капучино',img:'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300&q=80',on:true},
+    {id:'c13',cat:'coffee',name:'Айс Американо',name_ru:'Айс Американо',price:650,tag:'',desc:'650/850/950₸. Мұзды американо',desc_ru:'650/850/950₸. Ледяной американо',img:'https://images.unsplash.com/photo-1521302200778-33500795e128?w=300&q=80',on:true},
+
+    // ===== ЧАЙ =====
+    {id:'h1',cat:'tea',name:'Qazaq шай тарымен',name_ru:'Qazaq чай с тары',price:1690,tag:'hot',desc:'0,8/1,3 л — 1690/2390₸. Қара шай, сүт, тары, қант',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай чёрный, молоко, тары, сахар',img:'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&q=80',on:true},
+    {id:'h2',cat:'tea',name:'Имбирлі шай',name_ru:'Имбирный чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Жасыл шай, апельсин, лимон, зімбір, даршын, бадиан, бал, сироп',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай зелёный, апельсин, лимон, имбирь, корица, бадьян, мёд, сироп',img:'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=300&q=80',on:true},
+    {id:'h3',cat:'tea',name:'Ташкент шайы',name_ru:'Ташкентский чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Қара шай, жасыл шай, апельсин, лимон, жалбыз, бал',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай чёрный, зелёный, апельсин, лимон, мята, мёд',img:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=300&q=80',on:true},
+    {id:'h4',cat:'tea',name:'Шырғанақ шайы',name_ru:'Облепиховый чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Қара шай, шырғанақ жидегі, маракуйя сиропы',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай чёрный, ягоды облепихи, сироп маракуйя',img:'https://images.unsplash.com/photo-1597318181409-cf64d0b5d8a2?w=300&q=80',on:true},
+    {id:'h5',cat:'tea',name:'Марокко шайы',name_ru:'Марокканский чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Қара шай, апельсин, лайм, даршын, бадиан, қалампыр, жалбыз, анар сиропы',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай чёрный, апельсин, лайм, корица, бадьян, гвоздика, мята, сироп гранат',img:'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=300&q=80',on:true},
+    {id:'h6',cat:'tea',name:'Жеміс шайы',name_ru:'Фруктовый чай',price:1690,tag:'',desc:'0,8/1,3 л — 1690/2390₸. Жеміс шайы, апельсин, лимон, шие, бадам сиропы',desc_ru:'0,8/1,3 л — 1690/2390₸. Чай фруктовый, апельсин, лимон, вишня, сироп миндаль',img:'https://images.unsplash.com/photo-1563911892437-1feda0179e1b?w=300&q=80',on:true},
+    {id:'h7',cat:'tea',name:'Шәйнектегі шай',name_ru:'Чай чайник',price:900,tag:'',desc:'Қара/жасыл — 900/1050₸',desc_ru:'Чёрный/зелёный — 900/1050₸',img:'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=300&q=80',on:true},
+    {id:'h8',cat:'tea',name:'Шай (стақан)',name_ru:'Чай (стакан)',price:300,tag:'',desc:'350/450 мл — қара/жасыл — 300/350₸, сүтпен/лимонмен — 350/400₸',desc_ru:'350/450 мл — чёрный/зелёный — 300/350₸, с молоком/лимоном — 350/400₸',img:'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&q=80',on:true},
+    {id:'h9',cat:'tea',name:'Орех тоғыша майымен',name_ru:'Орешки со сгущёнкой',price:200,tag:'',desc:'Тоғыша майы құйылған тәтті орех',desc_ru:'Орешки со сгущёнкой',img:'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=300&q=80',on:true},
+
+    // ===== ХОЛОДНЫЕ НАПИТКИ =====
+    {id:'i1',cat:'cold',name:'Мохито',name_ru:'Мохито',price:790,tag:'new',desc:'300/400/500 мл — 790/890/990₸. Лайм, жалбыз, газды су, қант сиропы',desc_ru:'300/400/500 мл — 790/890/990₸. Лайм, мята, газированная вода, сахарный сироп',img:'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=300&q=80',on:true},
+    {id:'i2',cat:'cold',name:'Лимонад',name_ru:'Лимонад',price:790,tag:'hot',desc:'300/400/500 мл — 790/890/990₸ (графин — 2100₸). Апельсин, жалбыз, газды су, мұз, сироп',desc_ru:'300/400/500 мл — 790/890/990₸ (графин — 2100₸). Апельсин, мята, газированная вода, лёд, сироп',img:'https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=300&q=80',on:true},
+    {id:'i3',cat:'cold',name:'Милкшейк Ванильді',name_ru:'Милкшейк Ванильный',price:1200,tag:'',desc:'300/400/500 мл — 1200/1400/1600₸. Балмұздақ, ваниль, сүт',desc_ru:'300/400/500 мл — 1200/1400/1600₸. Мороженое, ваниль, молоко',img:'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&q=80',on:true},
+    {id:'i4',cat:'cold',name:'Милкшейк Шоколадты',name_ru:'Милкшейк Шоколадный',price:1200,tag:'',desc:'300/400/500 мл — 1200/1400/1600₸. Шоколад балмұздағы, сүт',desc_ru:'300/400/500 мл — 1200/1400/1600₸. Шоколадное мороженое, молоко',img:'https://images.unsplash.com/photo-1568901839119-631418a3910d?w=300&q=80',on:true},
+    {id:'i5',cat:'cold',name:'Милкшейк Oreo',name_ru:'Милкшейк Oreo',price:1200,tag:'new',desc:'300/400/500 мл — 1200/1400/1600₸. Балмұздақ, Oreo, сүт',desc_ru:'300/400/500 мл — 1200/1400/1600₸. Мороженое, Oreo, молоко',img:'https://images.unsplash.com/photo-1626202373152-8db1760c8f57?w=300&q=80',on:true},
+    {id:'i6',cat:'cold',name:'Милкшейк Банан',name_ru:'Милкшейк Банановый',price:1200,tag:'',desc:'300/400/500 мл — 1200/1400/1600₸. Балмұздақ, банан, сүт',desc_ru:'300/400/500 мл — 1200/1400/1600₸. Мороженое, банан, молоко',img:'https://images.unsplash.com/photo-1553787499-6f9133860278?w=300&q=80',on:true},
+    {id:'i7',cat:'cold',name:'Смузи Жасыл',name_ru:'Смузи Зелёный',price:890,tag:'',desc:'300/400/500 мл — 890/990/1090₸. Банан, шпинат, лимон, мұз, су',desc_ru:'300/400/500 мл — 890/990/1090₸. Банан, шпинат, лимон, лёд, вода',img:'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=300&q=80',on:true},
+    {id:'i8',cat:'cold',name:'Смузи Клубничка',name_ru:'Смузи Клубничка',price:890,tag:'',desc:'300/400/500 мл — 890/990/1090₸. Құлпынай, таңқурай, банан, мұз, сүт',desc_ru:'300/400/500 мл — 890/990/1090₸. Клубника, малина, банан, лёд, молоко',img:'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=300&q=80',on:true},
+    {id:'i9',cat:'cold',name:'Pepsi',name_ru:'Pepsi',price:700,tag:'',desc:'0,5/1 L — 700/990₸',desc_ru:'0,5/1 L — 700/990₸',img:'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=300&q=80',on:true},
+    {id:'i10',cat:'cold',name:'Mirinda / 7up',name_ru:'Mirinda / 7up',price:700,tag:'',desc:'0,5/1 L — 700/990₸',desc_ru:'0,5/1 L — 700/990₸',img:'https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=300&q=80',on:true},
+    {id:'i11',cat:'cold',name:'Lipton',name_ru:'Lipton',price:700,tag:'',desc:'0,5/1 L — 700/990₸',desc_ru:'0,5/1 L — 700/990₸',img:'https://images.unsplash.com/photo-1499638673689-79a0b5115d87?w=300&q=80',on:true},
+    {id:'i12',cat:'cold',name:'Tassay',name_ru:'Tassay',price:400,tag:'',desc:'0,5/1 L — 400/600₸ (дәмді — 500/700₸)',desc_ru:'0,5/1 L — 400/600₸ (вкусовая — 500/700₸)',img:'https://images.unsplash.com/photo-1616118132534-381148898bb4?w=300&q=80',on:true},
+    {id:'i13',cat:'cold',name:'Gorilla',name_ru:'Gorilla',price:850,tag:'',desc:'Энергетик сусыны',desc_ru:'Энергетический напиток',img:'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=300&q=80',on:true},
+    {id:'i14',cat:'cold',name:'Айран',name_ru:'Айран',price:400,tag:'',desc:'Дәстүрлі ашытылған сүт сусыны',desc_ru:'Традиционный кисломолочный напиток',img:'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&q=80',on:true},
+    {id:'i15',cat:'cold',name:'Red Bull',name_ru:'Red Bull',price:1090,tag:'',desc:'1090/1290/1590₸. Энергетик',desc_ru:'1090/1290/1590₸. Энергетик',img:'https://images.unsplash.com/photo-1613214150384-4c0e6e8c1b4f?w=300&q=80',on:true},
+    {id:'i16',cat:'cold',name:'Компот',name_ru:'Компот',price:650,tag:'',desc:'Кептірілген жемістерден жасалған компот',desc_ru:'Компот из сухофруктов',img:'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=300&q=80',on:true},
+    {id:'i17',cat:'cold',name:'Жидек морсы',name_ru:'Морс ягодный',price:700,tag:'',desc:'Мүкжидек морсы',desc_ru:'Ягодный (клюквенный) морс',img:'https://images.unsplash.com/photo-1560508180-03f285f67ded?w=300&q=80',on:true},
+  ];
+}
+const CATS={doner:'🌯 Донер',combo:'🍱 Комбо',burger:'🍔 Бургер / Закуски',plov:'🍚 Плов / Тандыр',coffee:'☕ Кофе',tea:'🍵 Чай',cold:'🥤 Холодные напитки'};
+
+// ===== LOGIN =====
+function login(){
+  if(document.getElementById('loginPass').value===ADMIN_PASS){
+    document.getElementById('login').style.display='none';
+    document.getElementById('app').classList.add('visible');
+    sessionStorage.setItem('am_logged','1');
+    startPolling();renderAll();
+  }else{document.getElementById('loginErr').style.display='block';document.getElementById('loginPass').value='';}
+}
+function logout(){sessionStorage.removeItem('am_logged');location.reload();}
+
+// ===== PAGES =====
+function showPage(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(name==='analytics')renderAnalytics();
+  if(name==='menu')renderProducts();
+  if(name==='promos')renderPromos();
+  if(name==='customers')renderCustomers();
+  if(name==='reviews')renderAdminReviews();
+}
+
+// ===== ORDERS =====
+function filterOrders(f,btn){curFilter=f;document.querySelectorAll('.filters .filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderOrders();}
+
+function renderAll(){renderOrders();updateStats();renderAdminReviews();}
+
+function updateStats(){
+  document.getElementById('stTotal').textContent=orders.length;
+  const newC=orders.filter(o=>o.status==='new').length;
+  document.getElementById('stNew').textContent=orders.filter(o=>['new','cooking','delivering'].includes(o.status)).length;
+  document.getElementById('stDone').textContent=orders.filter(o=>o.status==='done').length;
+  document.getElementById('stRevenue').textContent=orders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.total,0).toLocaleString();
+  const b=document.getElementById('ordersBadge');b.textContent=newC;b.classList.toggle('show',newC>0);
+}
+
+function elapsed(ts){const d=Math.floor((Date.now()-ts)/1000);if(d<60)return d+'с';if(d<3600)return Math.floor(d/60)+'мин';return Math.floor(d/3600)+'сағ';}
+function elapsedCls(ts){const m=Math.floor((Date.now()-ts)/60000);if(m>30)return'urgent';if(m>15)return'warn';return'';}
+
+function renderOrders(){
+  const list=document.getElementById('ordersList');
+  let f=[...orders];
+  if(curFilter!=='all')f=f.filter(o=>o.status===curFilter);
+  f.sort((a,b)=>b.ts-a.ts);
+  if(!f.length){list.innerHTML=`<div class="empty"><span class="empty-icon">${curFilter==='all'?'📋':'🔍'}</span>${curFilter==='all'?'Заказтар жоқ.<br>Клиент тапсырыс бергенде осында автоматты пайда болады 🔥':'Бұл санатта заказ жоқ'}</div>`;return;}
+  const sLbl={new:'🔥 Жаңа',cooking:'👨‍🍳 Дайындалуда',delivering:'🛵 Жолда',done:'✅ Берілді',cancelled:'❌ Бас тартылды'};
+  const bCls={new:'b-new',cooking:'b-cooking',delivering:'b-delivering',done:'b-done',cancelled:'b-cancelled'};
+  list.innerHTML=f.map(o=>`
+    <div class="order s-${o.status}">
+      <div class="order-head">
+        <div>
+          <div class="order-num">🔥 #${String(o.num).padStart(4,'0')}</div>
+          <div class="order-meta">🕐 ${o.timeStr} · <span class="order-timer ${elapsedCls(o.ts)}" id="tm-${o.num}">${elapsed(o.ts)}</span></div>
+        </div>
+        <div class="order-badge ${bCls[o.status]}">${sLbl[o.status]}</div>
+      </div>
+      <div class="order-client">👤 ${o.name}</div>
+      <div class="order-phone">📞 <a href="tel:${o.phone}">${o.phone}</a></div>
+      <div class="order-deliv">${o.deliveryType==='delivery'?'🛵 Жеткізу':'🏃 Өзі алады'}${o.address?' · 📍 '+o.address:''}</div>
+      <div class="order-items">${o.items.map(i=>`• ${i.name} × ${i.qty} = ${(i.price*i.qty).toLocaleString()} ₸`).join('<br>')}</div>
+      <div class="order-foot">
+        <div><div class="order-total">${o.total.toLocaleString()} ₸</div>${o.payment?`<div class="order-pay">💳 ${o.payment}</div>`:''}</div>
+        <div class="order-actions">
+          ${o.status!=='cooking'&&o.status!=='done'&&o.status!=='cancelled'?`<button class="oa oa-cook" onclick="setStatus(${o.num},'cooking')">👨‍🍳 Дайындау</button>`:''}
+          ${o.status==='cooking'?`<button class="oa oa-deliver" onclick="setStatus(${o.num},'delivering')">🛵 Жолда</button>`:''}
+          ${o.status!=='done'&&o.status!=='cancelled'?`<button class="oa oa-done" onclick="setStatus(${o.num},'done')">✅ Берілді</button>`:''}
+          ${o.status!=='cancelled'&&o.status!=='done'?`<button class="oa oa-cancel" onclick="setStatus(${o.num},'cancelled')">❌</button>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+  startTimers(f);
+}
+function startTimers(f){
+  Object.values(timers).forEach(clearInterval);timers={};
+  f.filter(o=>['new','cooking','delivering'].includes(o.status)).forEach(o=>{
+    timers[o.num]=setInterval(()=>{const el=document.getElementById('tm-'+o.num);if(el){el.textContent=elapsed(o.ts);el.className='order-timer '+elapsedCls(o.ts);}},10000);
+  });
+}
+function setStatus(num,st){
+  const o=orders.find(x=>x.num===num);if(!o)return;o.status=st;save();renderOrders();updateStats();
+  showToast(st==='done'?'✅ Заказ берілді!':st==='cooking'?'👨‍🍳 Дайындалуда':st==='delivering'?'🛵 Жолда':st==='cancelled'?'❌ Бас тартылды':'⬆️ Жаңартылды','green');
+}
+
+// ===== MENU MGMT =====
+function renderProducts(){
+  const cf=document.getElementById('menuCatFilter');
+  cf.innerHTML=`<button class="filter ${menuCatFilter==='all'?'active':''}" onclick="setMenuCat('all',this)">Бәрі</button>`+
+    Object.entries(CATS).map(([k,v])=>`<button class="filter ${menuCatFilter===k?'active':''}" onclick="setMenuCat('${k}',this)">${v}</button>`).join('');
+  const list=document.getElementById('prodList');
+  let f=menuCatFilter==='all'?products:products.filter(p=>p.cat===menuCatFilter);
+  if(!f.length){list.innerHTML='<div class="empty"><span class="empty-icon">🍽️</span>Тағам жоқ</div>';return;}
+  list.innerHTML=f.map(p=>`
+    <div class="prod-row ${p.on?'':'disabled'}">
+      <img class="prod-thumb" src="${p.img||''}" onerror="this.style.opacity=0.2">
+      <div class="prod-info">
+        <div class="prod-name">${p.name} ${p.tag==='hot'?'🔥':p.tag==='new'?'✨':''}</div>
+        <div class="prod-cat">${CATS[p.cat]}</div>
+        <div class="prod-price">${p.price.toLocaleString()} ₸</div>
+      </div>
+      <div class="prod-actions">
+        <button class="pa-btn" onclick="editProduct('${p.id}')">✏️ Өзгерту</button>
+        <button class="pa-btn" onclick="toggleProduct('${p.id}')">${p.on?'🚫 Жасыру':'✅ Қосу'}</button>
+        <button class="pa-btn del" onclick="delProduct('${p.id}')">🗑️ Өшіру</button>
+      </div>
+    </div>`).join('');
+}
+function setMenuCat(c,btn){menuCatFilter=c;renderProducts();}
+function openProductModal(){editingId=null;document.getElementById('prodModalTitle').textContent='ТАҒАМ ҚОСУ';['pmName','pmNameRu','pmPrice','pmDesc','pmImg'].forEach(id=>document.getElementById(id).value='');document.getElementById('prodModal').classList.add('open');}
+function closeProductModal(){document.getElementById('prodModal').classList.remove('open');}
+function editProduct(id){
+  const p=products.find(x=>x.id===id);if(!p)return;editingId=id;
+  document.getElementById('prodModalTitle').textContent='ТАҒАМ ӨЗГЕРТУ';
+  document.getElementById('pmName').value=p.name;document.getElementById('pmNameRu').value=p.name_ru||'';
+  document.getElementById('pmCat').value=p.cat;document.getElementById('pmPrice').value=p.price;
+  document.getElementById('pmDesc').value=p.desc||'';document.getElementById('pmImg').value=p.img||'';
+  document.getElementById('pmTag').value=p.tag||'';
+  document.getElementById('prodModal').classList.add('open');
+}
+function saveProduct(){
+  const name=document.getElementById('pmName').value.trim();
+  const price=parseInt(document.getElementById('pmPrice').value);
+  if(!name||!price){showToast('❌ Аты мен бағаны толтыр!','red');return;}
+  const data={name,name_ru:document.getElementById('pmNameRu').value.trim()||name,cat:document.getElementById('pmCat').value,price,desc:document.getElementById('pmDesc').value.trim(),img:document.getElementById('pmImg').value.trim(),tag:document.getElementById('pmTag').value};
+  if(editingId){const p=products.find(x=>x.id===editingId);Object.assign(p,data);showToast('✅ Өзгертілді!','green');}
+  else{products.push({id:'p'+Date.now(),...data,on:true});showToast('✅ Қосылды!','green');}
+  saveProducts();renderProducts();closeProductModal();
+}
+function toggleProduct(id){const p=products.find(x=>x.id===id);p.on=!p.on;saveProducts();renderProducts();}
+function delProduct(id){if(!confirm('Өшіресің бе?'))return;products=products.filter(x=>x.id!==id);saveProducts();renderProducts();showToast('🗑️ Өшірілді','red');}
+function saveProducts(){localStorage.setItem('am_products',JSON.stringify(products));}
+
+// ===== ANALYTICS =====
+function renderAnalytics(){
+  const now=Date.now();const days=[];
+  for(let i=6;i>=0;i--){
+    const from=now-(i+1)*86400000,to=now-i*86400000;
+    const cnt=orders.filter(o=>o.ts>=from&&o.ts<to&&o.status!=='cancelled').length;
+    const d=new Date(to);days.push({lbl:['Жс','Дс','Сс','Ср','Бс','Жм','Сб'][d.getDay()],cnt});
+  }
+  const max=Math.max(...days.map(d=>d.cnt),1);
+  document.getElementById('weekChart').innerHTML=days.map(d=>`<div class="cbar-wrap"><span class="cbar-val">${d.cnt||''}</span><div class="cbar" style="height:${Math.max(d.cnt/max*110,4)}px;opacity:${d.cnt?1:0.25}"></div><span class="cbar-lbl">${d.lbl}</span></div>`).join('');
+  // top items
+  const ic={};orders.filter(o=>o.status!=='cancelled').forEach(o=>o.items.forEach(i=>ic[i.name]=(ic[i.name]||0)+i.qty));
+  const sorted=Object.entries(ic).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const tmax=sorted.length?sorted[0][1]:1;
+  document.getElementById('topItems').innerHTML=sorted.length?sorted.map(([n,c],i)=>`<div class="top-row"><span class="top-name">${['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'][i]} ${n}</span><div class="top-bar-bg"><div class="top-bar-fill" style="width:${c/tmax*100}%"></div></div><span class="top-count">${c}</span></div>`).join(''):'<div style="color:var(--gray);font-size:0.85rem;">Деректер жоқ...</div>';
+  // payment
+  const pc={};orders.filter(o=>o.status!=='cancelled').forEach(o=>{const p=o.payment||'Белгісіз';pc[p]=(pc[p]||0)+1;});
+  const ps=Object.entries(pc).sort((a,b)=>b[1]-a[1]);const pmax=ps.length?ps[0][1]:1;
+  document.getElementById('payStats').innerHTML=ps.length?ps.map(([n,c])=>`<div class="top-row"><span class="top-name">💳 ${n}</span><div class="top-bar-bg"><div class="top-bar-fill" style="width:${c/pmax*100}%"></div></div><span class="top-count">${c}</span></div>`).join(''):'<div style="color:var(--gray);font-size:0.85rem;">Деректер жоқ...</div>';
+}
+
+// ===== PROMOS =====
+function createPromo(){
+  const code=document.getElementById('pcCode').value.trim().toUpperCase();
+  const val=parseInt(document.getElementById('pcValue').value);
+  if(!code||!val){showToast('❌ Код пен мөлшерді толтыр!','red');return;}
+  promos.push({code,type:document.getElementById('pcType').value,value:val,min:parseInt(document.getElementById('pcMin').value)||0,used:0,on:true});
+  localStorage.setItem('am_promos',JSON.stringify(promos));
+  document.getElementById('pcCode').value='';document.getElementById('pcValue').value='';document.getElementById('pcMin').value='';
+  renderPromos();showToast('🎁 Промокод жасалды!','green');
+}
+function renderPromos(){
+  const list=document.getElementById('promoList');
+  if(!promos.length){list.innerHTML='<div class="empty"><span class="empty-icon">🎁</span>Промокод жоқ</div>';return;}
+  list.innerHTML=promos.map((p,i)=>`<div class="promo-item"><div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;"><span class="promo-code-badge">${p.code}</span><span style="font-size:0.85rem;">${p.type==='percent'?p.value+'% жеңілдік':p.value.toLocaleString()+' ₸ жеңілдік'}${p.min?' · мин '+p.min.toLocaleString()+'₸':''}</span></div><button class="pa-btn del" onclick="delPromo(${i})">🗑️ Өшіру</button></div>`).join('');
+}
+function delPromo(i){promos.splice(i,1);localStorage.setItem('am_promos',JSON.stringify(promos));renderPromos();}
+
+// ===== ADMIN REVIEWS =====
+function getAdminReviews(){
+  const DEFAULT=[
+    {name:'Айдос Қ.',rating:5,text:'Донері керемет! Ыстық, дәмді, тез жеткізді. Қарағандыдағы ең үздік street food!',role:'Тұрақты клиент',ts:Date.now()-86400000*3,verified:true},
+    {name:'Динара М.',rating:5,text:'Тандыр еті мен самса тіл үйірерлік. Бағасы да тиімді. Ұсынамын!',role:'Клиент',ts:Date.now()-86400000*2,verified:true},
+    {name:'Ерлан Т.',rating:5,text:'Кофесі де керемет екен! Енді күнде осыдан тапсырыс беремін. Рахмет!',role:'Жаңа клиент',ts:Date.now()-86400000,verified:true},
+  ];
+  return JSON.parse(localStorage.getItem('am_reviews')||'null')||DEFAULT;
+}
+function saveAdminReviews(r){localStorage.setItem('am_reviews',JSON.stringify(r));}
+
+function renderAdminReviews(){
+  const reviews=getAdminReviews();
+  const badge=document.getElementById('reviewsBadge');
+  if(badge){badge.textContent=reviews.length;badge.classList.toggle('show',reviews.length>0);}
+  const avg=reviews.length?(reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1):'0.0';
+  const avgBadge=document.getElementById('reviewAvgBadge');
+  if(avgBadge)avgBadge.textContent='★ '+avg;
+  const statCards=document.getElementById('reviewStatCards');
+  if(statCards){
+    const cnt5=reviews.filter(r=>r.rating===5).length;
+    const cnt4plus=reviews.filter(r=>r.rating>=4).length;
+    statCards.innerHTML=`
+      <div class="stat" style="border-radius:14px;border:1px solid var(--border);background:var(--card);"><div class="stat-icon">⭐</div><div class="stat-num">${reviews.length}</div><div class="stat-lbl">Барлық пікір</div></div>
+      <div class="stat" style="border-radius:14px;border:1px solid var(--border);background:var(--card);"><div class="stat-icon">🌟</div><div class="stat-num">${avg}</div><div class="stat-lbl">Орта баға</div></div>
+      <div class="stat" style="border-radius:14px;border:1px solid var(--border);background:var(--card);"><div class="stat-icon">💛</div><div class="stat-num">${cnt5}</div><div class="stat-lbl">5 жұлдыз</div></div>
+      <div class="stat" style="border-radius:14px;border:1px solid var(--border);background:var(--card);"><div class="stat-icon">✅</div><div class="stat-num">${cnt4plus}</div><div class="stat-lbl">4+ жұлдыз</div></div>
+    `;
+  }
+  const list=document.getElementById('adminReviewsList');
+  if(!list)return;
+  if(!reviews.length){list.innerHTML='<div class="empty"><span class="empty-icon">💬</span>Пікір жоқ</div>';return;}
+  list.innerHTML=reviews.map((r,i)=>{
+    const date=r.ts?new Date(r.ts).toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+    const stars='★'.repeat(r.rating)+'☆'.repeat(5-r.rating);
+    const col=['','#FF4444','#FF9F0A','#FF9F0A','var(--yellow)','var(--yellow)'][r.rating]||'var(--yellow)';
+    return `<div class="order" style="border-left:4px solid ${col};">
+      <div class="order-head">
+        <div>
+          <div class="order-client">👤 ${r.name}</div>
+          <div class="order-phone" style="margin-top:0.25rem;">${r.role||'Клиент'}${r.verified?'&nbsp;<span style="background:rgba(37,211,102,0.15);color:var(--green);padding:0.15rem 0.5rem;border-radius:10px;font-size:0.65rem;font-weight:800;">✓ РАСТАЛҒАН</span>':''}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="color:${col};font-size:1rem;letter-spacing:2px;">${stars}</div>
+          <div style="font-size:0.7rem;color:var(--gray);margin-top:0.2rem;">${date}</div>
+        </div>
+      </div>
+      <div class="order-items" style="font-style:italic;color:var(--white);">«${r.text}»</div>
+      <div class="order-foot">
+        <div class="order-total" style="font-size:1.1rem;">${r.rating}/5 ⭐</div>
+        <div class="order-actions">
+          <button class="oa oa-cancel" onclick="deleteAdminReview(${i})">🗑️ Өшіру</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteAdminReview(i){
+  if(!confirm('Бұл пікірді өшіресің бе?'))return;
+  const reviews=getAdminReviews();reviews.splice(i,1);saveAdminReviews(reviews);renderAdminReviews();showToast('🗑️ Пікір өшірілді','red');
+}
+function clearAllReviews(){
+  if(!confirm('Барлық пікірді өшіресің бе?'))return;saveAdminReviews([]);renderAdminReviews();showToast('🗑️ Барлық пікір өшірілді','red');
+}
+
+// ===== CUSTOMERS =====
+function renderCustomers(){
+  const list=document.getElementById('customersList');
+  const cust={};orders.forEach(o=>{if(!cust[o.phone])cust[o.phone]={name:o.name,phone:o.phone,orders:0,total:0};cust[o.phone].orders++;cust[o.phone].total+=o.status!=='cancelled'?o.total:0;});
+  const arr=Object.values(cust).sort((a,b)=>b.total-a.total);
+  if(!arr.length){list.innerHTML='<div class="empty"><span class="empty-icon">👥</span>Клиенттер жоқ</div>';return;}
+  list.innerHTML=arr.map((c,i)=>`<div class="order"><div class="order-head"><div><div class="order-client">${i===0?'👑 ':''}👤 ${c.name}</div><div class="order-phone">📞 <a href="tel:${c.phone}">${c.phone}</a></div></div><div class="order-badge b-done">${c.orders} заказ</div></div><div class="order-foot"><div class="order-total">${c.total.toLocaleString()} ₸</div><div class="order-pay">барлық уақытта</div></div></div>`).join('');
+}
+
+// ===== SETTINGS =====
+function changePass(){
+  const p1=document.getElementById('np1').value,p2=document.getElementById('np2').value;
+  if(!p1){showToast('❌ Пароль бос!','red');return;}
+  if(p1!==p2){showToast('❌ Парольдер сәйкес емес!','red');return;}
+  ADMIN_PASS=p1;localStorage.setItem('am_pass',p1);
+  document.getElementById('np1').value='';document.getElementById('np2').value='';
+  showToast('✅ Пароль өзгертілді!','green');
+}
+function clearAll(){if(!confirm('Барлық заказды өшіресің бе?'))return;orders=[];save();renderAll();showToast('🗑️ Өшірілді','red');}
+
+// ===== SOUND =====
+function toggleSound(){soundOn=!soundOn;localStorage.setItem('am_sound',soundOn?'on':'off');document.getElementById('soundBtn').textContent=soundOn?'🔔':'🔕';showToast(soundOn?'🔔 Дыбыс қосылды':'🔕 Дыбыс өшірілді');}
+function playSound(){if(!soundOn)return;try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[880,1100,1320].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.setValueAtTime(f,ctx.currentTime+i*0.12);g.gain.setValueAtTime(0.25,ctx.currentTime+i*0.12);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.12+0.3);o.start(ctx.currentTime+i*0.12);o.stop(ctx.currentTime+i*0.12+0.3);});}catch(e){}}
+
+// ===== TOAST =====
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ===== SAVE =====
+function save(){localStorage.setItem('am_orders',JSON.stringify(orders));}
+
+// ===== TELEGRAM POLLING =====
+async function poll(){
+  // 0) Алдымен localStorage-тен жаңа заказдарды тексеру (бір құрылғыда клиент жазғандар)
+  syncLocalOrders();
+  // 1) Telegram-нен жаңа заказдарды тексеру (басқа құрылғыдан келгендер)
+  try{
+    const r=await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpd+1}&timeout=3`);
+    const d=await r.json();
+    if(!d.ok||!d.result.length)return;
+    d.result.forEach(u=>{
+      if(u.update_id>lastUpd)lastUpd=u.update_id;
+      const m=u.message;if(!m||!m.text)return;
+      if(m.text.includes('ASIA MIX')&&m.text.includes('ТАПСЫРЫС'))parseOrder(m.text,m.date*1000);
+    });
+    localStorage.setItem('am_lastupd',lastUpd);
+  }catch(e){}
+}
+// localStorage-тегі жаңа заказдарды тауып, дыбыс/хабарлама шығару
+let knownOids=new Set(orders.map(o=>o.oid).filter(Boolean));
+function syncLocalOrders(){
+  let stored;
+  try{stored=JSON.parse(localStorage.getItem('am_orders')||'[]');}catch(e){return;}
+  // Жадтағы orders-пен salыstыру: localStorage-те бар, бірақ жаңа oid-тар
+  let added=false;
+  stored.forEach(so=>{
+    if(so.oid&&!knownOids.has(so.oid)){
+      knownOids.add(so.oid);
+      // егер жадта бұл заказ жоқ болса — қос
+      if(!orders.some(o=>o.oid===so.oid)){
+        orders.unshift(so);
+        added=true;
+        showToast(`🔥 Жаңа заказ! #${String(so.num).padStart(4,'0')} — ${so.name}`,'green');
+        playSound();
+        const f=document.getElementById('flash');if(f){f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1000);}
+      }
+    }
+  });
+  if(added){
+    orderCnt=orders.length?Math.max(...orders.map(o=>o.num||0)):orderCnt;
+    save();renderOrders();updateStats();
+  }
+}
+function parseOrder(text,ts){
+  const lines=text.split('\n');
+  let name='',phone='',addr='',dt='delivery',pay='',total=0,items=[],timeStr='',oid='';
+  lines.forEach(l=>{
+    if(l.startsWith('👤'))name=l.replace('👤','').trim();
+    else if(l.startsWith('📞'))phone=l.replace('📞','').trim();
+    else if(l.startsWith('📍'))addr=l.replace('📍','').trim();
+    else if(l.startsWith('🛵')&&l.includes('Өзі'))dt='pickup';
+    else if(l.startsWith('💳'))pay=l.replace('💳','').trim();
+    else if(l.startsWith('🆔'))oid=l.replace('🆔','').trim();
+    else if(l.startsWith('🕐'))timeStr=l.replace('🕐','').trim();
+    else if(l.startsWith('•')){const mt=l.match(/• (.+?) × (\d+) = ([\d  ]+) ₸/);if(mt)items.push({name:mt[1].trim(),qty:parseInt(mt[2]),price:parseInt(mt[3].replace(/[\s ]/g,''))});}
+    else if(l.includes('Жалпы:')){const mt=l.match(/([\d  ]+) ₸/);if(mt)total=parseInt(mt[1].replace(/[\s ]/g,''));}
+  });
+  if(!name&&!phone)return;
+  // Дубликатты тексеру: oid бойынша (ең сенімді), болмаса аты+тел+сома+уақыт бойынша
+  if(oid&&orders.some(o=>o.oid===oid))return;
+  if(!oid&&orders.some(o=>o.name===name&&o.phone===phone&&o.total===total&&Math.abs(o.ts-ts)<20000))return;
+  orderCnt++;
+  orders.unshift({num:orderCnt,oid,name,phone,address:addr,deliveryType:dt,payment:pay,total,items:items.length?items:[{name:'Заказ',qty:1,price:total}],status:'new',ts:ts||Date.now(),timeStr:timeStr||new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})});
+  save();renderOrders();updateStats();playSound();
+  showToast(`🔥 Жаңа заказ! #${String(orderCnt).padStart(4,'0')} — ${name}`,'green');
+  const f=document.getElementById('flash');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1000);
+}
+let pollIv=null;
+function startPolling(){if(pollIv)clearInterval(pollIv);poll();pollIv=setInterval(poll,5000);}
+
+// ===== INIT =====
+document.getElementById('soundBtn').textContent=soundOn?'🔔':'🔕';
+if(sessionStorage.getItem('am_logged')==='1'){document.getElementById('login').style.display='none';document.getElementById('app').classList.add('visible');startPolling();renderAll();}
+</script>
+</body>
+</html>
