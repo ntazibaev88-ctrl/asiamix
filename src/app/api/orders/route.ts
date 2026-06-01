@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
           `• ${i.name_ru} × ${i.qty} = ${(i.price * i.qty).toLocaleString()} ₸`)
         .join('\n')
 
-      const msg = `🔥 *ASIA MIX — НОВЫЙ ЗАКАЗ #${order.num}*\n\n👤 ${body.name}\n📞 ${body.phone}\n${body.address ? `📍 ${body.address}` : '🏃 Самовывоз'}\n💳 ${body.payment}\n\n${itemsText}\n\n💰 *Итого: ${body.total.toLocaleString()} ₸*`
+      const msg = `⚡ *TEZI — НОВЫЙ ЗАКАЗ #${order.num}*\n\n👤 ${body.name}\n📞 ${body.phone}\n${body.address ? `📍 ${body.address}` : '🏃 Самовывоз'}\n💳 ${body.payment}\n\n${itemsText}\n\n💰 *Итого: ${body.total.toLocaleString()} ₸*`
 
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
