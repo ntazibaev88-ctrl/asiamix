@@ -138,6 +138,10 @@ const DICT: Dict = {
   "admin.tempCommission": { kk: "Уақытша комиссия", ru: "Временная комиссия", en: "Temp commission" },
   "admin.activeCommission": { kk: "Қазіргі комиссия", ru: "Активная комиссия", en: "Active commission" },
   "admin.until": { kk: "дейін", ru: "до", en: "until" },
+  "admin.weatherTitle": { kk: "Ауа райы коэффициенті (жеткізу)", ru: "Погодный коэффициент (доставка)", en: "Weather surcharge (delivery)" },
+  "admin.weatherNote": { kk: "Клиентке көрінбейді — бағаға автоматты қосылады", ru: "Не виден клиенту — добавляется в цену автоматически", en: "Hidden from customers — added to price automatically" },
+  "weather.auto": { kk: "Авто", ru: "Авто", en: "Auto" },
+  "admin.current": { kk: "Қазір", ru: "Сейчас", en: "Now" },
 
   // Profile / loyalty
   "profile.rating": { kk: "Рейтинг", ru: "Рейтинг", en: "Rating" },

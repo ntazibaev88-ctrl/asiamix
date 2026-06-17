@@ -6,6 +6,7 @@ import { formatPrice } from "@/lib/format";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { OrdersTable } from "@/components/OrdersTable";
+import { WeatherControl } from "@/components/admin/WeatherControl";
 import { demoOrders } from "@/lib/mock";
 import { useManagedStores } from "@/lib/managedStores";
 
@@ -34,6 +35,10 @@ export default function AdminDashboard() {
         />
         <StatCard icon={Store} label={t("nav.stores")} value={String(stores.length)} />
         <StatCard icon={Bike} label={t("dash.activeCouriers")} value="3" />
+      </div>
+
+      <div className="mt-6">
+        <WeatherControl />
       </div>
 
       <h2 className="mt-8 mb-4 font-display text-lg font-bold">

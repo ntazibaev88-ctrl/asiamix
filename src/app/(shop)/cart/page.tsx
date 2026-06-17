@@ -14,13 +14,8 @@ import {
   cartTotal,
 } from "@/lib/cart";
 import { Button } from "@/components/ui/Button";
-import {
-  distanceTiers,
-  weatherInfo,
-  deliveryFee,
-  esilStreets,
-  type Weather,
-} from "@/lib/delivery";
+import { distanceTiers, deliveryFee, esilStreets } from "@/lib/delivery";
+import { useEffectiveWeather } from "@/lib/weather";
 
 export default function CartPage() {
   const { t, locale } = useI18n();
@@ -37,9 +32,10 @@ export default function CartPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [zone, setZone] = useState(distanceTiers[0].id);
-  const [weather, setWeather] = useState<Weather>("normal");
   const [street, setStreet] = useState(esilStreets[0]);
   const [house, setHouse] = useState("");
+  // Weather surcharge is automatic (or set by admin) — hidden from the client.
+  const weather = useEffectiveWeather();
 
   const delivery = deliveryType === "delivery" ? deliveryFee(zone, weather) : 0;
   const total = subtotal + delivery;
@@ -225,17 +221,6 @@ export default function CartPage() {
                   ))}
                 </div>
               </Field>
-              <Field label={t("cart.weather")}>
-                <Toggle
-                  value={weather}
-                  onChange={setWeather}
-                  options={[
-                    { value: "normal", label: t("weather.normal") },
-                    { value: "medium", label: `${t("weather.medium")} +` },
-                    { value: "high", label: `${t("weather.high")} ++` },
-                  ]}
-                />
-              </Field>
             </>
           )}
           <Field label={t("store.payment")}>
@@ -255,22 +240,7 @@ export default function CartPage() {
       {/* Summary */}
       <div className="rounded-2xl bg-surface-2 p-4 text-sm">
         <Row label={t("common.cart")} value={formatPrice(subtotal)} muted />
-        <Row
-          label={t("common.delivery")}
-          value={formatPrice(
-            deliveryType === "delivery"
-              ? distanceTiers.find((x) => x.id === zone)?.price ?? 0
-              : 0,
-          )}
-          muted
-        />
-        {deliveryType === "delivery" && weather !== "normal" && (
-          <Row
-            label={`${t("cart.weather")} (${t(`weather.${weather}`)})`}
-            value={`+${formatPrice(weatherInfo[weather].fee)}`}
-            muted
-          />
-        )}
+        <Row label={t("common.delivery")} value={formatPrice(delivery)} muted />
         <div className="my-2 border-t border-border" />
         <Row label={t("common.total")} value={formatPrice(total)} />
       </div>
