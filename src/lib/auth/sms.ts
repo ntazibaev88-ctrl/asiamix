@@ -28,9 +28,9 @@ export async function sendSms(
     }
   }
 
-  // No provider configured → demo mode (outside production, or when the
-  // NOMI_DEMO flag is set so the deployed demo stays testable).
-  if (process.env.NODE_ENV !== "production" || process.env.NOMI_DEMO === "1") {
+  // No provider configured → demo mode (return the code so the demo stays
+  // testable). Set NOMI_SECURE=1 in production to disable this.
+  if (process.env.NOMI_SECURE !== "1") {
     return { delivered: false, demoCode: code };
   }
   return { delivered: false };

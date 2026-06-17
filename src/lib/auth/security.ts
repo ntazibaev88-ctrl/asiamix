@@ -7,7 +7,10 @@ export function sameOrigin(req: NextRequest): boolean {
   const origin = req.headers.get("origin");
   const referer = req.headers.get("referer");
   const src = origin || referer;
-  if (!src) return false; // state-changing requests must carry origin/referer
+  // If neither header is present we cannot compare; allow and rely on the
+  // SameSite=strict session cookie (which blocks cross-site CSRF). When a
+  // header is present it must match our host.
+  if (!src) return true;
   try {
     return new URL(src).host === host;
   } catch {

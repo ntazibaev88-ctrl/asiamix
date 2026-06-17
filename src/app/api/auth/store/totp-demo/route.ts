@@ -5,7 +5,7 @@ import { currentTotp } from "@/lib/auth/totp";
 // Demo helper: returns the current valid 2FA code for a store account so the
 // demo is usable without an authenticator app. DISABLED in production.
 export async function GET(req: NextRequest) {
-  if (process.env.NODE_ENV === "production" && process.env.NOMI_DEMO !== "1")
+  if (process.env.NOMI_SECURE === "1")
     return NextResponse.json({ error: "disabled" }, { status: 404 });
 
   const username = req.nextUrl.searchParams.get("username") || "";

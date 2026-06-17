@@ -17,11 +17,11 @@ export interface StaffUser {
 
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
 // Override in production via ADMIN_PASSWORD (or ADMIN_PASSWORD_HASH).
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "nomi-admin-2026";
-const DEMO_STORE_PASSWORD = process.env.STORE_PASSWORD || "store-1234";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+const DEMO_STORE_PASSWORD = process.env.STORE_PASSWORD || "store123";
 
-// Demo TOTP secret (base32). Add to Google Authenticator to get live codes.
-const DEMO_TOTP = "JBSWY3DPEHPK3PXP";
+// Demo TOTP secret (base32, 20 bytes). Add to Google Authenticator for codes.
+const DEMO_TOTP = "KONZNHZ4FNCF5SXBP2XP4CGJJ7ARINDE";
 
 export const users: StaffUser[] = [
   {

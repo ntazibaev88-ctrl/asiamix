@@ -97,7 +97,7 @@ export default function StoreLogin() {
           {t("common.signin")}
         </Button>
         <div className="rounded-xl bg-surface-2 px-3 py-2 text-xs text-muted">
-          demo: <b>altynorda</b> / <b>store-1234</b> · <b>capital</b> / <b>store-1234</b>
+          demo: <b>altynorda</b> / <b>store123</b> · <b>capital</b> / <b>store123</b>
         </div>
       </div>
     </AuthShell>

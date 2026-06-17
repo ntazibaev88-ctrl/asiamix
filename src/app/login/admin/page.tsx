@@ -56,6 +56,16 @@ export default function AdminLogin() {
         <Button className="w-full" disabled={loading} onClick={submit}>
           {t("common.signin")}
         </Button>
+        <button
+          onClick={() => {
+            setUsername("admin");
+            setPassword("admin123");
+            setError("");
+          }}
+          className="rounded-xl bg-surface-2 px-3 py-2 text-xs text-muted hover:text-fg cursor-pointer"
+        >
+          demo: <b>admin</b> / <b>admin123</b> — толтыру
+        </button>
       </div>
     </AuthShell>
   );
