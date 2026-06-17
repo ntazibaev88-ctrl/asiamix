@@ -9,14 +9,14 @@
 
 :root {
   /* Light theme (default) */
-  --bg: #f7f7f8;
+  --bg: #f5f5f5;
   --bg-elevated: #ffffff;
   --surface: #ffffff;
-  --surface-2: #f1f2f4;
-  --border: rgba(13, 13, 18, 0.08);
-  --border-strong: rgba(13, 13, 18, 0.14);
-  --fg: #0e0e12;
-  --muted: #66666f;
+  --surface-2: #f0f1f2;
+  --border: rgba(13, 13, 18, 0.06);
+  --border-strong: rgba(13, 13, 18, 0.12);
+  --fg: #14151a;
+  --muted: #6b6b75;
   --faint: #9a9aa3;
 
   --brand: #1fa45a;
@@ -34,8 +34,8 @@
   --info-soft: rgba(58, 122, 254, 0.12);
 
   --ring: rgba(31, 164, 90, 0.4);
-  --shadow: 0 1px 2px rgba(13, 13, 18, 0.06), 0 8px 24px rgba(13, 13, 18, 0.06);
-  --shadow-lg: 0 12px 48px rgba(13, 13, 18, 0.12);
+  --shadow: 0 1px 2px rgba(13, 13, 18, 0.04), 0 4px 16px rgba(13, 13, 18, 0.05);
+  --shadow-lg: 0 10px 40px rgba(13, 13, 18, 0.1);
 }
 
 [data-theme="dark"] {

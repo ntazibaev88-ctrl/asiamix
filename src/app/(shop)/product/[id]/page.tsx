@@ -27,7 +27,7 @@ export default function ProductPage() {
   return (
     <div className="flex flex-col gap-5 pb-24">
       {/* Image */}
-      <div className="relative -mx-4 -mt-4 grid h-64 place-items-center bg-surface-2 text-[8rem]">
+      <div className="relative -mx-4 -mt-4 grid h-64 place-items-center bg-gradient-to-br from-surface-2 to-[color-mix(in_srgb,var(--brand)_10%,var(--surface-2))] text-[8rem]">
         <Link
           href={`/stores/${storeSlug}`}
           className="absolute left-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-bg/80 backdrop-blur"

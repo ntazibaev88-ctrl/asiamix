@@ -16,12 +16,12 @@ export function StoreCard({ store }: { store: Store }) {
     <Link
       href={`/stores/${store.slug}`}
       className={cn(
-        "flex items-center gap-3 rounded-2xl border border-border bg-surface p-3 transition-all hover:border-brand hover:shadow-[var(--shadow)]",
+        "flex items-center gap-3.5 rounded-3xl bg-surface p-3.5 shadow-[var(--shadow)] transition-all duration-200 hover:shadow-[var(--shadow-lg)] active:scale-[0.99]",
         !store.open && "opacity-60",
       )}
     >
       <div
-        className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl text-3xl"
+        className="grid h-[68px] w-[68px] shrink-0 place-items-center rounded-3xl text-3xl"
         style={{ background: store.cover }}
       >
         {store.emoji}

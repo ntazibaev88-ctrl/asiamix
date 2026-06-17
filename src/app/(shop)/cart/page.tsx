@@ -114,7 +114,7 @@ export default function CartPage() {
             {group.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-3"
+                className="flex items-center gap-3 rounded-3xl bg-surface p-3.5 shadow-[var(--shadow)]"
               >
                 <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-surface-2 text-2xl">
                   {item.emoji}
@@ -152,7 +152,7 @@ export default function CartPage() {
 
       {/* Checkout form */}
       {checkout && (
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4">
+        <div className="flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-[var(--shadow)]">
           <Field label={t("store.name")}>
             <input value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
           </Field>

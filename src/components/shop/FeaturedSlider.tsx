@@ -27,11 +27,11 @@ export function FeaturedSlider({
         {products.map((p) => (
           <div
             key={p.id}
-            className="relative flex w-36 shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface"
+            className="relative flex w-36 shrink-0 flex-col overflow-hidden rounded-3xl bg-surface shadow-[var(--shadow)]"
           >
             <Link
               href={`/product/${p.id}?store=${storeSlug}`}
-              className="relative grid h-24 place-items-center bg-surface-2 text-5xl"
+              className="relative grid h-24 place-items-center bg-gradient-to-br from-surface-2 to-[color-mix(in_srgb,var(--brand)_8%,var(--surface-2))] text-5xl"
             >
               {p.emoji}
               {p.tag && (

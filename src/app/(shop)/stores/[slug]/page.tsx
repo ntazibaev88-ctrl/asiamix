@@ -17,6 +17,7 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import { FeaturedSlider } from "@/components/shop/FeaturedSlider";
 import { PromoCarousel } from "@/components/shop/PromoCarousel";
 import { SpecialOffers } from "@/components/shop/SpecialOffers";
+import { CategoryCard } from "@/components/shop/CategoryCard";
 
 export default function StoreDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -102,21 +103,17 @@ export default function StoreDetailPage() {
             if (cats.length === 0) return null;
             return (
               <section key={g.key}>
-                <h2 className="mb-3 font-display text-lg font-bold">
+                <h2 className="mb-3 font-display text-xl font-bold">
                   {g.name[locale]}
                 </h2>
-                <div className="grid grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-2 gap-3">
                   {cats.map((c) => (
-                    <button
+                    <CategoryCard
                       key={c.slug}
+                      emoji={c.emoji}
+                      name={c.name[locale]}
                       onClick={() => setCat(c.slug)}
-                      className="flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-surface p-3 text-center transition-all hover:border-brand active:scale-95 cursor-pointer"
-                    >
-                      <span className="text-3xl">{c.emoji}</span>
-                      <span className="text-[11px] font-semibold leading-tight">
-                        {c.name[locale]}
-                      </span>
-                    </button>
+                    />
                   ))}
                 </div>
               </section>
