@@ -75,6 +75,12 @@ const DICT: Dict = {
   "shop.language": { kk: "Тіл", ru: "Язык", en: "Language" },
   "shop.portals": { kk: "Қызметкер порталдары", ru: "Порталы сотрудников", en: "Staff portals" },
   "shop.items": { kk: "тауар", ru: "товаров", en: "items" },
+  "shop.catalog": { kk: "Каталог", ru: "Каталог", en: "Catalog" },
+  "shop.categories": { kk: "Категориялар", ru: "Категории", en: "Categories" },
+  "shop.nothingFound": { kk: "Ештеңе табылмады", ru: "Ничего не найдено", en: "Nothing found" },
+
+  // Login / store admin
+  "login.storeAdmin": { kk: "Дүкен админі", ru: "Админ магазина", en: "Store admin" },
 
   // Roles / portals
   "role.customer": { kk: "Клиент", ru: "Клиент", en: "Customer" },

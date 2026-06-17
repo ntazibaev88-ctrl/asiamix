@@ -3,36 +3,50 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { ArrowLeft, Clock, ShoppingBasket, Star } from "lucide-react";
+import { ArrowLeft, Clock, Search, ShoppingBasket, Star } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
-import { categories, products, stores } from "@/lib/mock";
+import {
+  catalogGroups,
+  categories,
+  productsForStore,
+  stores,
+} from "@/lib/mock";
 import { useCart, cartCount, cartTotal } from "@/lib/cart";
 import { ProductCard } from "@/components/shop/ProductCard";
-import { cn } from "@/lib/cn";
 
 export default function StoreDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { t, locale } = useI18n();
-  const [cat, setCat] = useState("all");
+  const [cat, setCat] = useState<string | null>(null);
+  const [q, setQ] = useState("");
   const map = useCart();
 
   const store = stores.find((s) => s.slug === slug);
   if (!store) notFound();
 
-  const filtered = useMemo(
-    () => (cat === "all" ? products : products.filter((p) => p.cat === cat)),
-    [cat],
-  );
+  const catalog = useMemo(() => productsForStore(store.slug), [store.slug]);
+
+  const query = q.trim().toLowerCase();
+  const results = useMemo(() => {
+    if (query)
+      return catalog.filter((p) =>
+        p.name[locale].toLowerCase().includes(query),
+      );
+    if (cat) return catalog.filter((p) => p.cat === cat);
+    return [];
+  }, [catalog, query, cat, locale]);
 
   const count = cartCount(map);
   const total = cartTotal(map);
+  const showCatalog = !query && !cat;
+  const activeCat = categories.find((c) => c.slug === cat);
 
   return (
     <div className="flex flex-col gap-4">
       {/* Store header */}
       <div
-        className="relative -mx-4 -mt-4 flex h-40 flex-col justify-end p-4 text-white"
+        className="relative -mx-4 -mt-4 flex h-36 flex-col justify-end p-4 text-white"
         style={{ background: store.cover }}
       >
         <Link
@@ -41,7 +55,7 @@ export default function StoreDetailPage() {
         >
           <ArrowLeft size={18} />
         </Link>
-        <div className="text-5xl">{store.emoji}</div>
+        <div className="text-4xl">{store.emoji}</div>
         <h1 className="mt-1 font-display text-2xl font-bold">{store.name}</h1>
         <div className="flex items-center gap-3 text-sm">
           <span className="flex items-center gap-1">
@@ -50,35 +64,84 @@ export default function StoreDetailPage() {
           <span className="flex items-center gap-1">
             <Star size={13} fill="currentColor" /> {store.rating}
           </span>
-          <span>{store.address}</span>
+          <span className="truncate">{store.address}</span>
         </div>
       </div>
 
-      {/* Category chips */}
-      <div className="sticky top-14 z-20 -mx-4 flex gap-2 overflow-x-auto bg-bg/90 px-4 py-2 backdrop-blur-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {categories.map((c) => (
-          <button
-            key={c.slug}
-            onClick={() => setCat(c.slug)}
-            className={cn(
-              "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors cursor-pointer",
-              cat === c.slug
-                ? "bg-brand text-brand-fg"
-                : "bg-surface-2 text-muted hover:text-fg",
-            )}
-          >
-            <span>{c.emoji}</span>
-            {c.name[locale]}
-          </button>
-        ))}
+      {/* Search */}
+      <div className="relative">
+        <Search
+          size={17}
+          className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
+        />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={t("shop.searchProducts")}
+          className="w-full rounded-full border border-border bg-surface py-3 pl-10 pr-4 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-[var(--ring)]"
+        />
       </div>
 
-      {/* Products */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {filtered.map((p) => (
-          <ProductCard key={p.id} product={p} storeSlug={store.slug} />
-        ))}
-      </div>
+      {showCatalog ? (
+        /* Catalog: category tiles grouped like Рядом */
+        <div className="flex flex-col gap-6">
+          {catalogGroups.map((g) => {
+            const cats = categories.filter((c) => c.group === g.key);
+            if (cats.length === 0) return null;
+            return (
+              <section key={g.key}>
+                <h2 className="mb-3 font-display text-lg font-bold">
+                  {g.name[locale]}
+                </h2>
+                <div className="grid grid-cols-3 gap-2.5">
+                  {cats.map((c) => (
+                    <button
+                      key={c.slug}
+                      onClick={() => setCat(c.slug)}
+                      className="flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-surface p-3 text-center transition-all hover:border-brand active:scale-95 cursor-pointer"
+                    >
+                      <span className="text-3xl">{c.emoji}</span>
+                      <span className="text-[11px] font-semibold leading-tight">
+                        {c.name[locale]}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+      ) : (
+        /* Category / search results */
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            {!query && (
+              <button
+                onClick={() => setCat(null)}
+                className="flex items-center gap-1 text-sm font-semibold text-brand cursor-pointer"
+              >
+                <ArrowLeft size={16} /> {t("shop.categories")}
+              </button>
+            )}
+            {activeCat && !query && (
+              <span className="font-display text-lg font-bold">
+                {activeCat.emoji} {activeCat.name[locale]}
+              </span>
+            )}
+          </div>
+          {results.length === 0 ? (
+            <p className="py-16 text-center text-muted">
+              {t("shop.nothingFound")}
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {results.map((prod) => (
+                <ProductCard key={prod.id} product={prod} storeSlug={store.slug} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Sticky cart bar */}
       {count > 0 && (
