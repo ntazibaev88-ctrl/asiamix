@@ -96,6 +96,21 @@ const DICT: Dict = {
   // Login / store admin
   "login.storeAdmin": { kk: "Дүкен админі", ru: "Админ магазина", en: "Store admin" },
 
+  // Customer auth
+  "auth.login": { kk: "Кіру", ru: "Вход", en: "Sign in" },
+  "auth.register": { kk: "Тіркелу", ru: "Регистрация", en: "Register" },
+  "auth.name": { kk: "Атыңыз", ru: "Имя", en: "Name" },
+  "auth.phone": { kk: "Телефон", ru: "Телефон", en: "Phone" },
+  "auth.doLogin": { kk: "Кіру", ru: "Войти", en: "Sign in" },
+  "auth.doRegister": { kk: "Аккаунт құру", ru: "Создать аккаунт", en: "Create account" },
+  "auth.welcome": { kk: "NOMI-ге қош келдіңіз", ru: "Добро пожаловать в NOMI", en: "Welcome to NOMI" },
+  "auth.subtitle": { kk: "Телефон арқылы кіріңіз", ru: "Войдите по номеру телефона", en: "Sign in with your phone" },
+
+  // Profile / loyalty
+  "profile.rating": { kk: "Рейтинг", ru: "Рейтинг", en: "Rating" },
+  "profile.points": { kk: "Ұпай", ru: "Баллы", en: "Points" },
+  "profile.cashback": { kk: "Кэшбэк", ru: "Кэшбэк", en: "Cashback" },
+
   // Roles / portals
   "role.customer": { kk: "Клиент", ru: "Клиент", en: "Customer" },
   "role.courier": { kk: "Курьер", ru: "Курьер", en: "Courier" },

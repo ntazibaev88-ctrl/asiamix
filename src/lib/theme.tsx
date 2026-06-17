@@ -10,7 +10,7 @@ const STORAGE_KEY = "nomi.theme";
  * Inline script that applies the persisted (or system) theme before paint to
  * avoid a flash of the wrong theme. Rendered in <head> via the root layout.
  */
-export const themeNoFlashScript = `(function(){try{var t=localStorage.getItem("${STORAGE_KEY}");if(!t){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;
+export const themeNoFlashScript = `(function(){try{var t=localStorage.getItem("${STORAGE_KEY}")||"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;
 
 // Tiny external store. The DOM `data-theme` attribute (set pre-paint by the
 // no-flash script) is the source of truth, so we read it via

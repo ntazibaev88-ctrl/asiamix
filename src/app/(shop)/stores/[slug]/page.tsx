@@ -15,6 +15,7 @@ import {
 import { useCart, cartCount, cartTotal } from "@/lib/cart";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { FeaturedSlider } from "@/components/shop/FeaturedSlider";
+import { PromoCarousel } from "@/components/shop/PromoCarousel";
 
 export default function StoreDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -68,6 +69,9 @@ export default function StoreDetailPage() {
           <span className="truncate">{store.address}</span>
         </div>
       </div>
+
+      {/* Promo slider */}
+      {showCatalog && <PromoCarousel />}
 
       {/* Search */}
       <div className="relative">

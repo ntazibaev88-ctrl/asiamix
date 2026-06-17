@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Minus, Plus, ShoppingBasket } from "lucide-react";
+import { Minus, Plus, ShoppingBasket, Store } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
 import {
@@ -98,39 +98,54 @@ export default function CartPage() {
     <div className="flex flex-col gap-4">
       <h1 className="font-display text-2xl font-bold">{t("shop.tab.cart")}</h1>
 
-      {/* Items */}
-      <div className="flex flex-col gap-2">
-        {lines.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-3"
-          >
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-surface-2 text-2xl">
-              {item.emoji}
+      {/* Items grouped by store */}
+      <div className="flex flex-col gap-5">
+        {Object.values(
+          lines.reduce<Record<string, typeof lines>>((acc, l) => {
+            (acc[l.storeSlug] ??= []).push(l);
+            return acc;
+          }, {}),
+        ).map((group) => (
+          <div key={group[0].storeSlug} className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 px-1">
+              <Store size={15} className="text-brand" />
+              <span className="text-sm font-bold">{group[0].storeName}</span>
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-semibold">{item.name}</div>
-              <div className="text-xs text-muted">
-                {formatPrice(item.price)} · {item.storeName}
+            {group.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-3"
+              >
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-surface-2 text-2xl">
+                  {item.emoji}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-semibold">
+                    {item.name}
+                  </div>
+                  <div className="text-xs text-muted">
+                    {formatPrice(item.price)}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => decrement(item.id)}
+                    className="grid h-7 w-7 place-items-center rounded-full bg-surface-2 cursor-pointer"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="w-4 text-center text-sm font-bold">
+                    {item.qty}
+                  </span>
+                  <button
+                    onClick={() => addToCart(item.id, item.storeSlug)}
+                    className="grid h-7 w-7 place-items-center rounded-full bg-brand text-brand-fg cursor-pointer"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => decrement(item.id)}
-                className="grid h-7 w-7 place-items-center rounded-full bg-surface-2 cursor-pointer"
-              >
-                <Minus size={14} />
-              </button>
-              <span className="w-4 text-center text-sm font-bold">
-                {item.qty}
-              </span>
-              <button
-                onClick={() => addToCart(item.id, item.storeSlug)}
-                className="grid h-7 w-7 place-items-center rounded-full bg-brand text-brand-fg cursor-pointer"
-              >
-                <Plus size={14} />
-              </button>
-            </div>
+            ))}
           </div>
         ))}
       </div>

@@ -287,8 +287,8 @@ export function productsForStore(slug: string): Product[] {
 }
 
 export const stores: Store[] = [
-  { slug: "altyn-orda", name: "Алтын Орда", address: "Аль-Фараби 15/1", time: "15–25", rating: 4.8, open: true, emoji: "🏪", cover: "linear-gradient(135deg,#ff7a45,#e23c1f)" },
-  { slug: "capital", name: "Capital", address: "Аль-Фараби 9", time: "20–30", rating: 4.6, open: true, emoji: "🛒", cover: "linear-gradient(135deg,#3a7afe,#1f3fae)" },
+  { slug: "altyn-orda", name: "Алтын Орда", address: "Қабанбай батыр 15/1", time: "15–25", rating: 4.8, open: true, emoji: "🏪", cover: "linear-gradient(135deg,#1fa45a,#0c6e3a)" },
+  { slug: "capital", name: "Capital", address: "Достық 9", time: "20–30", rating: 4.6, open: true, emoji: "🛒", cover: "linear-gradient(135deg,#16a34a,#157f3c)" },
 ];
 
 export const promos: Promo[] = [
@@ -333,6 +333,6 @@ export const demoCouriers = [
 ];
 
 export const demoStores = [
-  { name: "Алтын Орда", city: "Алматы", orders: 312, revenue: 2840000, rating: 4.8, commission: 12, active: true },
+  { name: "Алтын Орда", city: "Астана", orders: 312, revenue: 2840000, rating: 4.8, commission: 12, active: true },
   { name: "Capital", city: "Астана", orders: 198, revenue: 1120000, rating: 4.6, commission: 15, active: true },
 ];

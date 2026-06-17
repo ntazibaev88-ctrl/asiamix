@@ -14,7 +14,7 @@ export default function ShopHome() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-1.5 text-sm font-semibold text-muted">
         <MapPin size={15} className="text-brand" />
-        {t("shop.deliveryTo")}: <span className="text-fg">Алматы</span>
+        {t("shop.deliveryTo")}: <span className="text-fg">Астана</span>
       </div>
 
       <PromoCarousel />
