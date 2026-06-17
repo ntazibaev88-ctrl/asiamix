@@ -295,8 +295,8 @@ export function productsForStore(slug: string): Product[] {
 }
 
 export const stores: Store[] = [
-  { slug: "altyn-orda", name: "Алтын Орда", address: "Қабанбай батыр 15/1", time: "15–25", rating: 4.8, open: true, emoji: "🏪", cover: "linear-gradient(135deg,#1fa45a,#0c6e3a)" },
-  { slug: "capital", name: "Capital", address: "Достық 9", time: "20–30", rating: 4.6, open: true, emoji: "🛒", cover: "linear-gradient(135deg,#16a34a,#157f3c)" },
+  { slug: "altyn-orda", name: "Алтын Орда", address: "Аль-Фараби 15/1", time: "15–25", rating: 4.8, open: true, emoji: "🏪", cover: "linear-gradient(135deg,#1fa45a,#0c6e3a)" },
+  { slug: "capital", name: "Capital", address: "Аль-Фараби 9", time: "20–30", rating: 4.6, open: true, emoji: "🛒", cover: "linear-gradient(135deg,#16a34a,#157f3c)" },
 ];
 
 export const promos: Promo[] = [
@@ -344,6 +344,38 @@ export const demoOrders: DemoOrder[] = [
   { num: 1037, customer: "Тимур А.", store: "Capital", items: 2, total: 1800, status: "cancelled", minsAgo: 72 },
 ];
 
+export interface CourierJob {
+  id: number;
+  store: { name: string; address: string; lat: number; lng: number };
+  client: { name: string; phone: string; address: string; lat: number; lng: number };
+  items: number;
+  total: number;
+  payment: "online" | "cash";
+  status: OrderStatus;
+  minsAgo: number;
+}
+
+export const courierJobs: CourierJob[] = [
+  {
+    id: 1042,
+    store: { name: "Алтын Орда", address: "Аль-Фараби 15/1", lat: 51.0915, lng: 71.4178 },
+    client: { name: "Айгерим С.", phone: "+7 701 222 33 44", address: "Қабанбай батыр 11, кв. 52", lat: 51.1009, lng: 71.4231 },
+    items: 8, total: 6700, payment: "online", status: "ready", minsAgo: 4,
+  },
+  {
+    id: 1041,
+    store: { name: "Capital", address: "Аль-Фараби 9", lat: 51.0922, lng: 71.4101 },
+    client: { name: "Дамир К.", phone: "+7 705 444 55 66", address: "Сығанақ 18, кв. 7", lat: 51.0876, lng: 71.4302 },
+    items: 4, total: 3400, payment: "cash", status: "on_the_way", minsAgo: 12,
+  },
+  {
+    id: 1040,
+    store: { name: "Алтын Орда", address: "Аль-Фараби 15/1", lat: 51.0915, lng: 71.4178 },
+    client: { name: "Зарина Т.", phone: "+7 702 777 88 99", address: "Тұран 24, кв. 130", lat: 51.1102, lng: 71.4156 },
+    items: 12, total: 12600, payment: "online", status: "accepted", minsAgo: 18,
+  },
+];
+
 export const demoCouriers = [
   { name: "Ерлан Б.", status: "online" as const, deliveries: 14, rating: 4.9, earnings: 18400 },
   { name: "Санжар М.", status: "busy" as const, deliveries: 11, rating: 4.8, earnings: 15200 },
@@ -352,6 +384,6 @@ export const demoCouriers = [
 ];
 
 export const demoStores = [
-  { name: "Алтын Орда", city: "Астана", orders: 312, revenue: 2840000, rating: 4.8, commission: 12, active: true },
-  { name: "Capital", city: "Астана", orders: 198, revenue: 1120000, rating: 4.6, commission: 15, active: true },
+  { slug: "altyn-orda", name: "Алтын Орда", city: "Астана", address: "Аль-Фараби 15/1", orders: 312, revenue: 2840000, rating: 4.8, commission: 3, active: true },
+  { slug: "capital", name: "Capital", city: "Астана", address: "Аль-Фараби 9", orders: 198, revenue: 1120000, rating: 4.6, commission: 3, active: true },
 ];

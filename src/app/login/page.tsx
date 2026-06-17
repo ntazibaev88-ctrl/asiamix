@@ -1,35 +1,33 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Bike, ShieldCheck, Store, User } from "lucide-react";
+import { Lock, User } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { setCookie } from "@/lib/cookies";
 import { setActiveStore } from "@/lib/activeStore";
-import { stores } from "@/lib/mock";
+import { findAccount, homeForRole, accounts } from "@/lib/accounts";
+import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LangSwitch } from "@/components/LangSwitch";
-import type { Role } from "@/lib/types";
-
-const roles: { role: Role; labelKey: string; href: string; icon: typeof User }[] = [
-  { role: "customer", labelKey: "role.customer", href: "/", icon: User },
-  { role: "courier", labelKey: "role.courier", href: "/courier", icon: Bike },
-  { role: "super_admin", labelKey: "role.admin", href: "/admin", icon: ShieldCheck },
-];
 
 export default function LoginPage() {
   const { t } = useI18n();
   const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
-  const enter = (role: Role, href: string) => {
-    setCookie("nomi_role", role);
-    router.push(href);
-  };
-
-  const enterStore = (slug: string) => {
-    setCookie("nomi_role", "store_admin");
-    setActiveStore(slug);
-    router.push("/store");
+  const submit = () => {
+    const acc = findAccount(username, password);
+    if (!acc) {
+      setError(true);
+      return;
+    }
+    setCookie("nomi_role", acc.role);
+    if (acc.storeSlug) setActiveStore(acc.storeSlug);
+    router.push(homeForRole(acc.role));
   };
 
   return (
@@ -39,63 +37,103 @@ export default function LoginPage() {
         <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-sm">
         <Link
           href="/"
           className="block text-center font-display text-3xl font-bold tracking-tight"
         >
           NOMI<span className="text-brand">.</span>
         </Link>
-        <p className="mt-2 text-center text-sm text-muted">
-          {t("login.subtitle")}
-        </p>
+        <p className="mt-2 text-center text-sm text-muted">{t("login.subtitle")}</p>
 
-        {/* Generic roles */}
-        <div className="mt-8 grid grid-cols-3 gap-3">
-          {roles.map(({ role, labelKey, href, icon: Icon }) => (
-            <button
-              key={role}
-              onClick={() => enter(role, href)}
-              className="group flex flex-col items-center gap-2 rounded-2xl border border-border bg-surface p-4 text-center transition-all hover:border-brand hover:shadow-[var(--shadow)] cursor-pointer"
-            >
-              <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand-soft text-brand transition-transform group-hover:scale-110">
-                <Icon size={20} />
-              </span>
-              <span className="text-xs font-semibold">{t(labelKey)}</span>
-            </button>
-          ))}
+        <div className="mt-8 flex flex-col gap-3">
+          <label className="block">
+            <span className="mb-1.5 block text-xs font-semibold text-muted">
+              {t("login.username")}
+            </span>
+            <div className="relative">
+              <User
+                size={16}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
+              />
+              <input
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  setError(false);
+                }}
+                autoCapitalize="none"
+                className={inputCls}
+              />
+            </div>
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block text-xs font-semibold text-muted">
+              {t("login.password")}
+            </span>
+            <div className="relative">
+              <Lock
+                size={16}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError(false);
+                }}
+                onKeyDown={(e) => e.key === "Enter" && submit()}
+                className={inputCls}
+              />
+            </div>
+          </label>
+
+          {error && (
+            <p className="rounded-xl bg-danger-soft px-3 py-2 text-sm font-medium text-danger">
+              {t("login.error")}
+            </p>
+          )}
+
+          <Button className="mt-1 w-full" onClick={submit}>
+            {t("common.signin")}
+          </Button>
         </div>
 
-        {/* Per-store admin — each store has its own isolated panel */}
-        <h2 className="mb-2 mt-7 px-1 text-xs font-bold uppercase tracking-wide text-faint">
-          {t("login.storeAdmin")}
-        </h2>
-        <div className="flex flex-col gap-2">
-          {stores.map((s) => (
-            <button
-              key={s.slug}
-              onClick={() => enterStore(s.slug)}
-              className="group flex items-center gap-3 rounded-2xl border border-border bg-surface p-3 text-left transition-all hover:border-brand cursor-pointer"
-            >
-              <span
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-2xl"
-                style={{ background: s.cover }}
+        {/* Demo credentials */}
+        <div className="mt-6 rounded-2xl border border-border bg-surface p-4">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-faint">
+            {t("login.demoAccounts")}
+          </p>
+          <div className="flex flex-col gap-1.5 text-xs text-muted">
+            {accounts.map((a) => (
+              <button
+                key={a.username}
+                onClick={() => {
+                  setUsername(a.username);
+                  setPassword(a.password);
+                  setError(false);
+                }}
+                className="flex items-center justify-between rounded-lg px-2 py-1 text-left hover:bg-surface-2 cursor-pointer"
               >
-                {s.emoji}
-              </span>
-              <span className="flex-1">
-                <span className="block text-sm font-semibold">{s.name}</span>
-                <span className="block text-xs text-muted">{s.address}</span>
-              </span>
-              <Store size={18} className="text-faint group-hover:text-brand" />
-            </button>
-          ))}
+                <span className="font-semibold text-fg">{a.label}</span>
+                <span className="font-mono">
+                  {a.username} / {a.password}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-6 rounded-xl border border-border bg-surface-2 p-3 text-center text-xs text-muted">
-          {t("login.demoNote")}
+        <div className="mt-5 text-center">
+          <Link href="/" className="text-sm font-semibold text-brand">
+            ← {t("role.customer")}
+          </Link>
         </div>
       </div>
     </div>
   );
 }
+
+const inputCls =
+  "w-full rounded-xl border border-border bg-surface py-2.5 pl-10 pr-3.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-[var(--ring)]";

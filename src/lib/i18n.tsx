@@ -64,6 +64,11 @@ const DICT: Dict = {
   "shop.searchStores": { kk: "Дүкен іздеу…", ru: "Поиск магазина…", en: "Search stores…" },
   "shop.searchProducts": { kk: "Тауар іздеу…", ru: "Поиск товара…", en: "Search products…" },
   "shop.deliveryTo": { kk: "Жеткізу", ru: "Доставка в", en: "Delivery to" },
+  "shop.districtNote": {
+    kk: "Әзірге тек Есіл ауданына жеткіземіз. Басқа аудандар жақын арада.",
+    ru: "Пока доставляем только в район Есиль. Другие районы — скоро.",
+    en: "For now we deliver only to Esil district. Other districts coming soon.",
+  },
   "shop.toStore": { kk: "Дүкенге кіру", ru: "В магазин", en: "Enter store" },
   "shop.favEmpty": { kk: "Таңдаулы дүкендер жоқ", ru: "Нет избранных магазинов", en: "No favorite stores yet" },
   "shop.ordersEmpty": { kk: "Әзірге тапсырыс жоқ", ru: "Заказов пока нет", en: "No orders yet" },
@@ -75,6 +80,12 @@ const DICT: Dict = {
   "shop.language": { kk: "Тіл", ru: "Язык", en: "Language" },
   "shop.portals": { kk: "Қызметкер порталдары", ru: "Порталы сотрудников", en: "Staff portals" },
   "shop.items": { kk: "тауар", ru: "товаров", en: "items" },
+  "store.productName": { kk: "Тауар атауы", ru: "Название товара", en: "Product name" },
+  "store.myProducts": { kk: "Дүкеннің тауарлары", ru: "Товары магазина", en: "Store products" },
+  "store.baseCatalog": { kk: "Жалпы каталог", ru: "Общий каталог", en: "Base catalog" },
+  "store.paymentReport": { kk: "Төлем бойынша есеп", ru: "Отчёт по оплате", en: "Payment report" },
+  "store.online": { kk: "Онлайн төлем", ru: "Онлайн оплата", en: "Online payment" },
+  "store.cashPay": { kk: "Қолма-қол", ru: "Наличные", en: "Cash" },
   "shop.catalog": { kk: "Каталог", ru: "Каталог", en: "Catalog" },
   "shop.categories": { kk: "Категориялар", ru: "Категории", en: "Categories" },
   "shop.nothingFound": { kk: "Ештеңе табылмады", ru: "Ничего не найдено", en: "Nothing found" },
@@ -96,6 +107,10 @@ const DICT: Dict = {
 
   // Login / store admin
   "login.storeAdmin": { kk: "Дүкен админі", ru: "Админ магазина", en: "Store admin" },
+  "login.username": { kk: "Логин", ru: "Логин", en: "Login" },
+  "login.password": { kk: "Құпиясөз", ru: "Пароль", en: "Password" },
+  "login.error": { kk: "Логин не құпиясөз қате", ru: "Неверный логин или пароль", en: "Wrong login or password" },
+  "login.demoAccounts": { kk: "Демо аккаунттар (басып толтыр)", ru: "Демо-аккаунты (нажмите)", en: "Demo accounts (tap to fill)" },
 
   // Customer auth
   "auth.login": { kk: "Кіру", ru: "Вход", en: "Sign in" },
@@ -106,6 +121,16 @@ const DICT: Dict = {
   "auth.doRegister": { kk: "Аккаунт құру", ru: "Создать аккаунт", en: "Create account" },
   "auth.welcome": { kk: "NOMI-ге қош келдіңіз", ru: "Добро пожаловать в NOMI", en: "Welcome to NOMI" },
   "auth.subtitle": { kk: "Телефон арқылы кіріңіз", ru: "Войдите по номеру телефона", en: "Sign in with your phone" },
+
+  // Super admin store management
+  "admin.addStore": { kk: "Дүкен қосу", ru: "Добавить магазин", en: "Add store" },
+  "admin.storeName": { kk: "Дүкен атауы", ru: "Название магазина", en: "Store name" },
+  "admin.city": { kk: "Қала", ru: "Город", en: "City" },
+  "admin.address": { kk: "Мекенжай", ru: "Адрес", en: "Address" },
+  "admin.save": { kk: "Сақтау", ru: "Сохранить", en: "Save" },
+  "admin.tempCommission": { kk: "Уақытша комиссия", ru: "Временная комиссия", en: "Temp commission" },
+  "admin.activeCommission": { kk: "Қазіргі комиссия", ru: "Активная комиссия", en: "Active commission" },
+  "admin.until": { kk: "дейін", ru: "до", en: "until" },
 
   // Profile / loyalty
   "profile.rating": { kk: "Рейтинг", ru: "Рейтинг", en: "Rating" },
@@ -145,6 +170,12 @@ const DICT: Dict = {
   "dash.goOnline": { kk: "Желіге шығу", ru: "Выйти онлайн", en: "Go online" },
   "dash.goOffline": { kk: "Желіден шығу", ru: "Уйти офлайн", en: "Go offline" },
   "dash.acceptOrder": { kk: "Қабылдау", ru: "Принять", en: "Accept" },
+  "courier.open": { kk: "Ашу", ru: "Открыть", en: "Open" },
+  "courier.pickup": { kk: "Дүкеннен алу", ru: "Забрать из магазина", en: "Pick up" },
+  "courier.dropoff": { kk: "Клиентке жеткізу", ru: "Доставить клиенту", en: "Deliver to" },
+  "courier.chat": { kk: "Клиентпен чат", ru: "Чат с клиентом", en: "Chat with client" },
+  "courier.message": { kk: "Хабарлама…", ru: "Сообщение…", en: "Message…" },
+  "courier.markAs": { kk: "Статусты ауыстыру", ru: "Сменить статус", en: "Mark as" },
 
   // Order statuses
   "status.pending": { kk: "Жаңа", ru: "Новый", en: "Pending" },
