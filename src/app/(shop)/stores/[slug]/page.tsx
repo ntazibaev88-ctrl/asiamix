@@ -16,6 +16,7 @@ import { useCart, cartCount, cartTotal } from "@/lib/cart";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { FeaturedSlider } from "@/components/shop/FeaturedSlider";
 import { PromoCarousel } from "@/components/shop/PromoCarousel";
+import { SpecialOffers } from "@/components/shop/SpecialOffers";
 
 export default function StoreDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -95,6 +96,7 @@ export default function StoreDetailPage() {
             products={catalog.filter((pr) => pr.tag === "HIT" || pr.tag === "SALE")}
             storeSlug={store.slug}
           />
+          <SpecialOffers />
           {catalogGroups.map((g) => {
             const cats = categories.filter((c) => c.group === g.key);
             if (cats.length === 0) return null;

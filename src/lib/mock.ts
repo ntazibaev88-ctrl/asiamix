@@ -297,6 +297,17 @@ export const promos: Promo[] = [
   { id: 3, badge: "Cashback", title: { kk: "Әр тапсырыстан 5% кэшбэк", ru: "5% кэшбэк с каждого заказа", en: "5% cashback on every order" }, price: "+5%", emoji: "💰", gradient: "linear-gradient(135deg,#18a957,#0c7a3c)" },
 ];
 
+export const specialOffers = [
+  { id: 1, title: { kk: "Футбол кезі!", ru: "Время футбола!", en: "Football time!" }, emoji: "⚽", gradient: "linear-gradient(135deg,#ffe7a3,#ffd36b)" },
+  { id: 2, title: { kk: "Жаңа қайнаған кофе", ru: "Свежесваренный кофе", en: "Freshly brewed coffee" }, emoji: "☕", gradient: "linear-gradient(135deg,#f3e1d2,#e6c6ac)" },
+  { id: 3, title: { kk: "Berry Much", ru: "Berry Much", en: "Berry Much" }, emoji: "🫐", gradient: "linear-gradient(135deg,#ffd9e3,#f7b8cd)" },
+  { id: 4, title: { kk: "Тиімді ай", ru: "Выгодный месяц", en: "Great month" }, emoji: "💰", gradient: "linear-gradient(135deg,#ffd1dc,#ff9fb6)" },
+  { id: 5, title: { kk: "Әр сатып алуда сыйлық", ru: "Призы в каждой покупке", en: "Prizes in every order" }, emoji: "🎁", gradient: "linear-gradient(135deg,#e7ecff,#c9d6ff)" },
+  { id: 6, title: { kk: "Өзіңе қамқорлық", ru: "Забота о себе", en: "Self care" }, emoji: "🧴", gradient: "linear-gradient(135deg,#d7f3d2,#aee3a6)" },
+  { id: 7, title: { kk: "Сусыннан да көп", ru: "Больше чем напиток", en: "More than a drink" }, emoji: "🥤", gradient: "linear-gradient(135deg,#ffe0c2,#ffc08a)" },
+  { id: 8, title: { kk: "Жеңілдік пен сапа", ru: "Лёгкость и качество", en: "Light & quality" }, emoji: "🧽", gradient: "linear-gradient(135deg,#cdefff,#a7dcf5)" },
+];
+
 export const reviews = [
   { name: "Айгерим", rating: 5, text: { kk: "Тауарлар жаңа, жеткізу жылдам. Рахмет!", ru: "Продукты свежие, доставка быстрая. Спасибо!", en: "Fresh products, fast delivery. Thanks!" } },
   { name: "Дамир", rating: 5, text: { kk: "Бағасы дүкендегідей, әрі үйге жеткізеді.", ru: "Цены как в магазине, да ещё и домой везут.", en: "Prices like in store, delivered home." } },

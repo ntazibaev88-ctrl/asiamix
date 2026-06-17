@@ -83,6 +83,7 @@ const DICT: Dict = {
 
   // Store featured slider
   "store.hits": { kk: "Хиттер мен жеңілдіктер 🔥", ru: "Хиты и скидки 🔥", en: "Hits & discounts 🔥" },
+  "shop.specialOffers": { kk: "Арнайы ұсыныстар", ru: "Специальные предложения", en: "Special offers" },
 
   // Product detail
   "product.per100": { kk: "100 грамға", ru: "На 100 грамм", en: "Per 100 g" },
