@@ -3,6 +3,7 @@
 import {
   BarChart3,
   LayoutDashboard,
+  Megaphone,
   Package,
   UtensilsCrossed,
 } from "lucide-react";
@@ -12,6 +13,7 @@ const nav: NavItem[] = [
   { href: "/store", labelKey: "nav.dashboard", icon: LayoutDashboard },
   { href: "/store/orders", labelKey: "nav.orders", icon: Package },
   { href: "/store/products", labelKey: "nav.products", icon: UtensilsCrossed },
+  { href: "/store/promos", labelKey: "nav.promos", icon: Megaphone },
   { href: "/store/analytics", labelKey: "nav.analytics", icon: BarChart3 },
 ];
 
