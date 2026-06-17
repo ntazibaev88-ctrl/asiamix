@@ -11,7 +11,8 @@ export interface Promo {
   title: string;
   gradient: string;
   emoji: string;
-  image?: string; // uploaded data URL
+  image?: string; // uploaded data URL (overrides barcode)
+  barcode?: string; // real product photo via Open Food Facts
 }
 
 export const PROMO_GRADIENTS: { name: string; value: string }[] = [
@@ -24,10 +25,10 @@ export const PROMO_GRADIENTS: { name: string; value: string }[] = [
 ];
 
 const DEFAULTS: Promo[] = [
-  { id: "p1", title: "Идеальная чистота", gradient: PROMO_GRADIENTS[0].value, emoji: "🧼" },
-  { id: "p2", title: "Свобода быть собой!", gradient: PROMO_GRADIENTS[1].value, emoji: "🥤" },
-  { id: "p3", title: "Корейское мороженое", gradient: PROMO_GRADIENTS[2].value, emoji: "🍦" },
-  { id: "p4", title: "Лёгкость и качество", gradient: PROMO_GRADIENTS[3].value, emoji: "🧴" },
+  { id: "p1", title: "Освежись с Coca-Cola", gradient: PROMO_GRADIENTS[4].value, emoji: "🥤", barcode: "5449000054227" },
+  { id: "p2", title: "Сладкий момент", gradient: PROMO_GRADIENTS[2].value, emoji: "🍫", barcode: "5000159461122" },
+  { id: "p3", title: "Хрустящий вкус", gradient: PROMO_GRADIENTS[1].value, emoji: "🥔", barcode: "5900259035378" },
+  { id: "p4", title: "Яркий вкус Fanta", gradient: PROMO_GRADIENTS[3].value, emoji: "🍊", barcode: "5449000011527" },
 ];
 
 type State = Record<string, Promo[]>;
