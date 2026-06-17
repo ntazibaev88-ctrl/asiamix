@@ -78,6 +78,20 @@ const DICT: Dict = {
   "shop.catalog": { kk: "Каталог", ru: "Каталог", en: "Catalog" },
   "shop.categories": { kk: "Категориялар", ru: "Категории", en: "Categories" },
   "shop.nothingFound": { kk: "Ештеңе табылмады", ru: "Ничего не найдено", en: "Nothing found" },
+  "shop.favStores": { kk: "Таңдаулы дүкендер", ru: "Избранные магазины", en: "Favorite stores" },
+  "shop.favProducts": { kk: "Таңдаулы тауарлар", ru: "Избранные товары", en: "Favorite products" },
+
+  // Store featured slider
+  "store.hits": { kk: "Хиттер мен жеңілдіктер 🔥", ru: "Хиты и скидки 🔥", en: "Hits & discounts 🔥" },
+
+  // Product detail
+  "product.per100": { kk: "100 грамға", ru: "На 100 грамм", en: "Per 100 g" },
+  "product.kcal": { kk: "ккал", ru: "ккал", en: "kcal" },
+  "product.protein": { kk: "ақуыз", ru: "белки", en: "protein" },
+  "product.fat": { kk: "майлар", ru: "жиры", en: "fat" },
+  "product.carbs": { kk: "көмірсу", ru: "углеводы", en: "carbs" },
+  "product.weight": { kk: "Салмағы", ru: "Вес", en: "Weight" },
+  "product.description": { kk: "Сипаттама", ru: "Описание", en: "Description" },
 
   // Login / store admin
   "login.storeAdmin": { kk: "Дүкен админі", ru: "Админ магазина", en: "Store admin" },

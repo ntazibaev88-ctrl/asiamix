@@ -18,6 +18,13 @@ export interface Category {
   emoji: string;
 }
 
+export interface Nutrition {
+  kcal: number;
+  protein: number;
+  fat: number;
+  carbs: number;
+}
+
 export interface Product {
   id: number;
   cat: string;
@@ -27,6 +34,11 @@ export interface Product {
   unit: string;
   tag?: "HIT" | "NEW" | "SALE";
   emoji: string;
+  rating: number;
+  desc: Localized;
+  brand?: string;
+  weight?: string;
+  nutrition?: Nutrition;
 }
 
 export interface Store {
@@ -123,6 +135,16 @@ export const categories: Category[] = [
   { slug: "stationery", group: "misc", emoji: "✏️", name: { kk: "Кеңсе тауары", ru: "Канцтовары", en: "Stationery" } },
 ];
 
+interface ProductExtra {
+  oldPrice?: number;
+  tag?: Product["tag"];
+  rating?: number;
+  brand?: string;
+  weight?: string;
+  desc?: Localized;
+  nutrition?: Nutrition;
+}
+
 const p = (
   id: number,
   cat: string,
@@ -132,14 +154,37 @@ const p = (
   price: number,
   unit: string,
   emoji: string,
-  extra?: { oldPrice?: number; tag?: Product["tag"] },
-): Product => ({ id, cat, name: { kk, ru, en }, price, unit, emoji, ...extra });
+  extra?: ProductExtra,
+): Product => ({
+  id,
+  cat,
+  name: { kk, ru, en },
+  price,
+  unit,
+  emoji,
+  // Every product gets a rating and a description (auto-generated when not
+  // supplied), so the product detail page is always complete.
+  rating: extra?.rating ?? Math.round((4.3 + ((id * 7) % 7) / 10) * 10) / 10,
+  desc:
+    extra?.desc ??
+    {
+      kk: `${kk} — сапалы әрі жаңа өнім. NOMI арқылы үйіңізге жылдам жеткіземіз.`,
+      ru: `${ru} — качественный свежий продукт. Быстро доставим домой через NOMI.`,
+      en: `${en} — a fresh, quality product. Quickly delivered to your door by NOMI.`,
+    },
+  ...(extra?.oldPrice !== undefined ? { oldPrice: extra.oldPrice } : {}),
+  ...(extra?.tag ? { tag: extra.tag } : {}),
+  ...(extra?.brand ? { brand: extra.brand } : {}),
+  ...(extra?.weight ? { weight: extra.weight } : {}),
+  ...(extra?.nutrition ? { nutrition: extra.nutrition } : {}),
+});
 
 export const products: Product[] = [
   // dairy
-  p(1, "dairy", "Сүт 1л", "Молоко 1л", "Milk 1L", 450, "шт", "🥛", { tag: "HIT" }),
-  p(2, "dairy", "Айран 0.5л", "Айран 0.5л", "Ayran 0.5L", 280, "шт", "🥛"),
-  p(3, "dairy", "Сметана 20%", "Сметана 20%", "Sour cream", 520, "шт", "🥛"),
+  p(1, "dairy", "Сүт 2.5% 1л", "Молоко 2.5% 1л", "Milk 2.5% 1L", 450, "шт", "🥛", { tag: "HIT", brand: "Food Master", weight: "1 л", nutrition: { kcal: 53, protein: 2.9, fat: 2.5, carbs: 4.7 } }),
+  p(2, "dairy", "Айран 0.5л", "Айран 0.5л", "Ayran 0.5L", 280, "шт", "🥛", { brand: "Президент", weight: "0.5 л" }),
+  p(3, "dairy", "Сметана 20%", "Сметана 20%", "Sour cream 20%", 520, "шт", "🥛", { brand: "Food Master", weight: "0.4 кг", nutrition: { kcal: 206, protein: 2.8, fat: 20, carbs: 3.2 } }),
+  p(52, "dairy", "Грек йогурты 8.4%", "Йогурт греческий 8.4%", "Greek yogurt 8.4%", 437, "шт", "🥛", { tag: "NEW", brand: "Food Master", weight: "0.135 кг", nutrition: { kcal: 122, protein: 4.8, fat: 8.4, carbs: 6.9 }, desc: { kk: "Құрамы: қалпына келтірілген сүт, ұйытқы. Food Master табиғи грек йогурты — жұмсақ, қою құрылымды. Салаттарға таптырмас.", ru: "Состав: нормализованное молоко, закваска. Натуральный греческий йогурт Food Master с нежной густой текстурой. Идеален для салатов.", en: "Ingredients: normalized milk, starter culture. Food Master natural Greek yogurt with a thick, creamy texture. Perfect for salads." } }),
   p(4, "cheese", "Ірімшік Гауда", "Сыр Гауда", "Gouda cheese", 1890, "кг", "🧀"),
   p(5, "cheese", "Сүзбе 5%", "Творог 5%", "Cottage cheese", 640, "шт", "🧀"),
   p(6, "eggs", "Жұмыртқа 10шт", "Яйца 10шт", "Eggs 10pc", 980, "уп", "🥚", { oldPrice: 1100, tag: "SALE" }),
@@ -155,7 +200,7 @@ export const products: Product[] = [
   p(14, "veg", "Картоп 1кг", "Картофель 1кг", "Potato 1kg", 220, "кг", "🥔"),
   p(15, "nuts", "Кешью 200г", "Кешью 200г", "Cashew 200g", 1450, "уп", "🥜"),
   // drinks
-  p(16, "soda", "Coca-Cola 0.5л", "Coca-Cola 0.5л", "Coca-Cola 0.5L", 250, "шт", "🥤", { tag: "HIT" }),
+  p(16, "soda", "Coca-Cola 0.5л", "Coca-Cola 0.5л", "Coca-Cola 0.5L", 250, "шт", "🥤", { tag: "HIT", brand: "Coca-Cola", weight: "0.5 л", nutrition: { kcal: 42, protein: 0, fat: 0, carbs: 10.6 } }),
   p(17, "water", "Тұрсын су 1.5л", "Вода 1.5л", "Water 1.5L", 180, "шт", "💧"),
   p(18, "juice", "Piko шырыны 1л", "Сок Piko 1л", "Piko juice 1L", 650, "шт", "🧃"),
   p(19, "energy", "Flash энергетик", "Flash энергетик", "Flash energy", 420, "шт", "⚡"),
@@ -201,11 +246,43 @@ export const products: Product[] = [
   p(49, "battery", "Батарейка AA 4шт", "Батарейки AA 4шт", "AA batteries", 690, "уп", "🔋"),
   p(50, "battery", "LED шам 9W", "Лампа LED 9W", "LED bulb 9W", 790, "шт", "💡"),
   p(51, "stationery", "Қалам көк", "Ручка синяя", "Pen blue", 120, "шт", "🖊️"),
+  // --- extra assortment ---
+  p(53, "dairy", "Кефир 2.5% 1л", "Кефир 2.5% 1л", "Kefir 2.5% 1L", 420, "шт", "🥛", { brand: "Простоквашино" }),
+  p(54, "cheese", "Ірімшік Моцарелла", "Сыр Моцарелла", "Mozzarella", 1290, "уп", "🧀", { tag: "HIT", weight: "0.2 кг" }),
+  p(55, "bread", "Лаваш", "Лаваш", "Lavash", 160, "шт", "🫓"),
+  p(56, "pastry", "Самса", "Самса", "Samsa", 250, "шт", "🥟", { tag: "HIT" }),
+  p(57, "fruits", "Апельсин 1кг", "Апельсины 1кг", "Oranges 1kg", 690, "кг", "🍊"),
+  p(58, "fruits", "Жүзім 1кг", "Виноград 1кг", "Grapes 1kg", 1190, "кг", "🍇", { tag: "NEW" }),
+  p(59, "veg", "Сәбіз 1кг", "Морковь 1кг", "Carrots 1kg", 250, "кг", "🥕"),
+  p(60, "veg", "Пияз 1кг", "Лук 1кг", "Onion 1kg", 190, "кг", "🧅"),
+  p(61, "veg", "Қияр 1кг", "Огурцы 1кг", "Cucumbers 1kg", 590, "кг", "🥒"),
+  p(62, "soda", "Fanta 1л", "Fanta 1л", "Fanta 1L", 450, "шт", "🥤", { brand: "Coca-Cola" }),
+  p(63, "soda", "Sprite 1л", "Sprite 1л", "Sprite 1L", 450, "шт", "🥤", { brand: "Coca-Cola" }),
+  p(64, "juice", "Алма шырыны Gracio", "Сок яблочный Gracio", "Apple juice", 590, "шт", "🧃", { tag: "SALE", oldPrice: 750 }),
+  p(65, "coffee", "Кофе 3в1 Nescafe", "Кофе 3в1 Nescafe", "Coffee 3in1", 90, "шт", "☕", { brand: "Nescafe" }),
+  p(66, "tea", "Шай Pickwick жеміс", "Чай Pickwick фрукт.", "Fruit tea", 1190, "уп", "🍵"),
+  p(67, "pasta", "Гречка 800г", "Гречка 800г", "Buckwheat 800g", 690, "уп", "🌾"),
+  p(68, "oil", "Зәйтүн майы 0.5л", "Оливковое масло 0.5л", "Olive oil 0.5L", 2890, "шт", "🫒", { tag: "NEW" }),
+  p(69, "canned", "Жүгері консерві", "Кукуруза консерв.", "Canned corn", 590, "шт", "🌽"),
+  p(70, "choco", "Snickers 50г", "Snickers 50г", "Snickers 50g", 290, "шт", "🍫", { brand: "Mars", tag: "HIT" }),
+  p(71, "snacks", "Сухарики Хрусteam", "Сухарики Хрусteam", "Croutons", 250, "шт", "🥨"),
+  p(72, "cookies", "Орео 95г", "Орео 95г", "Oreo 95g", 490, "уп", "🍪", { brand: "Oreo" }),
+  p(73, "meat", "Тауық филе 1кг", "Филе куриное 1кг", "Chicken fillet 1kg", 1990, "кг", "🍗", { tag: "HIT" }),
+  p(74, "fish", "Скумбрия с/м", "Скумбрия с/м", "Mackerel", 1490, "кг", "🐟"),
+  p(75, "sausage", "Сосиски молочные", "Сосиски молочные", "Milk sausages", 1290, "уп", "🌭", { tag: "SALE", oldPrice: 1590 }),
+  p(76, "frozen", "Мұздатылған көкөніс", "Овощи зам. микс", "Frozen veg mix", 890, "уп", "🧊"),
+  p(77, "personal", "Дезодорант Rexona", "Дезодорант Rexona", "Deodorant", 1290, "шт", "🧴", { brand: "Rexona" }),
+  p(78, "hair", "Бальзам Pantene", "Бальзам Pantene", "Hair balm", 1890, "шт", "🧴", { brand: "Pantene" }),
+  p(79, "cleaning", "Шүберек микрофибра", "Тряпка микрофибра", "Microfiber cloth", 390, "шт", "🧽"),
+  p(80, "chemicals", "Освежитель Glade", "Освежитель Glade", "Air freshener", 990, "шт", "🧴", { brand: "Glade" }),
 ];
 
 /** Catalog visible in a given store. Demo: every store carries the full
  *  catalog; in production this is the store's own product table. */
-export function productsForStore(_slug: string): Product[] {
+export function productsForStore(slug: string): Product[] {
+  // Demo: every store carries the full catalog. `slug` will scope this to the
+  // store's own product table once wired to Supabase.
+  void slug;
   return products;
 }
 

@@ -14,6 +14,7 @@ import {
 } from "@/lib/mock";
 import { useCart, cartCount, cartTotal } from "@/lib/cart";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { FeaturedSlider } from "@/components/shop/FeaturedSlider";
 
 export default function StoreDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -83,8 +84,13 @@ export default function StoreDetailPage() {
       </div>
 
       {showCatalog ? (
-        /* Catalog: category tiles grouped like Рядом */
+        /* Catalog: hits/discounts slider + category tiles grouped like Рядом */
         <div className="flex flex-col gap-6">
+          <FeaturedSlider
+            title={t("store.hits")}
+            products={catalog.filter((pr) => pr.tag === "HIT" || pr.tag === "SALE")}
+            storeSlug={store.slug}
+          />
           {catalogGroups.map((g) => {
             const cats = categories.filter((c) => c.group === g.key);
             if (cats.length === 0) return null;
