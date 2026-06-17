@@ -14,8 +14,13 @@ import {
   cartTotal,
 } from "@/lib/cart";
 import { Button } from "@/components/ui/Button";
-
-const DELIVERY_FEE = 300;
+import {
+  distanceTiers,
+  weatherInfo,
+  deliveryFee,
+  esilStreets,
+  type Weather,
+} from "@/lib/delivery";
 
 export default function CartPage() {
   const { t, locale } = useI18n();
@@ -31,10 +36,15 @@ export default function CartPage() {
   const [payment, setPayment] = useState<"cash" | "card" | "kaspi">("kaspi");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
+  const [zone, setZone] = useState(distanceTiers[0].id);
+  const [weather, setWeather] = useState<Weather>("normal");
+  const [street, setStreet] = useState(esilStreets[0]);
+  const [house, setHouse] = useState("");
 
-  const delivery = deliveryType === "delivery" ? DELIVERY_FEE : 0;
+  const delivery = deliveryType === "delivery" ? deliveryFee(zone, weather) : 0;
   const total = subtotal + delivery;
+  const address =
+    deliveryType === "delivery" ? `${street}, ${house}`.trim() : "";
 
   const submit = async () => {
     if (!name || !phone) return;
@@ -175,9 +185,58 @@ export default function CartPage() {
             />
           </Field>
           {deliveryType === "delivery" && (
-            <Field label={t("store.address")}>
-              <input value={address} onChange={(e) => setAddress(e.target.value)} className={inputCls} />
-            </Field>
+            <>
+              <Field label={t("cart.street")}>
+                <select
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
+                  className={inputCls}
+                >
+                  {esilStreets.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label={t("cart.house")}>
+                <input
+                  value={house}
+                  onChange={(e) => setHouse(e.target.value)}
+                  placeholder="24, кв. 12"
+                  className={inputCls}
+                />
+              </Field>
+              <Field label={t("cart.zone")}>
+                <div className="grid grid-cols-2 gap-2">
+                  {distanceTiers.map((tier) => (
+                    <button
+                      key={tier.id}
+                      onClick={() => setZone(tier.id)}
+                      className={`flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors cursor-pointer ${
+                        zone === tier.id
+                          ? "border-brand bg-brand text-brand-fg"
+                          : "border-border text-muted hover:text-fg"
+                      }`}
+                    >
+                      <span>{tier.label}</span>
+                      <span>{tier.price} ₸</span>
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Field label={t("cart.weather")}>
+                <Toggle
+                  value={weather}
+                  onChange={setWeather}
+                  options={[
+                    { value: "normal", label: t("weather.normal") },
+                    { value: "medium", label: `${t("weather.medium")} +` },
+                    { value: "high", label: `${t("weather.high")} ++` },
+                  ]}
+                />
+              </Field>
+            </>
           )}
           <Field label={t("store.payment")}>
             <Toggle
@@ -196,7 +255,22 @@ export default function CartPage() {
       {/* Summary */}
       <div className="rounded-2xl bg-surface-2 p-4 text-sm">
         <Row label={t("common.cart")} value={formatPrice(subtotal)} muted />
-        <Row label={t("common.delivery")} value={formatPrice(delivery)} muted />
+        <Row
+          label={t("common.delivery")}
+          value={formatPrice(
+            deliveryType === "delivery"
+              ? distanceTiers.find((x) => x.id === zone)?.price ?? 0
+              : 0,
+          )}
+          muted
+        />
+        {deliveryType === "delivery" && weather !== "normal" && (
+          <Row
+            label={`${t("cart.weather")} (${t(`weather.${weather}`)})`}
+            value={`+${formatPrice(weatherInfo[weather].fee)}`}
+            muted
+          />
+        )}
         <div className="my-2 border-t border-border" />
         <Row label={t("common.total")} value={formatPrice(total)} />
       </div>
