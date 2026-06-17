@@ -48,3 +48,28 @@ export const esilStreets = [
   "Жиделі",
   "VIP городок",
 ];
+
+// Each street maps to a distance zone from the stores (on Аль-Фараби). The
+// customer never picks a zone — it is derived automatically from the address.
+const streetZone: Record<string, string> = {
+  "Аль-Фараби": "z1",
+  "Фариза Оңғарсынова": "z1",
+  "Керей-Жәнібек": "z2",
+  "Мәңгілік Ел": "z2",
+  "Ұлы Дала": "z2",
+  "VIP городок": "z2",
+  "Орынбор": "z3",
+  "Бұхар жырау": "z3",
+  "Аққұм": "z3",
+  "Жошы хан": "z3",
+  "Түркістан": "z4",
+  "Тұрар Рысқұлов": "z4",
+  "Әбіш Кекілбаев": "z4",
+  "Жиделі": "z4",
+};
+
+export function zoneForStreet(street: string): DistanceTier {
+  const id = streetZone[street] ?? "z2";
+  return distanceTiers.find((t) => t.id === id) ?? distanceTiers[1];
+}
+

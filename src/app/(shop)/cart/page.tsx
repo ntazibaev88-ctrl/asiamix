@@ -14,7 +14,11 @@ import {
   cartTotal,
 } from "@/lib/cart";
 import { Button } from "@/components/ui/Button";
-import { distanceTiers, deliveryFee, esilStreets } from "@/lib/delivery";
+import {
+  deliveryFee,
+  esilStreets,
+  zoneForStreet,
+} from "@/lib/delivery";
 import { useEffectiveWeather } from "@/lib/weather";
 
 export default function CartPage() {
@@ -31,11 +35,12 @@ export default function CartPage() {
   const [payment, setPayment] = useState<"cash" | "card" | "kaspi">("kaspi");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [zone, setZone] = useState(distanceTiers[0].id);
   const [street, setStreet] = useState(esilStreets[0]);
   const [house, setHouse] = useState("");
-  // Weather surcharge is automatic (or set by admin) — hidden from the client.
+  // Distance zone (from address) and weather surcharge are both automatic and
+  // hidden from the client.
   const weather = useEffectiveWeather();
+  const zone = zoneForStreet(street).id;
 
   const delivery = deliveryType === "delivery" ? deliveryFee(zone, weather) : 0;
   const total = subtotal + delivery;
@@ -202,24 +207,6 @@ export default function CartPage() {
                   placeholder="24, кв. 12"
                   className={inputCls}
                 />
-              </Field>
-              <Field label={t("cart.zone")}>
-                <div className="grid grid-cols-2 gap-2">
-                  {distanceTiers.map((tier) => (
-                    <button
-                      key={tier.id}
-                      onClick={() => setZone(tier.id)}
-                      className={`flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors cursor-pointer ${
-                        zone === tier.id
-                          ? "border-brand bg-brand text-brand-fg"
-                          : "border-border text-muted hover:text-fg"
-                      }`}
-                    >
-                      <span>{tier.label}</span>
-                      <span>{tier.price} ₸</span>
-                    </button>
-                  ))}
-                </div>
               </Field>
             </>
           )}
