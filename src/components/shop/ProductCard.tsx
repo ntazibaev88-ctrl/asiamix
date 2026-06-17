@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/format";
 import { useCart, addToCart, decrement } from "@/lib/cart";
 import { useFavoriteProducts, toggleFavoriteProduct } from "@/lib/favorites";
 import { Badge } from "@/components/ui/Badge";
+import { ProductImage } from "./ProductImage";
 import type { Product } from "@/lib/mock";
 
 export function ProductCard({
@@ -24,11 +25,11 @@ export function ProductCard({
     <div className="relative flex flex-col overflow-hidden rounded-3xl bg-surface shadow-[var(--shadow)] transition-shadow duration-200 hover:shadow-[var(--shadow-lg)]">
       <Link
         href={`/product/${product.id}?store=${storeSlug}`}
-        className="relative grid h-28 place-items-center bg-gradient-to-br from-surface-2 to-[color-mix(in_srgb,var(--brand)_8%,var(--surface-2))] text-6xl"
+        className="relative block h-28"
       >
-        {product.emoji}
+        <ProductImage product={product} className="h-full w-full" />
         {product.tag && (
-          <span className="absolute left-2 top-2">
+          <span className="absolute left-2 top-2 z-10">
             <Badge tone={product.tag === "SALE" ? "danger" : "brand"}>
               {product.tag}
             </Badge>

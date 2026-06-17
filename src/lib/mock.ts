@@ -39,6 +39,10 @@ export interface Product {
   brand?: string;
   weight?: string;
   nutrition?: Nutrition;
+  /** EAN/barcode used to fetch a real photo from Open Food Facts */
+  barcode?: string;
+  /** Explicit image URL (overrides barcode lookup) */
+  image?: string;
 }
 
 export interface Store {
@@ -143,6 +147,8 @@ interface ProductExtra {
   weight?: string;
   desc?: Localized;
   nutrition?: Nutrition;
+  barcode?: string;
+  image?: string;
 }
 
 const p = (
@@ -177,6 +183,8 @@ const p = (
   ...(extra?.brand ? { brand: extra.brand } : {}),
   ...(extra?.weight ? { weight: extra.weight } : {}),
   ...(extra?.nutrition ? { nutrition: extra.nutrition } : {}),
+  ...(extra?.barcode ? { barcode: extra.barcode } : {}),
+  ...(extra?.image ? { image: extra.image } : {}),
 });
 
 export const products: Product[] = [
@@ -200,7 +208,7 @@ export const products: Product[] = [
   p(14, "veg", "Картоп 1кг", "Картофель 1кг", "Potato 1kg", 220, "кг", "🥔"),
   p(15, "nuts", "Кешью 200г", "Кешью 200г", "Cashew 200g", 1450, "уп", "🥜"),
   // drinks
-  p(16, "soda", "Coca-Cola 0.5л", "Coca-Cola 0.5л", "Coca-Cola 0.5L", 250, "шт", "🥤", { tag: "HIT", brand: "Coca-Cola", weight: "0.5 л", nutrition: { kcal: 42, protein: 0, fat: 0, carbs: 10.6 } }),
+  p(16, "soda", "Coca-Cola 0.5л", "Coca-Cola 0.5л", "Coca-Cola 0.5L", 250, "шт", "🥤", { tag: "HIT", brand: "Coca-Cola", weight: "0.5 л", barcode: "5449000054227", nutrition: { kcal: 42, protein: 0, fat: 0, carbs: 10.6 } }),
   p(17, "water", "Тұрсын су 1.5л", "Вода 1.5л", "Water 1.5L", 180, "шт", "💧"),
   p(18, "juice", "Piko шырыны 1л", "Сок Piko 1л", "Piko juice 1L", 650, "шт", "🧃"),
   p(19, "energy", "Flash энергетик", "Flash энергетик", "Flash energy", 420, "шт", "⚡"),
@@ -214,7 +222,7 @@ export const products: Product[] = [
   p(25, "canned", "Тушёнка 325г", "Тушёнка 325г", "Stew 325g", 1290, "шт", "🥫"),
   // sweets
   p(26, "choco", "Шоколад Рахат", "Шоколад Рахат", "Chocolate", 420, "шт", "🍫"),
-  p(27, "snacks", "Чипсы Lay's", "Чипсы Lay's", "Lay's chips", 550, "шт", "🥔"),
+  p(27, "snacks", "Чипсы Lay's", "Чипсы Lay's", "Lay's chips", 550, "шт", "🥔", { brand: "Lay's", barcode: "5900259035378" }),
   p(28, "cookies", "Печенье Юбилейное", "Печенье Юбилейное", "Cookies", 380, "уп", "🍪"),
   // meat
   p(29, "meat", "Тауық еті 1кг", "Курица 1кг", "Chicken 1kg", 1290, "кг", "🍗", { tag: "HIT" }),
@@ -256,17 +264,17 @@ export const products: Product[] = [
   p(59, "veg", "Сәбіз 1кг", "Морковь 1кг", "Carrots 1kg", 250, "кг", "🥕"),
   p(60, "veg", "Пияз 1кг", "Лук 1кг", "Onion 1kg", 190, "кг", "🧅"),
   p(61, "veg", "Қияр 1кг", "Огурцы 1кг", "Cucumbers 1kg", 590, "кг", "🥒"),
-  p(62, "soda", "Fanta 1л", "Fanta 1л", "Fanta 1L", 450, "шт", "🥤", { brand: "Coca-Cola" }),
-  p(63, "soda", "Sprite 1л", "Sprite 1л", "Sprite 1L", 450, "шт", "🥤", { brand: "Coca-Cola" }),
+  p(62, "soda", "Fanta 1л", "Fanta 1л", "Fanta 1L", 450, "шт", "🥤", { brand: "Coca-Cola", barcode: "5449000011527" }),
+  p(63, "soda", "Sprite 1л", "Sprite 1л", "Sprite 1L", 450, "шт", "🥤", { brand: "Coca-Cola", barcode: "5449000014535" }),
   p(64, "juice", "Алма шырыны Gracio", "Сок яблочный Gracio", "Apple juice", 590, "шт", "🧃", { tag: "SALE", oldPrice: 750 }),
   p(65, "coffee", "Кофе 3в1 Nescafe", "Кофе 3в1 Nescafe", "Coffee 3in1", 90, "шт", "☕", { brand: "Nescafe" }),
   p(66, "tea", "Шай Pickwick жеміс", "Чай Pickwick фрукт.", "Fruit tea", 1190, "уп", "🍵"),
   p(67, "pasta", "Гречка 800г", "Гречка 800г", "Buckwheat 800g", 690, "уп", "🌾"),
   p(68, "oil", "Зәйтүн майы 0.5л", "Оливковое масло 0.5л", "Olive oil 0.5L", 2890, "шт", "🫒", { tag: "NEW" }),
   p(69, "canned", "Жүгері консерві", "Кукуруза консерв.", "Canned corn", 590, "шт", "🌽"),
-  p(70, "choco", "Snickers 50г", "Snickers 50г", "Snickers 50g", 290, "шт", "🍫", { brand: "Mars", tag: "HIT" }),
+  p(70, "choco", "Snickers 50г", "Snickers 50г", "Snickers 50g", 290, "шт", "🍫", { brand: "Mars", tag: "HIT", barcode: "5000159461122" }),
   p(71, "snacks", "Сухарики Хрусteam", "Сухарики Хрусteam", "Croutons", 250, "шт", "🥨"),
-  p(72, "cookies", "Орео 95г", "Орео 95г", "Oreo 95g", 490, "уп", "🍪", { brand: "Oreo" }),
+  p(72, "cookies", "Орео 95г", "Орео 95г", "Oreo 95g", 490, "уп", "🍪", { brand: "Oreo", barcode: "7622210449283" }),
   p(73, "meat", "Тауық филе 1кг", "Филе куриное 1кг", "Chicken fillet 1kg", 1990, "кг", "🍗", { tag: "HIT" }),
   p(74, "fish", "Скумбрия с/м", "Скумбрия с/м", "Mackerel", 1490, "кг", "🐟"),
   p(75, "sausage", "Сосиски молочные", "Сосиски молочные", "Milk sausages", 1290, "уп", "🌭", { tag: "SALE", oldPrice: 1590 }),

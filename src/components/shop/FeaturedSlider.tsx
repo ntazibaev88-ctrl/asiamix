@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
 import { addToCart } from "@/lib/cart";
 import { Badge } from "@/components/ui/Badge";
+import { ProductImage } from "./ProductImage";
 import type { Product } from "@/lib/mock";
 
 export function FeaturedSlider({
@@ -31,11 +32,11 @@ export function FeaturedSlider({
           >
             <Link
               href={`/product/${p.id}?store=${storeSlug}`}
-              className="relative grid h-24 place-items-center bg-gradient-to-br from-surface-2 to-[color-mix(in_srgb,var(--brand)_8%,var(--surface-2))] text-5xl"
+              className="relative block h-24"
             >
-              {p.emoji}
+              <ProductImage product={p} className="h-full w-full" emojiClassName="text-5xl" />
               {p.tag && (
-                <span className="absolute left-2 top-2">
+                <span className="absolute left-2 top-2 z-10">
                   <Badge tone={p.tag === "SALE" ? "danger" : "brand"}>
                     {p.tag}
                   </Badge>

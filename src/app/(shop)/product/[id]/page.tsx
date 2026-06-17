@@ -9,6 +9,7 @@ import { products, stores } from "@/lib/mock";
 import { useCart, addToCart, decrement } from "@/lib/cart";
 import { useFavoriteProducts, toggleFavoriteProduct } from "@/lib/favorites";
 import { Badge } from "@/components/ui/Badge";
+import { ProductImage } from "@/components/shop/ProductImage";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -27,28 +28,32 @@ export default function ProductPage() {
   return (
     <div className="flex flex-col gap-5 pb-24">
       {/* Image */}
-      <div className="relative -mx-4 -mt-4 grid h-64 place-items-center bg-gradient-to-br from-surface-2 to-[color-mix(in_srgb,var(--brand)_10%,var(--surface-2))] text-[8rem]">
+      <div className="relative -mx-4 -mt-4 h-64">
+        <ProductImage
+          product={product}
+          className="h-full w-full"
+          emojiClassName="text-[8rem]"
+        />
         <Link
           href={`/stores/${storeSlug}`}
-          className="absolute left-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-bg/80 backdrop-blur"
+          className="absolute left-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-bg/80 backdrop-blur"
         >
           <ArrowLeft size={18} />
         </Link>
         <button
           onClick={() => toggleFavoriteProduct(product.id)}
           aria-label="favorite"
-          className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-bg/80 text-faint backdrop-blur hover:text-brand cursor-pointer"
+          className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-bg/80 text-faint backdrop-blur hover:text-brand cursor-pointer"
         >
           <Heart size={18} className={fav ? "text-brand" : ""} fill={fav ? "currentColor" : "none"} />
         </button>
         {product.tag && (
-          <span className="absolute bottom-4 left-4">
+          <span className="absolute bottom-4 left-4 z-10">
             <Badge tone={product.tag === "SALE" ? "danger" : "brand"}>
               {product.tag}
             </Badge>
           </span>
         )}
-        {product.emoji}
       </div>
 
       {/* Title */}
