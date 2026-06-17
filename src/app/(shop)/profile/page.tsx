@@ -59,7 +59,10 @@ export default function ProfilePage() {
             />
           </div>
           <button
-            onClick={signOut}
+            onClick={() => {
+              fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+              signOut();
+            }}
             className="flex w-full items-center justify-center gap-2 border-t border-border p-3 text-sm font-semibold text-muted hover:text-danger cursor-pointer"
           >
             <LogOut size={16} /> {t("common.signout")}
@@ -67,7 +70,7 @@ export default function ProfilePage() {
         </div>
       ) : (
         <Link
-          href="/signin"
+          href="/login/client"
           className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4 transition-colors hover:border-brand"
         >
           <div className="grid h-14 w-14 place-items-center rounded-full bg-brand-soft text-brand">

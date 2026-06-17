@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import { LogOut } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { deleteCookie } from "@/lib/cookies";
 import { cn } from "@/lib/cn";
 import { ThemeToggle } from "./ThemeToggle";
 import { LangSwitch } from "./LangSwitch";
@@ -31,8 +30,12 @@ export function DashboardShell({
   const router = useRouter();
   const { t } = useI18n();
 
-  const signOut = () => {
-    deleteCookie("nomi_role");
+  const signOut = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      /* ignore */
+    }
     router.push("/login");
   };
 

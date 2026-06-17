@@ -308,3 +308,54 @@ create policy orders_access on orders for select using (
 drop policy if exists orders_insert on orders;
 create policy orders_insert on orders for insert
   with check (customer_id = auth.uid() or customer_id is null);
+
+-- ============================================================================
+-- Authentication & audit (production backing for the secure auth system)
+-- Passwords are stored only as bcrypt/argon2 hashes; OTP is short-lived; all
+-- queries via Supabase are parameterized (no raw SQL → SQL-injection safe).
+-- ============================================================================
+
+create table if not exists app_users (
+  id            uuid primary key default uuid_generate_v4(),
+  role          user_role not null,
+  username      text unique,                 -- store/admin login
+  phone         text unique,                 -- client/courier OTP login
+  password_hash text,                         -- bcrypt/argon2 (store/admin)
+  totp_secret   text,                         -- 2FA for stores
+  store_id      uuid references stores(id) on delete set null,
+  is_active     boolean not null default true,
+  created_at    timestamptz not null default now()
+);
+
+create table if not exists otp_codes (
+  id          uuid primary key default uuid_generate_v4(),
+  phone       text not null,
+  code_hash   text not null,                 -- HMAC-SHA256 of the code
+  channel     text not null,                 -- client | courier
+  expires_at  timestamptz not null,
+  consumed    boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+create index if not exists otp_phone_idx on otp_codes(phone);
+
+create table if not exists refresh_tokens (
+  id          uuid primary key default uuid_generate_v4(),
+  user_id     uuid references app_users(id) on delete cascade,
+  token_hash  text not null,                 -- hashed; supports rotation/revoke
+  revoked     boolean not null default false,
+  expires_at  timestamptz not null,
+  created_at  timestamptz not null default now()
+);
+
+create table if not exists audit_log (
+  id          bigserial primary key,
+  at          timestamptz not null default now(),
+  event       text not null,                 -- login_success, otp_verify_fail …
+  identifier  text,                          -- phone / username
+  role        text,
+  ip          text,
+  user_agent  text,
+  detail      jsonb not null default '{}'
+);
+create index if not exists audit_event_idx on audit_log(event);
+create index if not exists audit_at_idx on audit_log(at desc);

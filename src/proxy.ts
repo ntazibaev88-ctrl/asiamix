@@ -1,30 +1,28 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { COOKIE, verifyToken } from "@/lib/auth/tokens";
 import type { Role } from "@/lib/types";
 
-// Next.js 16 renamed Middleware to "Proxy" (same functionality). This runs an
-// optimistic role check before protected portals render. It is intentionally
-// lightweight — full authorization must also be enforced server-side (RLS in
-// Supabase + checks in route handlers / server components).
+// Next.js 16 Proxy (formerly Middleware). Verifies the signed JWT access token
+// and enforces role-based access to each portal. Runs on every protected path.
 
-const AREA_ROLES: { prefix: string; allow: Role[] }[] = [
-  { prefix: "/courier", allow: ["courier", "super_admin"] },
-  { prefix: "/store", allow: ["store_admin", "super_admin"] },
-  { prefix: "/admin", allow: ["super_admin"] },
+const AREAS: { prefix: string; allow: Role[]; login: string }[] = [
+  { prefix: "/courier", allow: ["courier", "super_admin"], login: "/login/courier" },
+  { prefix: "/store", allow: ["store_admin", "super_admin"], login: "/login/store" },
+  { prefix: "/admin", allow: ["super_admin"], login: "/login/admin" },
 ];
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const area = AREA_ROLES.find((a) => pathname.startsWith(a.prefix));
+  const area = AREAS.find((a) => pathname.startsWith(a.prefix));
   if (!area) return NextResponse.next();
 
-  // Demo session cookie set by the login page. Swap for the Supabase auth
-  // session + a role lookup once real auth is connected.
-  const role = request.cookies.get("nomi_role")?.value as Role | undefined;
+  const token = request.cookies.get(COOKIE.access)?.value;
+  const session = token ? await verifyToken(token) : null;
 
-  if (!role || !area.allow.includes(role)) {
+  if (!session || session.typ !== "access" || !area.allow.includes(session.role)) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = area.login;
     url.searchParams.set("next", pathname);
     return NextResponse.redirect(url);
   }
