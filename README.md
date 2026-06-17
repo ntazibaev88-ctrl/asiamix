@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NOMI — Delivery Platform
 
-## Getting Started
+Современная платформа доставки еды. Web-first, с архитектурой, готовой к
+переносу на мобильные приложения (React Native) в будущем.
 
-First, run the development server:
+Стек: **Next.js 16** (App Router, Turbopack) · **React 19** · **Tailwind CSS v4**
+· **Supabase** (PostgreSQL + Auth) · **framer-motion** · **TypeScript**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Возможности (текущий каркас)
+
+Заложена структура для всех четырёх ролей из ТЗ:
+
+| Раздел | Маршрут | Что внутри |
+| --- | --- | --- |
+| 🛒 Клиент | `/` | Витрина: меню по категориям, корзина, оформление заказа, отзывы |
+| 🏍️ Курьер | `/courier` | Онлайн/офлайн, доступные заказы, доход, баланс, вывод средств |
+| 🏪 Магазин | `/store` | Дашборд продаж, заказы, товары (наличие/цена), аналитика |
+| 🛡️ Супер админ | `/admin` | Пользователи, курьеры, магазины, комиссии, финансы, бан |
+| 🔐 Вход | `/login` | Выбор роли (демо), затем редирект в нужный портал |
+
+Дополнительно реализовано:
+
+- **Тёмная/светлая тема** — семантические дизайн-токены (`globals.css`),
+  без мигания при загрузке (inline-скрипт в `<head>`), переключатель в шапке.
+- **Мультиязычность** — Қазақша / Русский / English (`src/lib/i18n.tsx`).
+- **Премиальный UI** — единая система компонентов (`src/components/ui`),
+  плавные анимации framer-motion.
+- **Защита маршрутов** — `src/proxy.ts` (в Next.js 16 middleware называется
+  Proxy) делает оптимистичную проверку роли перед порталами.
+
+## Структура проекта
+
+```
+src/
+  app/
+    layout.tsx            # шрифты, провайдеры темы и i18n, метаданные NOMI
+    page.tsx              # витрина клиента
+    login/                # вход и выбор роли
+    courier/              # портал курьера (layout + страницы)
+    store/                # портал магазина
+    admin/                # портал супер-админа
+    api/orders/route.ts   # приём заказа + уведомление в Telegram
+  components/
+    ui/                   # Button, Card, Badge, StatCard, PageHeader
+    DashboardShell.tsx    # сайдбар + топбар для всех порталов
+    OrdersTable.tsx, ThemeToggle.tsx, LangSwitch.tsx
+  lib/
+    i18n.tsx, theme.tsx   # локали и тема (useSyncExternalStore)
+    types.ts, brand.ts    # доменные типы и бренд
+    mock.ts               # демо-данные витрины и дашбордов
+    format.ts, cn.ts, cookies.ts
+    supabase/             # client, server, auth helpers
+  proxy.ts                # ролевая защита маршрутов
+supabase/
+  schema.sql              # полная схема БД (роли, магазины, заказы, RLS …)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Запуск
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev        # http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Окружение (`.env.local`):
 
-## Learn More
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+TELEGRAM_BOT_TOKEN=...      # опционально, уведомления о заказах
+TELEGRAM_CHAT_ID=...
+```
 
-To learn more about Next.js, take a look at the following resources:
+База данных: выполните `supabase/schema.sql` в SQL-редакторе Supabase.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Следующие шаги
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Подключить реальную авторизацию Supabase (телефон/OTP) вместо демо-cookie
+  в `/login` и `src/proxy.ts`.
+- Заменить `src/lib/mock.ts` на запросы к Supabase.
+- Live-трекинг курьера на карте (Yandex/Google Maps) и real-time чат через
+  Supabase Realtime.
+- Платежи: Kaspi Pay, Visa, Mastercard.
+- Промокоды, рефералы, кэшбэк, программа лояльности (таблицы уже в схеме).
