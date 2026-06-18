@@ -4,8 +4,10 @@ import Link from "next/link";
 import {
   Bike,
   ChevronRight,
+  Heart,
   LogOut,
   Moon,
+  Package,
   ShieldCheck,
   Star,
   Store,
@@ -84,6 +86,14 @@ export default function ProfilePage() {
           </div>
         </Link>
       )}
+
+      {/* Quick links: Favorites & Orders (moved from the bottom nav) */}
+      <section>
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+          <PortalRow href="/favorites" icon={Heart} label={t("shop.tab.favorites")} />
+          <PortalRow href="/orders" icon={Package} label={t("shop.tab.orders")} />
+        </div>
+      </section>
 
       {/* Settings */}
       <section>

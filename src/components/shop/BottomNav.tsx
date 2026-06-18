@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Heart,
   Home,
-  Package,
   ShoppingBasket,
   Store,
   User,
@@ -18,9 +16,7 @@ import { cn } from "@/lib/cn";
 const tabs: { href: string; labelKey: string; icon: LucideIcon }[] = [
   { href: "/", labelKey: "shop.tab.home", icon: Home },
   { href: "/stores", labelKey: "shop.tab.stores", icon: Store },
-  { href: "/favorites", labelKey: "shop.tab.favorites", icon: Heart },
   { href: "/cart", labelKey: "shop.tab.cart", icon: ShoppingBasket },
-  { href: "/orders", labelKey: "shop.tab.orders", icon: Package },
   { href: "/profile", labelKey: "shop.tab.profile", icon: User },
 ];
 
