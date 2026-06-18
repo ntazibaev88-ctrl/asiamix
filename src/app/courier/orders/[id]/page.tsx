@@ -3,36 +3,29 @@
 import { useState } from "react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { ArrowLeft, Phone, Send, Store, MapPin } from "lucide-react";
+import { ArrowLeft, MessageSquare, Phone, Send, Store, MapPin } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
 import { useCourierJob, setStatus, nextStatus } from "@/lib/courierOrders";
+import { useChat, sendMessage } from "@/lib/chat";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge, statusTone } from "@/components/ui/Badge";
 
-interface Msg {
-  from: "courier" | "client";
-  text: string;
-}
-
 export default function CourierOrderDetail() {
   const { id } = useParams<{ id: string }>();
   const { t } = useI18n();
   const job = useCourierJob(Number(id));
-
-  const [messages, setMessages] = useState<Msg[]>([
-    { from: "client", text: "Сәлеметсіз бе! Қашан жетесіз?" },
-    { from: "courier", text: "Сәлем! 10 минутта боламын 🚀" },
-  ]);
+  const chatId = `job-${id}`;
+  const messages = useChat(chatId);
   const [draft, setDraft] = useState("");
 
   if (!job) notFound();
 
   const send = () => {
     if (!draft.trim()) return;
-    setMessages((m) => [...m, { from: "courier", text: draft.trim() }]);
+    sendMessage(chatId, "courier", draft);
     setDraft("");
   };
 
@@ -105,6 +98,17 @@ export default function CourierOrderDetail() {
             <Phone size={18} />
           </a>
         </Card>
+        {job.comment && (
+          <Card className="flex items-start gap-3 p-4">
+            <MessageSquare size={18} className="mt-0.5 text-warning" />
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-faint">
+                {t("shop.comment")}
+              </div>
+              <div className="mt-0.5 text-sm">{job.comment}</div>
+            </div>
+          </Card>
+        )}
       </div>
 
       {/* Status action */}

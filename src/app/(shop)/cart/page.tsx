@@ -20,9 +20,12 @@ import {
   zoneForStreet,
 } from "@/lib/delivery";
 import { useEffectiveWeather } from "@/lib/weather";
+import { placeOrder } from "@/lib/activeOrder";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { t, locale } = useI18n();
+  const router = useRouter();
   const map = useCart();
   const lines = cartLines(map, locale);
   const subtotal = cartTotal(map);
@@ -37,6 +40,7 @@ export default function CartPage() {
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState(esilStreets[0]);
   const [house, setHouse] = useState("");
+  const [comment, setComment] = useState("");
   // Distance zone (from address) and weather surcharge are both automatic and
   // hidden from the client.
   const weather = useEffectiveWeather();
@@ -60,6 +64,7 @@ export default function CartPage() {
           deliveryType,
           payment,
           total,
+          comment,
           items: lines.map((l) => ({
             name_ru: l.name,
             qty: l.qty,
@@ -70,8 +75,21 @@ export default function CartPage() {
     } catch {
       /* demo: keep UX flowing without a configured backend */
     }
+    const itemCount = lines.reduce((s, l) => s + l.qty, 0);
+    placeOrder({
+      store: lines[0]?.storeName ?? "NOMI",
+      address,
+      total,
+      items: itemCount,
+      comment: comment.trim() || undefined,
+      etaMin: deliveryType === "delivery" ? 18 : 0,
+    });
     clearCart();
-    setDone(true);
+    if (deliveryType === "delivery") {
+      router.push("/orders/track");
+    } else {
+      setDone(true);
+    }
   };
 
   if (done) {
@@ -219,6 +237,15 @@ export default function CartPage() {
                 { value: "card", label: t("store.card") },
                 { value: "cash", label: t("store.cash") },
               ]}
+            />
+          </Field>
+          <Field label={t("shop.comment")}>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder={t("shop.commentPh")}
+              rows={2}
+              className={`${inputCls} resize-none`}
             />
           </Field>
         </div>

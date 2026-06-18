@@ -38,6 +38,22 @@ export default function ShopHome() {
           ))}
         </div>
       </section>
+
+      {/* About NOMI */}
+      <footer className="mt-2 rounded-3xl bg-surface p-6 shadow-[var(--shadow)]">
+        <div className="font-display text-2xl font-bold tracking-tight">
+          NOMI<span className="text-brand">.</span>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-muted">
+          {t("about.text")}
+        </p>
+        <div className="mt-4 border-t border-border pt-4 text-sm">
+          <div className="font-semibold">{t("about.contacts")}</div>
+          <div className="mt-1 text-muted">📞 +7 700 000 00 00 · ✉️ hello@nomi.kz</div>
+          <div className="mt-1 text-muted">🕒 24/7 · Астана, Есіл ауданы</div>
+        </div>
+        <div className="mt-4 text-xs text-faint">© 2026 NOMI Delivery</div>
+      </footer>
     </div>
   );
 }

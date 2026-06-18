@@ -333,11 +333,12 @@ export interface DemoOrder {
   total: number;
   status: OrderStatus;
   minsAgo: number;
+  comment?: string;
 }
 
 export const demoOrders: DemoOrder[] = [
-  { num: 1042, customer: "Айгерим С.", store: "Алтын Орда", items: 8, total: 6700, status: "pending", minsAgo: 2 },
-  { num: 1041, customer: "Дамир К.", store: "Capital", items: 4, total: 3400, status: "accepted", minsAgo: 9 },
+  { num: 1042, customer: "Айгерим С.", store: "Алтын Орда", items: 8, total: 6700, status: "pending", minsAgo: 2, comment: "Домофон жұмыс істемейді, қоңырау шалыңыз" },
+  { num: 1041, customer: "Дамир К.", store: "Capital", items: 4, total: 3400, status: "accepted", minsAgo: 9, comment: "Есік коды #1234, ұялы дыбыссыз" },
   { num: 1040, customer: "Зарина Т.", store: "Алтын Орда", items: 12, total: 12600, status: "on_the_way", minsAgo: 18 },
   { num: 1039, customer: "Әлібек Н.", store: "Capital", items: 3, total: 2700, status: "delivered", minsAgo: 41 },
   { num: 1038, customer: "Мадина О.", store: "Алтын Орда", items: 9, total: 9200, status: "delivered", minsAgo: 58 },
@@ -353,6 +354,7 @@ export interface CourierJob {
   payment: "online" | "cash";
   status: OrderStatus;
   minsAgo: number;
+  comment?: string;
 }
 
 export const courierJobs: CourierJob[] = [
@@ -361,12 +363,14 @@ export const courierJobs: CourierJob[] = [
     store: { name: "Алтын Орда", address: "Аль-Фараби 15/1", lat: 51.0915, lng: 71.4178 },
     client: { name: "Айгерим С.", phone: "+7 701 222 33 44", address: "Қабанбай батыр 11, кв. 52", lat: 51.1009, lng: 71.4231 },
     items: 8, total: 6700, payment: "online", status: "ready", minsAgo: 4,
+    comment: "Домофон жұмыс істемейді, қоңырау шалыңыз",
   },
   {
     id: 1041,
     store: { name: "Capital", address: "Аль-Фараби 9", lat: 51.0922, lng: 71.4101 },
     client: { name: "Дамир К.", phone: "+7 705 444 55 66", address: "Сығанақ 18, кв. 7", lat: 51.0876, lng: 71.4302 },
     items: 4, total: 3400, payment: "cash", status: "on_the_way", minsAgo: 12,
+    comment: "Есік коды #1234, ұялы дыбыссыз",
   },
   {
     id: 1040,

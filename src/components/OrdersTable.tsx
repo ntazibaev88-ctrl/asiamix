@@ -37,22 +37,25 @@ export function OrdersTable({
                 key={o.num}
                 className="border-b border-border last:border-0 transition-colors hover:bg-surface-2"
               >
-                <td className="px-5 py-3 font-bold">#{o.num}</td>
-                <td className="px-5 py-3">
+                <td className="px-5 py-3 font-bold align-top">#{o.num}</td>
+                <td className="px-5 py-3 align-top">
                   <div className="font-medium">{o.customer}</div>
-                  <div className="text-xs text-faint">
-                    {o.items} × · {o.minsAgo} {t("common.today")}
-                  </div>
+                  <div className="text-xs text-faint">{o.items} ×</div>
+                  {o.comment && (
+                    <div className="mt-1 max-w-[200px] rounded-lg bg-warning-soft px-2 py-1 text-xs text-warning">
+                      💬 {o.comment}
+                    </div>
+                  )}
                 </td>
                 {showStore && (
-                  <td className="hidden px-5 py-3 text-muted sm:table-cell">
+                  <td className="hidden px-5 py-3 text-muted align-top sm:table-cell">
                     {o.store}
                   </td>
                 )}
-                <td className="px-5 py-3 font-semibold">
+                <td className="px-5 py-3 font-semibold align-top">
                   {formatPrice(o.total)}
                 </td>
-                <td className="px-5 py-3">
+                <td className="px-5 py-3 align-top">
                   <Badge tone={statusTone[o.status]}>
                     {t(`status.${o.status}`)}
                   </Badge>
