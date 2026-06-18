@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Bike, Check, Clock, Phone, Send } from "lucide-react";
+import { Bike, Check, Clock, Phone, Send, Star } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
 import { useActiveOrder } from "@/lib/activeOrder";
@@ -40,6 +40,10 @@ export default function TrackPage() {
   const order = useActiveOrder();
   const [eta, setEta] = useState(order?.etaMin ?? 0);
   const [draft, setDraft] = useState("");
+  const [tipped, setTipped] = useState(false);
+  const [rated, setRated] = useState(false);
+  const [stars, setStars] = useState(5);
+  const [reviewText, setReviewText] = useState("");
   const messages = useChat(order?.id ?? "none");
   const alerted = useRef(false);
 
@@ -162,6 +166,56 @@ export default function TrackPage() {
           </div>
         )}
       </Card>
+
+      {/* Tip the courier */}
+      <Card className="p-5">
+        <div className="text-sm font-semibold">{t("tip.title")}</div>
+        {tipped ? (
+          <p className="mt-2 text-sm font-medium text-success">{t("tip.thanks")}</p>
+        ) : (
+          <div className="mt-3 flex gap-2">
+            {[100, 200, 500].map((amt) => (
+              <button
+                key={amt}
+                onClick={() => setTipped(true)}
+                className="flex-1 rounded-xl border border-border py-2.5 text-sm font-bold hover:border-brand hover:text-brand cursor-pointer"
+              >
+                {formatPrice(amt)}
+              </button>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Rate the order (after delivery) */}
+      {eta <= 0 && (
+        <Card className="p-5">
+          <div className="text-sm font-semibold">{t("review.title")}</div>
+          {rated ? (
+            <p className="mt-2 text-sm font-medium text-success">{t("review.thanks")}</p>
+          ) : (
+            <>
+              <div className="mt-3 flex gap-1">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <button key={n} onClick={() => setStars(n)} className="cursor-pointer">
+                    <Star size={28} className="text-warning" fill={n <= stars ? "currentColor" : "none"} />
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                rows={2}
+                placeholder={t("review.comment")}
+                className="mt-2 w-full resize-none rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-brand"
+              />
+              <Button size="sm" className="mt-2" onClick={() => setRated(true)}>
+                {t("review.send")}
+              </Button>
+            </>
+          )}
+        </Card>
+      )}
 
       {/* Courier + chat */}
       <Card className="p-5">

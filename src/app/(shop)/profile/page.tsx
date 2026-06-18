@@ -6,8 +6,11 @@ import {
   Bike,
   ChevronRight,
   Copy,
+  FileText,
   Gift,
+  Headphones,
   Heart,
+  HelpCircle,
   LogOut,
   Moon,
   Package,
@@ -151,6 +154,18 @@ export default function ProfilePage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Help & legal */}
+      <section>
+        <h2 className="mb-2 px-1 text-xs font-bold uppercase tracking-wide text-faint">
+          {t("help.title")}
+        </h2>
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+          <PortalRow href="/support" icon={Headphones} label={t("profile.support")} />
+          <PortalRow href="/faq" icon={HelpCircle} label={t("profile.faq")} />
+          <PortalRow href="/terms" icon={FileText} label={t("profile.terms")} />
         </div>
       </section>
 

@@ -3,14 +3,31 @@
 import Link from "next/link";
 import { MapPin, Megaphone } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { stores } from "@/lib/mock";
+import { stores, products } from "@/lib/mock";
 import { useAnnouncement } from "@/lib/announcements";
+import { useFavoriteProducts } from "@/lib/favorites";
 import { PromoCarousel } from "@/components/shop/PromoCarousel";
 import { StoreCard } from "@/components/shop/StoreCard";
+import { FeaturedSlider } from "@/components/shop/FeaturedSlider";
+import { Reveal } from "@/components/shop/Reveal";
 
 export default function ShopHome() {
   const { t } = useI18n();
   const announcement = useAnnouncement();
+  const favIds = useFavoriteProducts();
+
+  const defaultStore = stores[0].slug;
+  const newProducts = products.filter((p) => p.tag === "NEW");
+  const popular = [...products].sort((a, b) => b.rating - a.rating).slice(0, 8);
+  // Recommendations from the categories of your favorite products, else popular.
+  const favCats = new Set(
+    products.filter((p) => favIds.includes(p.id)).map((p) => p.cat),
+  );
+  const recommended = (
+    favCats.size > 0
+      ? products.filter((p) => favCats.has(p.cat) && !favIds.includes(p.id))
+      : popular
+  ).slice(0, 8);
 
   return (
     <div className="flex flex-col gap-6">
@@ -46,6 +63,20 @@ export default function ShopHome() {
           ))}
         </div>
       </section>
+
+      {recommended.length > 0 && (
+        <Reveal>
+          <FeaturedSlider title={t("home.recommended")} products={recommended} storeSlug={defaultStore} />
+        </Reveal>
+      )}
+      {newProducts.length > 0 && (
+        <Reveal>
+          <FeaturedSlider title={t("home.new")} products={newProducts} storeSlug={defaultStore} />
+        </Reveal>
+      )}
+      <Reveal>
+        <FeaturedSlider title={t("home.popular")} products={popular} storeSlug={defaultStore} />
+      </Reveal>
 
       {/* About NOMI */}
       <footer className="mt-2 rounded-3xl bg-surface p-6 shadow-[var(--shadow)]">

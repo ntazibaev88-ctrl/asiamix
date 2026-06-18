@@ -151,6 +151,41 @@ const DICT: Dict = {
     en: "NOMI is a modern delivery platform in Astana. We bring groceries and goods from your favorite stores to your door in minutes. Fast, convenient and reliable.",
   },
   "about.contacts": { kk: "Байланыс", ru: "Контакты", en: "Contacts" },
+
+  // Help / legal / profile links
+  "help.title": { kk: "Көмек", ru: "Помощь", en: "Help" },
+  "profile.support": { kk: "Қолдау қызметі", ru: "Поддержка", en: "Support" },
+  "profile.faq": { kk: "Жиі қойылатын сұрақтар", ru: "Частые вопросы", en: "FAQ" },
+  "profile.terms": { kk: "Қолдану шарттары", ru: "Условия использования", en: "Terms of use" },
+  "support.title": { kk: "Қолдау қызметі", ru: "Поддержка", en: "Support" },
+  "support.greeting": { kk: "Сәлеметсіз бе! Сұрағыңызды жазыңыз, көмектесеміз 🙂", ru: "Здравствуйте! Напишите вопрос, мы поможем 🙂", en: "Hi! Ask your question, we'll help 🙂" },
+  "faq.title": { kk: "Жиі қойылатын сұрақтар", ru: "Частые вопросы", en: "FAQ" },
+  "terms.title": { kk: "Қолдану шарттары", ru: "Условия использования", en: "Terms of use" },
+
+  // Catalog filter
+  "filter.title": { kk: "Сүзгі", ru: "Фильтр", en: "Filter" },
+  "filter.brand": { kk: "Бренд", ru: "Бренд", en: "Brand" },
+  "filter.allBrands": { kk: "Барлық брендтер", ru: "Все бренды", en: "All brands" },
+  "filter.sort": { kk: "Сұрыптау", ru: "Сортировка", en: "Sort" },
+  "filter.default": { kk: "Әдепкі", ru: "По умолчанию", en: "Default" },
+  "filter.cheap": { kk: "Алдымен арзан", ru: "Сначала дешёвые", en: "Cheapest first" },
+  "filter.expensive": { kk: "Алдымен қымбат", ru: "Сначала дорогие", en: "Priciest first" },
+
+  // Home sliders
+  "home.new": { kk: "Жаңа өнімдер 🆕", ru: "Новинки 🆕", en: "New products 🆕" },
+  "home.popular": { kk: "Танымал тауарлар ⭐", ru: "Популярные товары ⭐", en: "Popular products ⭐" },
+  "home.recommended": { kk: "Сізге ұсынамыз 💡", ru: "Рекомендуем вам 💡", en: "Recommended for you 💡" },
+
+  // Tips & reviews
+  "tip.title": { kk: "Курьерге рахмет (чаевые)", ru: "Чаевые курьеру", en: "Tip the courier" },
+  "tip.custom": { kk: "Басқа сома", ru: "Другая сумма", en: "Custom" },
+  "tip.thanks": { kk: "Рахмет! Курьер ризашылығын білдіреді 🙏", ru: "Спасибо! Курьер благодарит 🙏", en: "Thanks! The courier appreciates it 🙏" },
+  "review.title": { kk: "Бағалаңыз", ru: "Оцените заказ", en: "Rate your order" },
+  "review.comment": { kk: "Пікіріңіз…", ru: "Ваш отзыв…", en: "Your review…" },
+  "review.send": { kk: "Жіберу", ru: "Отправить", en: "Send" },
+  "review.thanks": { kk: "Пікіріңізге рахмет! ⭐", ru: "Спасибо за отзыв! ⭐", en: "Thanks for your review! ⭐" },
+  "review.reviews": { kk: "Пікірлер", ru: "Отзывы", en: "Reviews" },
+  "review.add": { kk: "Пікір қалдыру", ru: "Оставить отзыв", en: "Write a review" },
   "nav.promos": { kk: "Акциялар", ru: "Акции", en: "Promotions" },
   "promo.add": { kk: "Акция қосу", ru: "Добавить акцию", en: "Add promo" },
   "promo.title": { kk: "Жазуы", ru: "Заголовок", en: "Title" },

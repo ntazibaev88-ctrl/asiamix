@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { notFound, useParams, useSearchParams } from "next/navigation";
 import { ArrowLeft, Heart, Minus, Plus, Star } from "lucide-react";
@@ -8,7 +9,10 @@ import { formatPrice } from "@/lib/format";
 import { products, stores } from "@/lib/mock";
 import { useCart, addToCart, decrement } from "@/lib/cart";
 import { useFavoriteProducts, toggleFavoriteProduct } from "@/lib/favorites";
+import { useReviews, addReview } from "@/lib/reviews";
+import { useUser } from "@/lib/user";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { ProductImage } from "@/components/shop/ProductImage";
 
 export default function ProductPage() {
@@ -109,6 +113,9 @@ export default function ProductPage() {
         </p>
       </div>
 
+      {/* Reviews */}
+      <ProductReviews productId={product.id} />
+
       {/* Sticky add-to-cart */}
       <div className="fixed inset-x-4 bottom-20 z-30 mx-auto max-w-[36rem]">
         {qty === 0 ? (
@@ -150,6 +157,70 @@ function Nut({ value, label }: { value: number; label: string }) {
     <div className="rounded-2xl bg-surface-2 p-3 text-center">
       <div className="font-display text-lg font-bold">{value}</div>
       <div className="text-[11px] text-faint">{label}</div>
+    </div>
+  );
+}
+
+function ProductReviews({ productId }: { productId: number }) {
+  const { t } = useI18n();
+  const reviews = useReviews(productId);
+  const user = useUser();
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const submit = () => {
+    addReview(productId, { rating, text: text.trim(), author: user?.name ?? t("shop.guest") });
+    setText("");
+    setOpen(false);
+  };
+
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wide text-faint">
+          {t("review.reviews")} ({reviews.length})
+        </p>
+        <button onClick={() => setOpen((v) => !v)} className="text-sm font-semibold text-brand cursor-pointer">
+          {t("review.add")}
+        </button>
+      </div>
+
+      {open && (
+        <div className="mb-3 flex flex-col gap-2 rounded-2xl bg-surface-2 p-4">
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} onClick={() => setRating(n)} className="cursor-pointer">
+                <Star size={24} className="text-warning" fill={n <= rating ? "currentColor" : "none"} />
+              </button>
+            ))}
+          </div>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={2}
+            placeholder={t("review.comment")}
+            className="w-full resize-none rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-brand"
+          />
+          <Button size="sm" onClick={submit}>{t("review.send")}</Button>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
+        {reviews.map((r, i) => (
+          <div key={i} className="rounded-2xl bg-surface-2 p-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold">{r.author}</span>
+              <span className="flex gap-0.5 text-warning">
+                {Array.from({ length: 5 }).map((_, s) => (
+                  <Star key={s} size={12} fill={s < r.rating ? "currentColor" : "none"} />
+                ))}
+              </span>
+            </div>
+            {r.text && <p className="mt-1 text-sm text-muted">{r.text}</p>}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

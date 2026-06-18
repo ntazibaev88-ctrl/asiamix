@@ -25,6 +25,8 @@ export default function StoreDetailPage() {
   const { t, locale } = useI18n();
   const [cat, setCat] = useState<string | null>(null);
   const [q, setQ] = useState("");
+  const [brand, setBrand] = useState("");
+  const [sort, setSort] = useState<"default" | "cheap" | "expensive">("default");
   const map = useCart();
 
   const store = stores.find((s) => s.slug === slug);
@@ -34,13 +36,23 @@ export default function StoreDetailPage() {
 
   const query = q.trim().toLowerCase();
   const results = useMemo(() => {
-    if (query)
-      return catalog.filter((p) =>
-        p.name[locale].toLowerCase().includes(query),
-      );
-    if (cat) return catalog.filter((p) => p.cat === cat);
-    return [];
-  }, [catalog, query, cat, locale]);
+    let list =
+      query
+        ? catalog.filter((p) => p.name[locale].toLowerCase().includes(query))
+        : cat
+          ? catalog.filter((p) => p.cat === cat)
+          : [];
+    if (brand) list = list.filter((p) => p.brand === brand);
+    if (sort === "cheap") list = [...list].sort((a, b) => a.price - b.price);
+    if (sort === "expensive") list = [...list].sort((a, b) => b.price - a.price);
+    return list;
+  }, [catalog, query, cat, locale, brand, sort]);
+
+  // Brands available in the current view (category or all when searching).
+  const brands = useMemo(() => {
+    const base = cat ? catalog.filter((p) => p.cat === cat) : catalog;
+    return Array.from(new Set(base.map((p) => p.brand).filter(Boolean))) as string[];
+  }, [catalog, cat]);
 
   const count = cartCount(map);
   const total = cartTotal(map);
@@ -166,6 +178,30 @@ export default function StoreDetailPage() {
               </span>
             )}
           </div>
+
+          {/* Filters: brand + price sort */}
+          <div className="flex gap-2">
+            <select
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              className="flex-1 rounded-xl border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-brand"
+            >
+              <option value="">{t("filter.allBrands")}</option>
+              {brands.map((b) => (
+                <option key={b} value={b}>{b}</option>
+              ))}
+            </select>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as typeof sort)}
+              className="flex-1 rounded-xl border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-brand"
+            >
+              <option value="default">{t("filter.default")}</option>
+              <option value="cheap">{t("filter.cheap")}</option>
+              <option value="expensive">{t("filter.expensive")}</option>
+            </select>
+          </div>
+
           {results.length === 0 ? (
             <p className="py-16 text-center text-muted">
               {t("shop.nothingFound")}
