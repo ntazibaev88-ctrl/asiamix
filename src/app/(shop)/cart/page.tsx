@@ -19,7 +19,7 @@ import {
   esilStreets,
   zoneForStreet,
 } from "@/lib/delivery";
-import { SERVICE_FEE } from "@/lib/payments/split";
+import { serviceFeeFor } from "@/lib/payments/split";
 import { useEffectiveWeather } from "@/lib/weather";
 import { placeOrder } from "@/lib/activeOrder";
 import { validatePromo } from "@/lib/promoCodes";
@@ -45,6 +45,7 @@ export default function CartPage() {
   const [comment, setComment] = useState("");
   const [promoInput, setPromoInput] = useState("");
   const [promoPct, setPromoPct] = useState(0);
+  const [promoKind, setPromoKind] = useState<"subtotal" | "delivery">("subtotal");
   const [promoErr, setPromoErr] = useState(false);
   const [when, setWhen] = useState<"asap" | "scheduled">("asap");
   const [schedTime, setSchedTime] = useState("");
@@ -54,18 +55,24 @@ export default function CartPage() {
   const zone = zoneForStreet(street).id;
 
   const delivery = deliveryType === "delivery" ? deliveryFee(zone, weather) : 0;
-  // Flat platform service fee — charged on delivery orders, becomes platform profit.
-  const serviceFee = deliveryType === "delivery" ? SERVICE_FEE : 0;
-  const discount = Math.round((subtotal * promoPct) / 100);
+  // Platform service fee — tiered by goods subtotal, becomes platform profit.
+  const serviceFee = deliveryType === "delivery" ? serviceFeeFor(subtotal) : 0;
+  // A promo discounts either the goods subtotal or the delivery fee.
+  const discount =
+    promoKind === "delivery"
+      ? Math.round((delivery * promoPct) / 100)
+      : Math.round((subtotal * promoPct) / 100);
   const total = subtotal + delivery + serviceFee - discount;
 
   const applyPromo = () => {
     const valid = validatePromo(promoInput);
     if (valid) {
       setPromoPct(valid.discountPct);
+      setPromoKind(valid.kind ?? "subtotal");
       setPromoErr(false);
     } else {
       setPromoPct(0);
+      setPromoKind("subtotal");
       setPromoErr(true);
     }
   };
@@ -307,6 +314,7 @@ export default function CartPage() {
             {promoPct > 0 && (
               <p className="mt-1.5 text-xs font-semibold text-success">
                 ✓ {t("promo.applied")}: −{promoPct}%
+                {promoKind === "delivery" && ` · ${t("common.delivery")}`}
               </p>
             )}
             {promoErr && (

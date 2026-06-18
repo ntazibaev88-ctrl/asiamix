@@ -7,6 +7,8 @@ export interface PromoCode {
   code: string;
   discountPct: number;
   active: boolean;
+  /** what the discount applies to — goods subtotal (default) or delivery fee */
+  kind?: "subtotal" | "delivery";
 }
 
 const KEY = "nomi.promoCodes";
@@ -15,8 +17,9 @@ let state: PromoCode[] | null = null;
 let loaded = false;
 
 const DEFAULTS: PromoCode[] = [
-  { code: "NOMI10", discountPct: 10, active: true },
-  { code: "WELCOME15", discountPct: 15, active: true },
+  { code: "NOMI10", discountPct: 10, active: true, kind: "subtotal" },
+  { code: "WELCOME15", discountPct: 15, active: true, kind: "subtotal" },
+  { code: "DOSTAVKA90", discountPct: 90, active: true, kind: "delivery" },
 ];
 
 function load() {
@@ -55,9 +58,16 @@ function getServerSnapshot() {
   return DEFAULTS;
 }
 
-export function addPromoCode(code: string, discountPct: number) {
+export function addPromoCode(
+  code: string,
+  discountPct: number,
+  kind: "subtotal" | "delivery" = "subtotal",
+) {
   const list = getSnapshot();
-  commit([{ code: code.toUpperCase().trim(), discountPct, active: true }, ...list]);
+  commit([
+    { code: code.toUpperCase().trim(), discountPct, active: true, kind },
+    ...list,
+  ]);
 }
 
 export function removePromoCode(code: string) {

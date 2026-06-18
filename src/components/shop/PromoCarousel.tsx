@@ -1,13 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { useHomeBanners } from "@/lib/homeBanners";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/cn";
 
 export function PromoCarousel() {
+  const { t } = useI18n();
   const banners = useHomeBanners();
   const [active, setActive] = useState(0);
+  const [copied, setCopied] = useState<string | null>(null);
   if (banners.length === 0) return null;
+
+  const copy = (code: string) => {
+    try {
+      navigator.clipboard?.writeText(code);
+    } catch {
+      /* ignore */
+    }
+    setCopied(code);
+    setTimeout(() => setCopied((c) => (c === code ? null : c)), 1500);
+  };
 
   return (
     <div>
@@ -30,7 +44,19 @@ export function PromoCarousel() {
             <h3 className="z-10 max-w-[75%] font-display text-2xl font-bold leading-tight">
               {b.title}
             </h3>
-            <p className="z-10 text-sm text-white/85">{b.subtitle}</p>
+            <div className="z-10 flex items-end justify-between gap-2">
+              <p className="text-sm text-white/85">{b.subtitle}</p>
+              {b.promoCode && (
+                <button
+                  onClick={() => copy(b.promoCode!)}
+                  className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/20 px-3 py-1.5 text-xs font-bold backdrop-blur transition-colors hover:bg-white/30 cursor-pointer"
+                  title={t("promo.copy")}
+                >
+                  {copied === b.promoCode ? <Check size={13} /> : <Copy size={13} />}
+                  <span className="font-mono tracking-wide">{b.promoCode}</span>
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>

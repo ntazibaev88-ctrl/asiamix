@@ -7,10 +7,21 @@
 //   • goods (subtotal − commission) → Store balance
 //   • delivery fee                  → Courier balance
 //   • commission (% of subtotal)    → Platform profit
-//   • service fee (flat)            → Platform profit
+//   • service fee (tiered)          → Platform profit
 
-/** Flat platform service fee per order, ₸ (configurable). */
-export const SERVICE_FEE = Number(process.env.SERVICE_FEE ?? 300);
+/**
+ * Platform service fee per order, ₸, tiered by goods subtotal:
+ *   • subtotal ≤ 2000₸  → 150₸
+ *   • 2001₸ – 5000₸     → 200₸
+ *   • subtotal > 5000₸  → 300₸
+ * Mirrored by process_order_payment in supabase/schema.sql.
+ */
+export function serviceFeeFor(subtotal: number): number {
+  if (subtotal <= 0) return 0;
+  if (subtotal <= 2000) return 150;
+  if (subtotal <= 5000) return 200;
+  return 300;
+}
 
 export interface SplitInput {
   /** items total (goes to the store, minus commission) */
@@ -51,7 +62,7 @@ export function computeSplit(input: SplitInput): PaymentSplit {
   if (input.commissionPct < 0 || input.commissionPct > 100)
     throw new Error("invalid commissionPct");
 
-  const serviceFee = input.serviceFee ?? SERVICE_FEE;
+  const serviceFee = input.serviceFee ?? serviceFeeFor(subtotal);
   assertInt(serviceFee, "serviceFee");
 
   const adminCommission = Math.round((subtotal * input.commissionPct) / 100);

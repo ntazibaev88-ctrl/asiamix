@@ -117,6 +117,10 @@ const DICT: Dict = {
   "promo.applied": { kk: "Промокод қолданылды", ru: "Промокод применён", en: "Promo applied" },
   "promo.invalid": { kk: "Промокод қате", ru: "Неверный промокод", en: "Invalid promo" },
   "promo.codePh": { kk: "Промокод енгізіңіз", ru: "Введите промокод", en: "Enter promo code" },
+  "promo.kindGoods": { kk: "Тауарға", ru: "На товары", en: "On goods" },
+  "promo.kindDelivery": { kk: "Жеткізуге", ru: "На доставку", en: "On delivery" },
+  "promo.copy": { kk: "Көшіру", ru: "Копировать", en: "Copy" },
+  "promo.copied": { kk: "Көшірілді", ru: "Скопировано", en: "Copied" },
   // Admin extra
   "nav.promocodes": { kk: "Промокодтар", ru: "Промокоды", en: "Promo codes" },
   "nav.notify": { kk: "Хабарлама", ru: "Рассылка", en: "Broadcast" },

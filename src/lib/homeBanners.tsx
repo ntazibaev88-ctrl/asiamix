@@ -8,6 +8,8 @@ export interface HomeBanner {
   subtitle: string;
   emoji: string;
   gradient: string;
+  /** optional promo code advertised on the banner (tap-to-copy) */
+  promoCode?: string;
 }
 
 export const BANNER_GRADIENTS = [
@@ -19,8 +21,9 @@ export const BANNER_GRADIENTS = [
 ];
 
 const DEFAULTS: HomeBanner[] = [
+  { id: "b0", title: "Жеткізуге −90%", subtitle: "Промокодпен · бірінші тапсырыс", emoji: "🛵", gradient: BANNER_GRADIENTS[1], promoCode: "DOSTAVKA90" },
   { id: "b1", title: "Coca-Cola 0.5л ТЕГІН", subtitle: "4500₸-дан тапсырысқа", emoji: "🥤", gradient: BANNER_GRADIENTS[0] },
-  { id: "b2", title: "Жеткізу ТЕГІН", subtitle: "5000₸-нан бастап", emoji: "🚀", gradient: BANNER_GRADIENTS[1] },
+  { id: "b2", title: "Жеткізу ТЕГІН", subtitle: "5000₸-нан бастап", emoji: "🚀", gradient: BANNER_GRADIENTS[2] },
   { id: "b3", title: "5% кэшбэк", subtitle: "әр тапсырыстан", emoji: "💰", gradient: BANNER_GRADIENTS[3] },
 ];
 

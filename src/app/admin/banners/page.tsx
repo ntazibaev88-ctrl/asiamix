@@ -21,12 +21,20 @@ export default function AdminBannersPage() {
   const [subtitle, setSubtitle] = useState("");
   const [emoji, setEmoji] = useState("🎉");
   const [gradient, setGradient] = useState(BANNER_GRADIENTS[0]);
+  const [promoCode, setPromoCode] = useState("");
 
   const add = () => {
     if (!title.trim()) return;
-    addBanner({ title: title.trim(), subtitle: subtitle.trim(), emoji, gradient });
+    addBanner({
+      title: title.trim(),
+      subtitle: subtitle.trim(),
+      emoji,
+      gradient,
+      promoCode: promoCode.trim().toUpperCase() || undefined,
+    });
     setTitle("");
     setSubtitle("");
+    setPromoCode("");
   };
 
   return (
@@ -40,13 +48,26 @@ export default function AdminBannersPage() {
         >
           <span className="absolute -bottom-4 -right-2 text-7xl opacity-25">{emoji}</span>
           <h3 className="z-10 font-display text-xl font-bold">{title || t("promo.title")}</h3>
-          <p className="z-10 text-sm text-white/85">{subtitle}</p>
+          <div className="z-10 flex items-end justify-between gap-2">
+            <p className="text-sm text-white/85">{subtitle}</p>
+            {promoCode && (
+              <span className="rounded-full bg-white/20 px-3 py-1 font-mono text-xs font-bold backdrop-blur">
+                {promoCode}
+              </span>
+            )}
+          </div>
         </div>
         <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("promo.title")} className={inputCls} />
         <div className="flex gap-3">
           <input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="..." className={inputCls} />
           <input value={emoji} onChange={(e) => setEmoji(e.target.value)} maxLength={2} className={`${inputCls} w-20 text-center`} />
         </div>
+        <input
+          value={promoCode}
+          onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+          placeholder={t("promo.code")}
+          className={`${inputCls} font-mono`}
+        />
         <div className="flex gap-2">
           {BANNER_GRADIENTS.map((g) => (
             <button
@@ -74,6 +95,11 @@ export default function AdminBannersPage() {
             <div className="z-10">
               <div className="font-display text-lg font-bold">{b.title}</div>
               <div className="text-sm text-white/85">{b.subtitle}</div>
+              {b.promoCode && (
+                <span className="mt-1 inline-block rounded-full bg-white/20 px-2.5 py-0.5 font-mono text-xs font-bold backdrop-blur">
+                  {b.promoCode}
+                </span>
+              )}
             </div>
             <button
               onClick={() => removeBanner(b.id)}

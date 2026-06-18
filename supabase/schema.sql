@@ -452,8 +452,7 @@ end; $$;
 -- rolls back ALL credits; the order is marked 'failed', the error is logged
 -- and the admin is notified. Returns the Transaction ID.
 create or replace function process_order_payment(
-  p_order_id uuid,
-  p_service_fee bigint default 300
+  p_order_id uuid
 ) returns text language plpgsql as $$
 declare
   o            orders%rowtype;
@@ -479,7 +478,13 @@ begin
   v_subtotal   := o.subtotal;
   v_delivery   := o.delivery_fee;
   v_commission := round(v_subtotal * v_commpct / 100.0);
-  v_service    := p_service_fee;
+  -- Tiered platform service fee by goods subtotal.
+  v_service    := case
+                    when v_subtotal <= 0    then 0
+                    when v_subtotal <= 2000 then 150
+                    when v_subtotal <= 5000 then 200
+                    else 300
+                  end;
   v_store_amt  := v_subtotal - v_commission;
   v_total      := v_subtotal + v_delivery + v_service;
 
