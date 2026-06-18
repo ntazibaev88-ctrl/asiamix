@@ -12,16 +12,12 @@ import {
   clearCart,
   cartLines,
   cartTotal,
+  cartWeightKg,
 } from "@/lib/cart";
 import { Button } from "@/components/ui/Button";
-import {
-  deliveryFee,
-  esilStreets,
-  zoneForStreet,
-} from "@/lib/delivery";
+import { deliveryFeeByWeight, esilStreets } from "@/lib/delivery";
 import { serviceFeeFor } from "@/lib/payments/split";
-import { useEffectiveWeather } from "@/lib/weather";
-import { placeOrder } from "@/lib/activeOrder";
+import { placeOrder, newOrderId } from "@/lib/activeOrder";
 import { validatePromo } from "@/lib/promoCodes";
 import { useRouter } from "next/navigation";
 
@@ -49,12 +45,11 @@ export default function CartPage() {
   const [promoErr, setPromoErr] = useState(false);
   const [when, setWhen] = useState<"asap" | "scheduled">("asap");
   const [schedTime, setSchedTime] = useState("");
-  // Distance zone (from address) and weather surcharge are both automatic and
-  // hidden from the client.
-  const weather = useEffectiveWeather();
-  const zone = zoneForStreet(street).id;
 
-  const delivery = deliveryType === "delivery" ? deliveryFee(zone, weather) : 0;
+  // Weight-based delivery pricing — the total basket weight sets the fee
+  // (same formula the server uses; the server is the source of truth).
+  const totalKg = cartWeightKg(map);
+  const delivery = deliveryType === "delivery" ? deliveryFeeByWeight(totalKg) : 0;
   // Platform service fee — tiered by goods subtotal, becomes platform profit.
   const serviceFee = deliveryType === "delivery" ? serviceFeeFor(subtotal) : 0;
   // A promo discounts either the goods subtotal or the delivery fee.
@@ -81,17 +76,46 @@ export default function CartPage() {
 
   const submit = async () => {
     if (!name || !phone) return;
+    const orderId = newOrderId();
+    const online = payment === "kaspi" || payment === "card";
+
+    // Online payment: capture into the platform wallet via Kaspi / acquiring;
+    // a successful capture auto-confirms the order.
+    let paid = false;
+    if (online && lines[0]) {
+      try {
+        const res = await fetch("/api/payments/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId,
+            storeSlug: lines[0].storeSlug,
+            subtotal,
+            deliveryFee: delivery,
+            paymentMethod: payment,
+          }),
+        });
+        const data = await res.json().catch(() => null);
+        paid = Boolean(data?.ok && data.status === "paid");
+      } catch {
+        /* demo: continue even if the payment API is unreachable */
+      }
+    }
+
     try {
       await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          orderId,
           name,
           phone,
           address,
           deliveryType,
           payment,
+          paid,
           total,
+          weightKg: totalKg,
           comment,
           items: lines.map((l) => ({
             name_ru: l.name,
@@ -105,12 +129,19 @@ export default function CartPage() {
     }
     const itemCount = lines.reduce((s, l) => s + l.qty, 0);
     placeOrder({
+      id: orderId,
       store: lines[0]?.storeName ?? "NOMI",
       address,
       total,
       items: itemCount,
+      weightKg: totalKg,
       comment: comment.trim() || undefined,
       etaMin: deliveryType === "delivery" ? 18 : 0,
+      paymentMethod: payment,
+      paid,
+      // Auto-confirm once the online payment is captured; cash is confirmed on
+      // pickup by the store.
+      confirmed: paid,
     });
     clearCart();
     if (deliveryType === "delivery") {
@@ -329,6 +360,9 @@ export default function CartPage() {
       {/* Summary */}
       <div className="rounded-2xl bg-surface-2 p-4 text-sm">
         <Row label={t("common.cart")} value={formatPrice(subtotal)} muted />
+        {deliveryType === "delivery" && (
+          <Row label={t("cart.totalWeight")} value={`${totalKg} ${t("cart.kg")}`} muted />
+        )}
         <Row label={t("common.delivery")} value={formatPrice(delivery)} muted />
         {serviceFee > 0 && (
           <Row label={t("cart.serviceFee")} value={formatPrice(serviceFee)} muted />

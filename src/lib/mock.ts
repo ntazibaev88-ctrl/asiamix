@@ -1,4 +1,5 @@
 import type { Localized, OrderStatus } from "./types";
+import { parseWeightKg } from "./delivery";
 
 // ============================================================================
 // NOMI catalog — Рядом/Choco-style category tree shared across stores.
@@ -38,6 +39,8 @@ export interface Product {
   desc: Localized;
   brand?: string;
   weight?: string;
+  /** numeric weight in kg, used for weight-based delivery pricing */
+  weightKg: number;
   nutrition?: Nutrition;
   /** EAN/barcode used to fetch a real photo from Open Food Facts */
   barcode?: string;
@@ -147,6 +150,8 @@ interface ProductExtra {
   rating?: number;
   brand?: string;
   weight?: string;
+  /** explicit kg; otherwise derived from `weight`, else a sensible default */
+  weightKg?: number;
   desc?: Localized;
   nutrition?: Nutrition;
   barcode?: string;
@@ -180,6 +185,8 @@ const p = (
       ru: `${ru} — качественный свежий продукт. Быстро доставим домой через NOMI.`,
       en: `${en} — a fresh, quality product. Quickly delivered to your door by NOMI.`,
     },
+  // Numeric weight for delivery pricing: explicit → parsed from label → 0.5kg.
+  weightKg: extra?.weightKg ?? parseWeightKg(extra?.weight) ?? 0.5,
   ...(extra?.oldPrice !== undefined ? { oldPrice: extra.oldPrice } : {}),
   ...(extra?.tag ? { tag: extra.tag } : {}),
   ...(extra?.brand ? { brand: extra.brand } : {}),
@@ -371,11 +378,24 @@ export const demoOrders: DemoOrder[] = [
   { num: 1037, customer: "Тимур А.", store: "Capital", items: 2, total: 1800, status: "cancelled", minsAgo: 72 },
 ];
 
+export interface CourierJobLine {
+  name: string;
+  qty: number;
+  emoji?: string;
+}
+
 export interface CourierJob {
   id: number;
   store: { name: string; address: string; lat: number; lng: number };
   client: { name: string; phone: string; address: string; lat: number; lng: number };
+  /** item lines shown to the courier (no prices) */
+  lines: CourierJobLine[];
+  /** total units across all lines */
   items: number;
+  /** total basket weight, kg */
+  weightKg: number;
+  /** number of shopping bags */
+  bags: number;
   total: number;
   payment: "online" | "cash";
   status: OrderStatus;
@@ -388,21 +408,38 @@ export const courierJobs: CourierJob[] = [
     id: 1042,
     store: { name: "Алтын Орда", address: "Аль-Фараби 15/1", lat: 51.0915, lng: 71.4178 },
     client: { name: "Айгерим С.", phone: "+7 701 222 33 44", address: "Қабанбай батыр 11, кв. 52", lat: 51.1009, lng: 71.4231 },
-    items: 8, total: 6700, payment: "online", status: "ready", minsAgo: 4,
+    lines: [
+      { name: "Coca-Cola 1Л", qty: 2, emoji: "🥤" },
+      { name: "Snickers", qty: 3, emoji: "🍫" },
+      { name: "Нан", qty: 1, emoji: "🍞" },
+      { name: "Сүт 2.5% 1л", qty: 2, emoji: "🥛" },
+    ],
+    items: 8, weightKg: 4.2, bags: 2, total: 6700, payment: "online", status: "ready", minsAgo: 4,
     comment: "Домофон жұмыс істемейді, қоңырау шалыңыз",
   },
   {
     id: 1041,
     store: { name: "Capital", address: "Аль-Фараби 9", lat: 51.0922, lng: 71.4101 },
     client: { name: "Дамир К.", phone: "+7 705 444 55 66", address: "Сығанақ 18, кв. 7", lat: 51.0876, lng: 71.4302 },
-    items: 4, total: 3400, payment: "cash", status: "on_the_way", minsAgo: 12,
+    lines: [
+      { name: "Тауық еті 1кг", qty: 2, emoji: "🍗" },
+      { name: "Күріш 1кг", qty: 1, emoji: "🍚" },
+      { name: "Қызанақ 1кг", qty: 1, emoji: "🍅" },
+    ],
+    items: 4, weightKg: 5.4, bags: 1, total: 3400, payment: "cash", status: "on_the_way", minsAgo: 12,
     comment: "Есік коды #1234, ұялы дыбыссыз",
   },
   {
     id: 1040,
     store: { name: "Алтын Орда", address: "Аль-Фараби 15/1", lat: 51.0915, lng: 71.4178 },
     client: { name: "Зарина Т.", phone: "+7 702 777 88 99", address: "Тұран 24, кв. 130", lat: 51.1102, lng: 71.4156 },
-    items: 12, total: 12600, payment: "online", status: "accepted", minsAgo: 18,
+    lines: [
+      { name: "Су 5Л", qty: 2, emoji: "💧" },
+      { name: "Ұн 2кг", qty: 1, emoji: "🌾" },
+      { name: "Қант 1кг", qty: 2, emoji: "🧂" },
+      { name: "Картоп 5кг", qty: 1, emoji: "🥔" },
+    ],
+    items: 12, weightKg: 18.5, bags: 3, total: 12600, payment: "online", status: "accepted", minsAgo: 18,
   },
 ];
 

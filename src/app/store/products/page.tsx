@@ -31,6 +31,7 @@ export default function StoreProductsPage() {
   const [cat, setCat] = useState(categories[1]?.slug ?? "dairy");
   const [unit, setUnit] = useState("шт");
   const [stock, setStock] = useState("");
+  const [weightKg, setWeightKg] = useState("");
   const [brand, setBrand] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<string | undefined>(undefined);
@@ -49,6 +50,7 @@ export default function StoreProductsPage() {
       cat,
       unit,
       stock: Number(stock) || 0,
+      weightKg: Number(weightKg) || 0.5,
       brand: brand.trim() || undefined,
       description: description.trim() || undefined,
       image: image || undefined,
@@ -57,6 +59,7 @@ export default function StoreProductsPage() {
     setName("");
     setPrice("");
     setStock("");
+    setWeightKg("");
     setBrand("");
     setDescription("");
     setImage(undefined);
@@ -86,7 +89,10 @@ export default function StoreProductsPage() {
                 <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="₸" className={inputCls} />
                 <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="шт / кг / л" className={inputCls} />
               </div>
-              <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder={t("store.stock")} className={inputCls} />
+              <div className="flex gap-2">
+                <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder={t("store.stock")} className={inputCls} />
+                <input type="number" step="0.1" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} placeholder={`${t("cart.kg")} (0.5)`} className={inputCls} />
+              </div>
             </div>
           </div>
           <select value={cat} onChange={(e) => setCat(e.target.value)} className={inputCls}>

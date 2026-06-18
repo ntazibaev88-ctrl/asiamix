@@ -11,11 +11,17 @@ export interface ActiveOrder {
   address: string;
   total: number;
   items: number;
+  weightKg: number;
   comment?: string;
   courier: string;
   courierPhone: string;
   placedAt: number;
   etaMin: number;
+  paymentMethod: "cash" | "card" | "kaspi";
+  /** online payment captured into the platform wallet */
+  paid: boolean;
+  /** auto-confirmed once payment is captured */
+  confirmed: boolean;
 }
 
 const KEY = "nomi.activeOrder";
@@ -61,11 +67,14 @@ function getServerSnapshot() {
 }
 
 export function placeOrder(
-  data: Omit<ActiveOrder, "id" | "placedAt" | "courier" | "courierPhone">,
+  data: Omit<ActiveOrder, "id" | "placedAt" | "courier" | "courierPhone"> & {
+    id?: string;
+  },
 ): ActiveOrder {
+  const { id, ...rest } = data;
   const next: ActiveOrder = {
-    ...data,
-    id: String(Math.floor(1000 + Math.random() * 9000)),
+    ...rest,
+    id: id ?? newOrderId(),
     placedAt: Date.now(),
     courier: "Ерлан Б.",
     courierPhone: "+7 701 555 33 22",
@@ -76,6 +85,11 @@ export function placeOrder(
 
 export function clearActiveOrder() {
   commit(null);
+}
+
+/** Generates a short order id (kept in a lib so callers stay render-pure). */
+export function newOrderId(): string {
+  return String(Math.floor(1000 + Math.random() * 9000));
 }
 
 export function useActiveOrder(): ActiveOrder | null {

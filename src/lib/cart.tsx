@@ -87,6 +87,7 @@ export interface CartLine {
   price: number;
   emoji: string;
   unit: string;
+  weightKg: number;
   storeSlug: string;
   storeName: string;
 }
@@ -108,6 +109,7 @@ export function cartLines(
         price: p.price,
         emoji: p.emoji,
         unit: p.unit,
+        weightKg: p.weightKg,
         storeSlug: e.storeSlug,
         storeName: store?.name ?? "",
       },
@@ -124,6 +126,15 @@ export function cartTotal(map: Record<number, CartEntry>): number {
     const p = products.find((x) => x.id === e.id);
     return s + (p ? p.price * e.qty : 0);
   }, 0);
+}
+
+/** Total basket weight in kg (drives weight-based delivery pricing). */
+export function cartWeightKg(map: Record<number, CartEntry>): number {
+  const kg = Object.values(map).reduce((s, e) => {
+    const p = products.find((x) => x.id === e.id);
+    return s + (p ? p.weightKg * e.qty : 0);
+  }, 0);
+  return Math.round(kg * 10) / 10;
 }
 
 export function useCart() {

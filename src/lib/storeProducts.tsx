@@ -14,6 +14,8 @@ export interface CustomProduct {
   cat: string;
   unit: string;
   stock: number;
+  /** weight in kg — used for weight-based delivery pricing */
+  weightKg: number;
   brand?: string;
   description?: string;
   image?: string; // data URL from upload

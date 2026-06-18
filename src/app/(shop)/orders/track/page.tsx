@@ -160,6 +160,18 @@ export default function TrackPage() {
           <span className="font-bold">{formatPrice(order.total)}</span>
         </div>
         <div className="mt-1 text-muted">{order.address}</div>
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+          {order.weightKg > 0 && (
+            <span className="rounded-full bg-surface-2 px-2.5 py-1 font-semibold text-muted">
+              ⚖️ {order.weightKg} {t("cart.kg")}
+            </span>
+          )}
+          {order.confirmed && (
+            <span className="rounded-full bg-success-soft px-2.5 py-1 font-semibold text-success">
+              ✅ {t("cart.paid")}
+            </span>
+          )}
+        </div>
         {order.comment && (
           <div className="mt-3 rounded-xl bg-surface-2 px-3 py-2 text-xs">
             💬 {order.comment}

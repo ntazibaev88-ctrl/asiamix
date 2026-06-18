@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import { ArrowLeft, MessageSquare, Phone, Send, Store, MapPin } from "lucide-react";
+import { ArrowLeft, MessageSquare, Package, Phone, Send, ShoppingBag, Store, MapPin } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { formatPrice } from "@/lib/format";
 import { useCourierJob, setStatus, nextStatus } from "@/lib/courierOrders";
 import { useChat, sendMessage } from "@/lib/chat";
+import { WeightTag } from "@/components/courier/WeightTag";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -51,13 +51,45 @@ export default function CourierOrderDetail() {
         <PageHeader title={`#${job.id}`} />
       </div>
 
+      {/* Status + weight (couriers never see price / commission) */}
       <div className="flex items-center justify-between">
         <Badge tone={statusTone[job.status]}>{t(`status.${job.status}`)}</Badge>
-        <span className="text-sm text-muted">
-          {job.items} {t("shop.items")} · {formatPrice(job.total)} ·{" "}
-          {job.payment === "online" ? t("store.online") : t("store.cashPay")}
-        </span>
+        <WeightTag kg={job.weightKg} />
       </div>
+
+      {/* Order contents — visible before accepting */}
+      <Card className="mt-4 p-4">
+        <div className="mb-3 flex items-center gap-2 text-sm font-bold">
+          <Package size={16} className="text-brand" /> {t("courier.items")}
+        </div>
+        <div className="flex flex-col gap-2">
+          {job.lines.map((l, i) => (
+            <div key={i} className="flex items-center justify-between text-sm">
+              <span className="flex items-center gap-2">
+                <span className="text-lg">{l.emoji ?? "🛍️"}</span>
+                {l.name}
+              </span>
+              <span className="font-semibold text-muted">× {l.qty}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border pt-3 text-center text-xs">
+          <div>
+            <div className="font-display text-base font-bold">{job.items}</div>
+            <div className="text-faint">{t("courier.totalItems")}</div>
+          </div>
+          <div>
+            <div className="font-display text-base font-bold">{job.weightKg} {t("cart.kg")}</div>
+            <div className="text-faint">{t("courier.weight")}</div>
+          </div>
+          <div>
+            <div className="flex items-center justify-center gap-1 font-display text-base font-bold">
+              <ShoppingBag size={14} /> {job.bags}
+            </div>
+            <div className="text-faint">{t("courier.bags")}</div>
+          </div>
+        </div>
+      </Card>
 
       {/* Map */}
       <Card className="mt-4 overflow-hidden p-0">
@@ -111,8 +143,12 @@ export default function CourierOrderDetail() {
         )}
       </div>
 
-      {/* Status action */}
-      {next ? (
+      {/* Status action — explicit Accept before taking, then the status flow */}
+      {job.status === "pending" || job.status === "ready" ? (
+        <Button className="mt-4 w-full" onClick={() => setStatus(job.id, "on_the_way")}>
+          {t("courier.accept")}
+        </Button>
+      ) : next ? (
         <Button className="mt-4 w-full" onClick={() => setStatus(job.id, next)}>
           {t("courier.markAs")}: {t(`status.${next}`)}
         </Button>

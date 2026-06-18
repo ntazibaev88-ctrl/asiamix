@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, MapPin, Store } from "lucide-react";
+import { ArrowRight, MapPin, Package, ShoppingBag, Store } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { formatPrice } from "@/lib/format";
 import { useCourierJobs } from "@/lib/courierOrders";
+import { WeightTag } from "@/components/courier/WeightTag";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge, statusTone } from "@/components/ui/Badge";
@@ -35,9 +35,17 @@ export default function CourierOrdersPage() {
                 <span className="truncate">{j.client.address}</span>
               </div>
               <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-                <span className="font-display font-bold">{formatPrice(j.total)}</span>
+                <WeightTag kg={j.weightKg} />
                 <span className="flex items-center gap-1 text-sm font-semibold text-brand">
                   {t("courier.open")} <ArrowRight size={15} />
+                </span>
+              </div>
+              <div className="mt-2 flex items-center gap-4 text-xs text-muted">
+                <span className="flex items-center gap-1">
+                  <Package size={13} /> {j.items}
+                </span>
+                <span className="flex items-center gap-1">
+                  <ShoppingBag size={13} /> {j.bags} {t("courier.bags")}
                 </span>
               </div>
             </Card>
