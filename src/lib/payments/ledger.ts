@@ -102,6 +102,62 @@ export function recordError(input: {
   errors.push({ ...input, createdAt: Date.now() });
 }
 
+export interface MonthlyRow {
+  store: string;
+  orders: number;
+  sales: number;
+  commissionPct: number;
+  commission: number;
+  payable: number;
+  refunds: number;
+  net: number;
+}
+
+export function getMonthlyReport() {
+  seed();
+  const now = new Date();
+  const periodFrom = new Date(now.getFullYear(), now.getMonth(), 1);
+  const periodTo = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const paid = transactions.filter((t) => t.status === "paid");
+
+  const rows: MonthlyRow[] = Object.values(
+    paid.reduce<Record<string, MonthlyRow>>((acc, r) => {
+      const store = demoStores.find((s) => s.slug === r.storeSlug);
+      const pct = store?.commission ?? 3;
+      (acc[r.storeSlug] ??= {
+        store: r.storeName,
+        orders: 0,
+        sales: 0,
+        commissionPct: pct,
+        commission: 0,
+        payable: 0,
+        refunds: 0,
+        net: 0,
+      });
+      const row = acc[r.storeSlug];
+      row.orders += 1;
+      row.sales += r.subtotal + r.deliveryFee;
+      row.commission += r.adminCommission;
+      row.payable += r.storeAmount;
+      row.net = row.payable - row.refunds;
+      return acc;
+    }, {}),
+  );
+
+  return {
+    periodFrom: periodFrom.toISOString().slice(0, 10),
+    periodTo: periodTo.toISOString().slice(0, 10),
+    rows,
+    totals: {
+      orders: rows.reduce((s, r) => s + r.orders, 0),
+      sales: rows.reduce((s, r) => s + r.sales, 0),
+      commission: rows.reduce((s, r) => s + r.commission, 0),
+      payable: rows.reduce((s, r) => s + r.payable, 0),
+      net: rows.reduce((s, r) => s + r.net, 0),
+    },
+  };
+}
+
 export function getReport() {
   seed();
   const paid = transactions.filter((t) => t.status === "paid");

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Layers,
   LayoutDashboard,
   Package,
   Wallet,
@@ -10,6 +11,7 @@ import { DashboardShell, type NavItem } from "@/components/DashboardShell";
 
 const nav: NavItem[] = [
   { href: "/courier", labelKey: "nav.dashboard", icon: LayoutDashboard },
+  { href: "/courier/pool", labelKey: "nav.pool", icon: Layers },
   { href: "/courier/orders", labelKey: "nav.orders", icon: Package },
   { href: "/courier/earnings", labelKey: "nav.earnings", icon: TrendingUp },
   { href: "/courier/balance", labelKey: "nav.balance", icon: Wallet },
