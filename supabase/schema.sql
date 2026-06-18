@@ -453,7 +453,7 @@ end; $$;
 -- and the admin is notified. Returns the Transaction ID.
 create or replace function process_order_payment(
   p_order_id uuid,
-  p_service_fee_pct numeric default 5
+  p_service_fee bigint default 300
 ) returns text language plpgsql as $$
 declare
   o            orders%rowtype;
@@ -479,7 +479,7 @@ begin
   v_subtotal   := o.subtotal;
   v_delivery   := o.delivery_fee;
   v_commission := round(v_subtotal * v_commpct / 100.0);
-  v_service    := round(v_subtotal * p_service_fee_pct / 100.0);
+  v_service    := p_service_fee;
   v_store_amt  := v_subtotal - v_commission;
   v_total      := v_subtotal + v_delivery + v_service;
 

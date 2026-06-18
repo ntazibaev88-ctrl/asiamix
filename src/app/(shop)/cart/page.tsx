@@ -19,6 +19,7 @@ import {
   esilStreets,
   zoneForStreet,
 } from "@/lib/delivery";
+import { SERVICE_FEE } from "@/lib/payments/split";
 import { useEffectiveWeather } from "@/lib/weather";
 import { placeOrder } from "@/lib/activeOrder";
 import { validatePromo } from "@/lib/promoCodes";
@@ -53,8 +54,10 @@ export default function CartPage() {
   const zone = zoneForStreet(street).id;
 
   const delivery = deliveryType === "delivery" ? deliveryFee(zone, weather) : 0;
+  // Flat platform service fee — charged on delivery orders, becomes platform profit.
+  const serviceFee = deliveryType === "delivery" ? SERVICE_FEE : 0;
   const discount = Math.round((subtotal * promoPct) / 100);
-  const total = subtotal + delivery - discount;
+  const total = subtotal + delivery + serviceFee - discount;
 
   const applyPromo = () => {
     const valid = validatePromo(promoInput);
@@ -319,6 +322,9 @@ export default function CartPage() {
       <div className="rounded-2xl bg-surface-2 p-4 text-sm">
         <Row label={t("common.cart")} value={formatPrice(subtotal)} muted />
         <Row label={t("common.delivery")} value={formatPrice(delivery)} muted />
+        {serviceFee > 0 && (
+          <Row label={t("cart.serviceFee")} value={formatPrice(serviceFee)} muted />
+        )}
         {discount > 0 && (
           <Row label={t("promo.code")} value={`−${formatPrice(discount)}`} muted />
         )}

@@ -2,18 +2,25 @@
 // runs only in route handlers / on the server. All amounts are integers (₸).
 // The same formula is mirrored by the atomic SQL function process_order_payment
 // in supabase/schema.sql, which is the authoritative source of truth in prod.
+//
+// Money flow: an online payment lands in the Platform Wallet first, then splits:
+//   • goods (subtotal − commission) → Store balance
+//   • delivery fee                  → Courier balance
+//   • commission (% of subtotal)    → Platform profit
+//   • service fee (flat)            → Platform profit
 
-export const SERVICE_FEE_PCT = Number(process.env.SERVICE_FEE_PCT ?? 5);
+/** Flat platform service fee per order, ₸ (configurable). */
+export const SERVICE_FEE = Number(process.env.SERVICE_FEE ?? 300);
 
 export interface SplitInput {
   /** items total (goes to the store, minus commission) */
   subtotal: number;
   /** delivery fee (goes to the courier) */
   deliveryFee: number;
-  /** store commission percent (admin income) */
+  /** store commission percent (platform profit) */
   commissionPct: number;
-  /** platform service fee percent of subtotal (admin income) */
-  serviceFeePct?: number;
+  /** flat platform service fee (platform profit) */
+  serviceFee?: number;
 }
 
 export interface PaymentSplit {
@@ -33,8 +40,9 @@ function assertInt(n: number, name: string) {
 }
 
 /**
- * Splits a paid order into store / courier / admin amounts. Throws if the parts
- * do not sum exactly to the total — guaranteeing money is never mis-allocated.
+ * Splits a paid order into store / courier / platform amounts. Throws if the
+ * parts do not sum exactly to the total — guaranteeing money is never
+ * mis-allocated.
  */
 export function computeSplit(input: SplitInput): PaymentSplit {
   const { subtotal, deliveryFee } = input;
@@ -43,13 +51,10 @@ export function computeSplit(input: SplitInput): PaymentSplit {
   if (input.commissionPct < 0 || input.commissionPct > 100)
     throw new Error("invalid commissionPct");
 
-  const serviceFeePct = input.serviceFeePct ?? SERVICE_FEE_PCT;
-  if (serviceFeePct < 0 || serviceFeePct > 100)
-    throw new Error("invalid serviceFeePct");
+  const serviceFee = input.serviceFee ?? SERVICE_FEE;
+  assertInt(serviceFee, "serviceFee");
 
   const adminCommission = Math.round((subtotal * input.commissionPct) / 100);
-  const serviceFee = Math.round((subtotal * serviceFeePct) / 100);
-
   const storeAmount = subtotal - adminCommission;
   const courierAmount = deliveryFee;
   const adminAmount = adminCommission + serviceFee;

@@ -213,6 +213,7 @@ const DICT: Dict = {
   "cart.weather": { kk: "Ауа райы коэффициенті", ru: "Погодный коэффициент", en: "Weather surcharge" },
   "cart.street": { kk: "Көше (Есіл ауданы)", ru: "Улица (район Есиль)", en: "Street (Esil district)" },
   "cart.house": { kk: "Үй, пәтер", ru: "Дом, квартира", en: "House, apt" },
+  "cart.serviceFee": { kk: "Сервистік алым", ru: "Сервисный сбор", en: "Service fee" },
   "weather.normal": { kk: "Қалыпты", ru: "Норма", en: "Normal" },
   "weather.medium": { kk: "Орташа", ru: "Средняя", en: "Medium" },
   "weather.high": { kk: "Нашар", ru: "Плохая", en: "Bad" },
@@ -318,6 +319,22 @@ const DICT: Dict = {
   "nav.stores": { kk: "Дүкендер", ru: "Магазины", en: "Stores" },
   "nav.analytics": { kk: "Аналитика", ru: "Аналитика", en: "Analytics" },
   "nav.finance": { kk: "Қаржы", ru: "Финансы", en: "Finance" },
+
+  // Finance / wallet
+  "fin.availableBalance": { kk: "Қолжетімді баланс", ru: "Доступный баланс", en: "Available balance" },
+  "fin.totalSales": { kk: "Жалпы сатылым", ru: "Всего продаж", en: "Total sales" },
+  "fin.paymentHistory": { kk: "Төлем тарихы", ru: "История платежей", en: "Payment history" },
+  "fin.monthlyReport": { kk: "Айлық отчет", ru: "Месячный отчёт", en: "Monthly report" },
+  "fin.orders": { kk: "Тапсырыстар", ru: "Заказы", en: "Orders" },
+  "fin.net": { kk: "Таза табыс", ru: "К зачислению", en: "Net" },
+  "fin.commissionLabel": { kk: "Комиссия", ru: "Комиссия", en: "Commission" },
+  "fin.today": { kk: "Бүгін", ru: "Сегодня", en: "Today" },
+  "fin.week": { kk: "Апта", ru: "Неделя", en: "Week" },
+  "fin.month": { kk: "Ай", ru: "Месяц", en: "Month" },
+  "fin.deliveries": { kk: "Жеткізулер", ru: "Доставки", en: "Deliveries" },
+  "fin.noPayments": { kk: "Әзірге төлем жоқ", ru: "Пока нет платежей", en: "No payments yet" },
+  "fin.payout": { kk: "Төлемге", ru: "К выплате", en: "Payout" },
+  "fin.order": { kk: "Тапсырыс", ru: "Заказ", en: "Order" },
 
   // Dashboard widgets
   "dash.revenue": { kk: "Түсім", ru: "Выручка", en: "Revenue" },

@@ -158,6 +158,89 @@ export function getMonthlyReport() {
   };
 }
 
+// ── Store-scoped report ──────────────────────────────────────────────────
+// What a single store admin sees: total sales, commission withheld by the
+// platform, available (payable) balance, and their own payment history.
+export function getStoreReport(storeSlug: string) {
+  seed();
+  const mine = transactions
+    .filter((t) => t.status === "paid" && t.storeSlug === storeSlug)
+    .sort((a, b) => b.createdAt - a.createdAt);
+  const sum = (f: (r: Receipt) => number) => mine.reduce((s, r) => s + f(r), 0);
+
+  const store = demoStores.find((s) => s.slug === storeSlug);
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const monthly = mine.filter((r) => r.createdAt >= monthStart);
+
+  return {
+    storeSlug,
+    storeName: store?.name ?? storeSlug,
+    commissionPct: store?.commission ?? 3,
+    orders: mine.length,
+    totalSales: sum((r) => r.subtotal), // goods sold (commission base)
+    commission: sum((r) => r.adminCommission), // withheld by platform
+    availableBalance: sum((r) => r.storeAmount), // payable to store
+    monthly: {
+      orders: monthly.length,
+      sales: monthly.reduce((s, r) => s + r.subtotal, 0),
+      commission: monthly.reduce((s, r) => s + r.adminCommission, 0),
+      payable: monthly.reduce((s, r) => s + r.storeAmount, 0),
+      periodFrom: new Date(monthStart).toISOString().slice(0, 10),
+    },
+    history: mine.slice(0, 30).map((r) => ({
+      txnId: r.txnId,
+      orderId: r.orderId,
+      paymentMethod: r.paymentMethod,
+      subtotal: r.subtotal,
+      commission: r.adminCommission,
+      net: r.storeAmount,
+      createdAt: r.createdAt,
+    })),
+  };
+}
+
+// ── Courier-scoped report ────────────────────────────────────────────────
+// today / weekly / monthly earnings + available balance + payment history.
+export function getCourierReport(courierName?: string) {
+  seed();
+  const paid = transactions.filter((t) => t.status === "paid");
+  // Scope to a named courier when we recognise them, otherwise show all
+  // (keeps the demo meaningful even when the session name isn't in the seed).
+  const mine = (
+    courierName && paid.some((r) => r.courierName === courierName)
+      ? paid.filter((r) => r.courierName === courierName)
+      : paid
+  ).sort((a, b) => b.createdAt - a.createdAt);
+
+  const now = Date.now();
+  const dayStart = new Date().setHours(0, 0, 0, 0);
+  const weekStart = now - 7 * 86_400_000;
+  const monthStart = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    1,
+  ).getTime();
+  const earned = (from: number) =>
+    mine.filter((r) => r.createdAt >= from).reduce((s, r) => s + r.deliveryFee, 0);
+
+  return {
+    courierName: courierName ?? "—",
+    deliveries: mine.length,
+    availableBalance: mine.reduce((s, r) => s + r.deliveryFee, 0),
+    today: earned(dayStart),
+    week: earned(weekStart),
+    month: earned(monthStart),
+    history: mine.slice(0, 30).map((r) => ({
+      txnId: r.txnId,
+      orderId: r.orderId,
+      store: r.storeName,
+      amount: r.deliveryFee,
+      createdAt: r.createdAt,
+    })),
+  };
+}
+
 export function getReport() {
   seed();
   const paid = transactions.filter((t) => t.status === "paid");
