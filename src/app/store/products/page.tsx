@@ -29,6 +29,8 @@ export default function StoreProductsPage() {
   const [cat, setCat] = useState(categories[1]?.slug ?? "dairy");
   const [unit, setUnit] = useState("шт");
   const [stock, setStock] = useState("");
+  const [brand, setBrand] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState<string>("");
 
   const catName = useMemo(
@@ -52,12 +54,16 @@ export default function StoreProductsPage() {
       cat,
       unit,
       stock: Number(stock) || 0,
+      brand: brand.trim() || undefined,
+      description: description.trim() || undefined,
       image: image || undefined,
       emoji,
     });
     setName("");
     setPrice("");
     setStock("");
+    setBrand("");
+    setDescription("");
     setImage("");
     setAdding(false);
   };
@@ -110,6 +116,14 @@ export default function StoreProductsPage() {
                 </option>
               ))}
           </select>
+          <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder={t("store.brand")} className={inputCls} />
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder={t("store.description")}
+            rows={2}
+            className={`${inputCls} resize-none`}
+          />
           <Button onClick={create} disabled={!name.trim() || !price}>
             {t("admin.save")}
           </Button>
@@ -133,12 +147,16 @@ export default function StoreProductsPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-semibold">{p.name}</div>
+                  {p.brand && <div className="text-xs text-muted">{p.brand}</div>}
                   <div className="text-sm font-bold">
                     {formatPrice(p.price)}{" "}
                     <span className="text-xs font-normal text-faint">
                       / {p.unit} · {catName[p.cat]}
                     </span>
                   </div>
+                  {p.description && (
+                    <p className="mt-0.5 line-clamp-2 text-xs text-muted">{p.description}</p>
+                  )}
                   <Badge tone={p.stock > 0 ? "success" : "danger"}>
                     {t("store.stock")}: {p.stock}
                   </Badge>

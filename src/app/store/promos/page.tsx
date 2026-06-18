@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ImagePlus, Plus, Trash2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useActiveStore } from "@/lib/activeStore";
+import { products } from "@/lib/mock";
 import {
   usePromos,
   addPromo,
@@ -16,15 +17,17 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 
 export default function StorePromosPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const store = useActiveStore();
   const promos = usePromos(store.slug);
 
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
   const [emoji, setEmoji] = useState("🔥");
   const [gradient, setGradient] = useState(PROMO_GRADIENTS[0].value);
   const [image, setImage] = useState("");
+  const [productId, setProductId] = useState("");
 
   const onFile = (file?: File) => {
     if (!file) return;
@@ -35,9 +38,19 @@ export default function StorePromosPage() {
 
   const create = () => {
     if (!title.trim()) return;
-    addPromo(store.slug, { title: title.trim(), emoji, gradient, image: image || undefined });
+    const prod = products.find((p) => String(p.id) === productId);
+    addPromo(store.slug, {
+      title: title.trim(),
+      subtitle: subtitle.trim() || undefined,
+      emoji: prod?.emoji ?? emoji,
+      gradient,
+      image: image || undefined,
+      barcode: prod?.barcode,
+    });
     setTitle("");
+    setSubtitle("");
     setImage("");
+    setProductId("");
     setAdding(false);
   };
 
@@ -60,9 +73,12 @@ export default function StorePromosPage() {
             className="relative flex h-32 overflow-hidden rounded-3xl p-5 text-white"
             style={{ background: gradient }}
           >
-            <h3 className="z-10 max-w-[55%] font-display text-xl font-bold leading-tight">
-              {title || t("promo.title")}
-            </h3>
+            <div className="z-10 max-w-[55%]">
+              <h3 className="font-display text-xl font-bold leading-tight">
+                {title || t("promo.title")}
+              </h3>
+              {subtitle && <p className="mt-1 text-sm text-white/85">{subtitle}</p>}
+            </div>
             {image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={image} alt="" className="absolute bottom-0 right-0 h-full w-1/2 object-contain object-right-bottom p-2" />
@@ -72,6 +88,15 @@ export default function StorePromosPage() {
           </div>
 
           <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("promo.title")} className={inputCls} />
+          <input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder={t("promo.subtitle")} className={inputCls} />
+          <select value={productId} onChange={(e) => setProductId(e.target.value)} className={inputCls}>
+            <option value="">{t("promo.product")}</option>
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.emoji} {p.name[locale]}
+              </option>
+            ))}
+          </select>
           <div className="flex gap-3">
             <input value={emoji} onChange={(e) => setEmoji(e.target.value)} placeholder="🔥" className={`${inputCls} w-20 text-center`} maxLength={2} />
             <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-border-strong bg-surface-2 px-3 py-2.5 text-sm text-muted">
@@ -109,9 +134,10 @@ export default function StorePromosPage() {
             className="relative flex h-32 items-center overflow-hidden rounded-3xl p-5 text-white shadow-[var(--shadow)]"
             style={{ background: p.gradient }}
           >
-            <h3 className="z-10 max-w-[55%] font-display text-xl font-bold leading-tight">
-              {p.title}
-            </h3>
+            <div className="z-10 max-w-[55%]">
+              <h3 className="font-display text-xl font-bold leading-tight">{p.title}</h3>
+              {p.subtitle && <p className="mt-1 text-sm text-white/85">{p.subtitle}</p>}
+            </div>
             {p.image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={p.image} alt="" className="absolute bottom-0 right-12 h-full w-1/2 object-contain object-right-bottom p-2" />

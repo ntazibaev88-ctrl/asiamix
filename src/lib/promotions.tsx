@@ -9,6 +9,7 @@ import { useSyncExternalStore } from "react";
 export interface Promo {
   id: string;
   title: string;
+  subtitle?: string; // description / news text
   gradient: string;
   emoji: string;
   image?: string; // uploaded data URL (overrides barcode)

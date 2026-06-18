@@ -44,9 +44,14 @@ function PromoCard({ promo }: { promo: Promo }) {
       className="relative flex h-36 w-72 shrink-0 snap-start overflow-hidden rounded-3xl p-5 text-white shadow-[var(--shadow)]"
       style={{ background: promo.gradient }}
     >
-      <h3 className="z-10 max-w-[55%] font-display text-xl font-bold leading-tight drop-shadow">
-        {promo.title}
-      </h3>
+      <div className="z-10 max-w-[55%]">
+        <h3 className="font-display text-xl font-bold leading-tight drop-shadow">
+          {promo.title}
+        </h3>
+        {promo.subtitle && (
+          <p className="mt-1 text-xs text-white/85">{promo.subtitle}</p>
+        )}
+      </div>
       {showImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img

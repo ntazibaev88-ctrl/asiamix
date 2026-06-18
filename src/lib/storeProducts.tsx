@@ -14,6 +14,8 @@ export interface CustomProduct {
   cat: string;
   unit: string;
   stock: number;
+  brand?: string;
+  description?: string;
   image?: string; // data URL from upload
   emoji: string;
 }

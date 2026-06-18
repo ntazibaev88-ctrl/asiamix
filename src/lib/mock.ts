@@ -325,6 +325,13 @@ export const reviews = [
 
 // ---- Dashboard demo data ----
 
+export interface OrderLine {
+  name: string;
+  price: number;
+  qty: number;
+  emoji: string;
+}
+
 export interface DemoOrder {
   num: number;
   customer: string;
@@ -334,12 +341,29 @@ export interface DemoOrder {
   status: OrderStatus;
   minsAgo: number;
   comment?: string;
+  lines?: OrderLine[];
 }
 
 export const demoOrders: DemoOrder[] = [
-  { num: 1042, customer: "Айгерим С.", store: "Алтын Орда", items: 8, total: 6700, status: "pending", minsAgo: 2, comment: "Домофон жұмыс істемейді, қоңырау шалыңыз" },
-  { num: 1041, customer: "Дамир К.", store: "Capital", items: 4, total: 3400, status: "accepted", minsAgo: 9, comment: "Есік коды #1234, ұялы дыбыссыз" },
-  { num: 1040, customer: "Зарина Т.", store: "Алтын Орда", items: 12, total: 12600, status: "on_the_way", minsAgo: 18 },
+  { num: 1042, customer: "Айгерим С.", store: "Алтын Орда", items: 8, total: 6700, status: "pending", minsAgo: 2, comment: "Домофон жұмыс істемейді, қоңырау шалыңыз",
+    lines: [
+      { name: "Сүт 2.5% 1л", price: 450, qty: 2, emoji: "🥛" },
+      { name: "Батон наны", price: 180, qty: 3, emoji: "🍞" },
+      { name: "Жұмыртқа 10шт", price: 980, qty: 1, emoji: "🥚" },
+      { name: "Сыр Гауда", price: 1890, qty: 2, emoji: "🧀" },
+    ] },
+  { num: 1041, customer: "Дамир К.", store: "Capital", items: 4, total: 3400, status: "accepted", minsAgo: 9, comment: "Есік коды #1234, ұялы дыбыссыз",
+    lines: [
+      { name: "Coca-Cola 0.5л", price: 250, qty: 4, emoji: "🥤" },
+      { name: "Чипсы Lay's", price: 550, qty: 2, emoji: "🥔" },
+      { name: "Шоколад Рахат", price: 420, qty: 3, emoji: "🍫" },
+    ] },
+  { num: 1040, customer: "Зарина Т.", store: "Алтын Орда", items: 12, total: 12600, status: "on_the_way", minsAgo: 18,
+    lines: [
+      { name: "Тауық еті 1кг", price: 1290, qty: 2, emoji: "🍗" },
+      { name: "Күріш 1кг", price: 690, qty: 3, emoji: "🍚" },
+      { name: "Алма 1кг", price: 590, qty: 4, emoji: "🍎" },
+    ] },
   { num: 1039, customer: "Әлібек Н.", store: "Capital", items: 3, total: 2700, status: "delivered", minsAgo: 41 },
   { num: 1038, customer: "Мадина О.", store: "Алтын Орда", items: 9, total: 9200, status: "delivered", minsAgo: 58 },
   { num: 1037, customer: "Тимур А.", store: "Capital", items: 2, total: 1800, status: "cancelled", minsAgo: 72 },
