@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useI18n } from "@/lib/i18n";
-import { promos } from "@/lib/mock";
+import { useHomeBanners } from "@/lib/homeBanners";
 import { cn } from "@/lib/cn";
 
 export function PromoCarousel() {
-  const { locale } = useI18n();
+  const banners = useHomeBanners();
   const [active, setActive] = useState(0);
+  if (banners.length === 0) return null;
 
   return (
     <div>
@@ -18,43 +18,26 @@ export function PromoCarousel() {
           setActive(Math.round(el.scrollLeft / (el.clientWidth * 0.92)));
         }}
       >
-        {promos.map((p) => (
+        {banners.map((b) => (
           <div
-            key={p.id}
+            key={b.id}
             className="relative flex h-40 w-[92%] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-3xl p-5 text-white"
-            style={{ background: p.gradient }}
+            style={{ background: b.gradient }}
           >
-            <div
-              className="pointer-events-none absolute -right-6 -bottom-8 text-[9rem] opacity-20"
-              aria-hidden
-            >
-              {p.emoji}
+            <div className="pointer-events-none absolute -right-4 -bottom-6 text-[8rem] opacity-25" aria-hidden>
+              {b.emoji}
             </div>
-            <span className="w-fit rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold backdrop-blur">
-              {p.badge}
-            </span>
-            <div>
-              <h3 className="max-w-[80%] font-display text-xl font-bold leading-tight">
-                {p.title[locale]}
-              </h3>
-              <div className="mt-1 flex items-end gap-2">
-                {p.oldPrice && (
-                  <span className="text-sm text-white/60 line-through">
-                    {p.oldPrice}
-                  </span>
-                )}
-                <span className="font-display text-2xl font-bold">
-                  {p.price}
-                </span>
-              </div>
-            </div>
+            <h3 className="z-10 max-w-[75%] font-display text-2xl font-bold leading-tight">
+              {b.title}
+            </h3>
+            <p className="z-10 text-sm text-white/85">{b.subtitle}</p>
           </div>
         ))}
       </div>
       <div className="mt-2 flex justify-center gap-1.5">
-        {promos.map((p, i) => (
+        {banners.map((b, i) => (
           <span
-            key={p.id}
+            key={b.id}
             className={cn(
               "h-1.5 rounded-full transition-all",
               i === active ? "w-5 bg-brand" : "w-1.5 bg-border-strong",

@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
   Bike,
   ChevronRight,
+  Copy,
+  Gift,
   Heart,
   LogOut,
   Moon,
@@ -87,6 +90,24 @@ export default function ProfilePage() {
         </Link>
       )}
 
+      {/* Referral / invite a friend */}
+      {user && (
+        <section>
+          <div className="rounded-2xl border border-border bg-surface p-5">
+            <div className="flex items-center gap-2 font-semibold">
+              <Gift size={18} className="text-brand" /> {t("profile.referral")}
+            </div>
+            <p className="mt-1 text-sm text-muted">{t("profile.referralDesc")}</p>
+            <div className="mt-3 flex items-center gap-2">
+              <code className="flex-1 rounded-xl bg-surface-2 px-3 py-2.5 text-center font-mono font-bold tracking-wider">
+                {user.referralCode}
+              </code>
+              <CopyButton code={user.referralCode} label={t("profile.copy")} copied={t("profile.copied")} />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Quick links: Favorites & Orders (moved from the bottom nav) */}
       <section>
         <div className="overflow-hidden rounded-2xl border border-border bg-surface">
@@ -165,6 +186,34 @@ function Loyalty({
       </div>
       <div className="text-[11px] text-faint">{label}</div>
     </div>
+  );
+}
+
+function CopyButton({
+  code,
+  label,
+  copied,
+}: {
+  code: string;
+  label: string;
+  copied: string;
+}) {
+  const [done, setDone] = useState(false);
+  return (
+    <button
+      onClick={() => {
+        navigator.clipboard?.writeText(code).then(
+          () => {
+            setDone(true);
+            setTimeout(() => setDone(false), 1500);
+          },
+          () => {},
+        );
+      }}
+      className="flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2.5 text-sm font-semibold text-brand-fg cursor-pointer"
+    >
+      <Copy size={15} /> {done ? copied : label}
+    </button>
   );
 }
 

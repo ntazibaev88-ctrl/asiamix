@@ -1,0 +1,92 @@
+"use client";
+
+import { useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
+import {
+  useHomeBanners,
+  addBanner,
+  removeBanner,
+  BANNER_GRADIENTS,
+} from "@/lib/homeBanners";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
+
+export default function AdminBannersPage() {
+  const { t } = useI18n();
+  const banners = useHomeBanners();
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [emoji, setEmoji] = useState("🎉");
+  const [gradient, setGradient] = useState(BANNER_GRADIENTS[0]);
+
+  const add = () => {
+    if (!title.trim()) return;
+    addBanner({ title: title.trim(), subtitle: subtitle.trim(), emoji, gradient });
+    setTitle("");
+    setSubtitle("");
+  };
+
+  return (
+    <>
+      <PageHeader title={t("admin.bannerTitle")} subtitle={t("role.admin")} />
+
+      <Card className="mb-5 flex flex-col gap-3 p-4">
+        <div
+          className="relative flex h-32 flex-col justify-between overflow-hidden rounded-3xl p-5 text-white"
+          style={{ background: gradient }}
+        >
+          <span className="absolute -bottom-4 -right-2 text-7xl opacity-25">{emoji}</span>
+          <h3 className="z-10 font-display text-xl font-bold">{title || t("promo.title")}</h3>
+          <p className="z-10 text-sm text-white/85">{subtitle}</p>
+        </div>
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("promo.title")} className={inputCls} />
+        <div className="flex gap-3">
+          <input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="..." className={inputCls} />
+          <input value={emoji} onChange={(e) => setEmoji(e.target.value)} maxLength={2} className={`${inputCls} w-20 text-center`} />
+        </div>
+        <div className="flex gap-2">
+          {BANNER_GRADIENTS.map((g) => (
+            <button
+              key={g}
+              onClick={() => setGradient(g)}
+              className={cn("h-9 w-9 rounded-full border-2", gradient === g ? "border-fg" : "border-transparent")}
+              style={{ background: g }}
+              aria-label="color"
+            />
+          ))}
+        </div>
+        <Button onClick={add} disabled={!title.trim()}>
+          <Plus size={18} /> {t("admin.save")}
+        </Button>
+      </Card>
+
+      <div className="flex flex-col gap-3">
+        {banners.map((b) => (
+          <div
+            key={b.id}
+            className="relative flex h-28 items-center overflow-hidden rounded-3xl p-5 text-white"
+            style={{ background: b.gradient }}
+          >
+            <span className="absolute -bottom-3 right-10 text-6xl opacity-25">{b.emoji}</span>
+            <div className="z-10">
+              <div className="font-display text-lg font-bold">{b.title}</div>
+              <div className="text-sm text-white/85">{b.subtitle}</div>
+            </div>
+            <button
+              onClick={() => removeBanner(b.id)}
+              className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/30 backdrop-blur hover:bg-black/50 cursor-pointer"
+            >
+              <Trash2 size={15} />
+            </button>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+const inputCls =
+  "flex-1 rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-[var(--ring)]";

@@ -21,6 +21,7 @@ import {
 } from "@/lib/delivery";
 import { useEffectiveWeather } from "@/lib/weather";
 import { placeOrder } from "@/lib/activeOrder";
+import { validatePromo } from "@/lib/promoCodes";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
@@ -41,13 +42,30 @@ export default function CartPage() {
   const [street, setStreet] = useState(esilStreets[0]);
   const [house, setHouse] = useState("");
   const [comment, setComment] = useState("");
+  const [promoInput, setPromoInput] = useState("");
+  const [promoPct, setPromoPct] = useState(0);
+  const [promoErr, setPromoErr] = useState(false);
+  const [when, setWhen] = useState<"asap" | "scheduled">("asap");
+  const [schedTime, setSchedTime] = useState("");
   // Distance zone (from address) and weather surcharge are both automatic and
   // hidden from the client.
   const weather = useEffectiveWeather();
   const zone = zoneForStreet(street).id;
 
   const delivery = deliveryType === "delivery" ? deliveryFee(zone, weather) : 0;
-  const total = subtotal + delivery;
+  const discount = Math.round((subtotal * promoPct) / 100);
+  const total = subtotal + delivery - discount;
+
+  const applyPromo = () => {
+    const valid = validatePromo(promoInput);
+    if (valid) {
+      setPromoPct(valid.discountPct);
+      setPromoErr(false);
+    } else {
+      setPromoPct(0);
+      setPromoErr(true);
+    }
+  };
   const address =
     deliveryType === "delivery" ? `${street}, ${house}`.trim() : "";
 
@@ -248,6 +266,52 @@ export default function CartPage() {
               className={`${inputCls} resize-none`}
             />
           </Field>
+          {deliveryType === "delivery" && (
+            <Field label={t("cart.when")}>
+              <Toggle
+                value={when}
+                onChange={setWhen}
+                options={[
+                  { value: "asap", label: t("cart.asap") },
+                  { value: "scheduled", label: t("cart.scheduled") },
+                ]}
+              />
+              {when === "scheduled" && (
+                <input
+                  type="time"
+                  value={schedTime}
+                  onChange={(e) => setSchedTime(e.target.value)}
+                  className={`${inputCls} mt-2`}
+                />
+              )}
+            </Field>
+          )}
+          <Field label={t("promo.code")}>
+            <div className="flex gap-2">
+              <input
+                value={promoInput}
+                onChange={(e) => {
+                  setPromoInput(e.target.value.toUpperCase());
+                  setPromoErr(false);
+                }}
+                placeholder={t("promo.codePh")}
+                className={inputCls}
+              />
+              <Button variant="outline" onClick={applyPromo}>
+                {t("promo.apply")}
+              </Button>
+            </div>
+            {promoPct > 0 && (
+              <p className="mt-1.5 text-xs font-semibold text-success">
+                ✓ {t("promo.applied")}: −{promoPct}%
+              </p>
+            )}
+            {promoErr && (
+              <p className="mt-1.5 text-xs font-semibold text-danger">
+                {t("promo.invalid")}
+              </p>
+            )}
+          </Field>
         </div>
       )}
 
@@ -255,6 +319,9 @@ export default function CartPage() {
       <div className="rounded-2xl bg-surface-2 p-4 text-sm">
         <Row label={t("common.cart")} value={formatPrice(subtotal)} muted />
         <Row label={t("common.delivery")} value={formatPrice(delivery)} muted />
+        {discount > 0 && (
+          <Row label={t("promo.code")} value={`−${formatPrice(discount)}`} muted />
+        )}
         <div className="my-2 border-t border-border" />
         <Row label={t("common.total")} value={formatPrice(total)} />
       </div>

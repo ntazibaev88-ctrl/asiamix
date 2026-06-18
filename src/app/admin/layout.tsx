@@ -2,9 +2,12 @@
 
 import {
   Bike,
+  Image as ImageIcon,
   LayoutDashboard,
+  Megaphone,
   Package,
   Store,
+  Ticket,
   Users,
   Wallet,
 } from "lucide-react";
@@ -17,6 +20,9 @@ const nav: NavItem[] = [
   { href: "/admin/couriers", labelKey: "nav.couriers", icon: Bike },
   { href: "/admin/stores", labelKey: "nav.stores", icon: Store },
   { href: "/admin/finance", labelKey: "nav.finance", icon: Wallet },
+  { href: "/admin/promocodes", labelKey: "nav.promocodes", icon: Ticket },
+  { href: "/admin/notify", labelKey: "nav.notify", icon: Megaphone },
+  { href: "/admin/banners", labelKey: "nav.banners", icon: ImageIcon },
 ];
 
 export default function AdminLayout({

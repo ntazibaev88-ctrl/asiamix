@@ -13,6 +13,7 @@ export interface CustomProduct {
   price: number;
   cat: string;
   unit: string;
+  stock: number;
   image?: string; // data URL from upload
   emoji: string;
 }

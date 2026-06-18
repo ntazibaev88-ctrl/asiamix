@@ -7,8 +7,19 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { StatCard } from "@/components/ui/StatCard";
 import { OrdersTable } from "@/components/OrdersTable";
 import { WeatherControl } from "@/components/admin/WeatherControl";
+import { Card } from "@/components/ui/Card";
 import { demoOrders } from "@/lib/mock";
 import { useManagedStores } from "@/lib/managedStores";
+
+const WEEK = [
+  { day: "Пн", value: 480000 },
+  { day: "Вт", value: 620000 },
+  { day: "Ср", value: 540000 },
+  { day: "Чт", value: 710000 },
+  { day: "Пт", value: 920000 },
+  { day: "Сб", value: 1080000 },
+  { day: "Вс", value: 860000 },
+];
 
 export default function AdminDashboard() {
   const { t } = useI18n();
@@ -36,6 +47,26 @@ export default function AdminDashboard() {
         <StatCard icon={Store} label={t("nav.stores")} value={String(stores.length)} />
         <StatCard icon={Bike} label={t("dash.activeCouriers")} value="3" />
       </div>
+
+      {/* Revenue chart */}
+      <Card className="mt-6 p-6">
+        <h2 className="mb-5 font-display text-lg font-bold">{t("admin.revenueChart")}</h2>
+        <div className="flex h-48 items-end justify-between gap-3">
+          {WEEK.map((d) => {
+            const max = Math.max(...WEEK.map((x) => x.value));
+            return (
+              <div key={d.day} className="flex flex-1 flex-col items-center gap-2">
+                <div
+                  className="w-full rounded-t-lg bg-brand transition-all"
+                  style={{ height: `${(d.value / max) * 100}%` }}
+                  title={formatPrice(d.value)}
+                />
+                <span className="text-xs text-muted">{d.day}</span>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
 
       <div className="mt-6">
         <WeatherControl />

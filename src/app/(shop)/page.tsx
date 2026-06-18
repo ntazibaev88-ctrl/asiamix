@@ -1,17 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, Megaphone } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { stores } from "@/lib/mock";
+import { useAnnouncement } from "@/lib/announcements";
 import { PromoCarousel } from "@/components/shop/PromoCarousel";
 import { StoreCard } from "@/components/shop/StoreCard";
 
 export default function ShopHome() {
   const { t } = useI18n();
+  const announcement = useAnnouncement();
 
   return (
     <div className="flex flex-col gap-6">
+      {announcement && (
+        <div className="flex items-start gap-2 rounded-2xl bg-brand-soft px-4 py-3 text-sm font-medium text-brand">
+          <Megaphone size={16} className="mt-0.5 shrink-0" />
+          <span>{announcement}</span>
+        </div>
+      )}
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center gap-1.5 text-sm font-semibold text-muted">
           <MapPin size={15} className="text-brand" />

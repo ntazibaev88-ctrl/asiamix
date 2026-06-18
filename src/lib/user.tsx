@@ -12,6 +12,7 @@ export interface NomiUser {
   points: number; // loyalty points
   cashback: number; // ₸
   level: string; // loyalty tier
+  referralCode: string; // invite-a-friend code
 }
 
 const KEY = "nomi.user";
@@ -53,6 +54,7 @@ export function signIn(name: string, phone: string) {
     points: 1250,
     cashback: 860,
     level: "NOMI Gold",
+    referralCode: "NOMI-" + phone.replace(/\D/g, "").slice(-4).padStart(4, "0"),
   };
   try {
     localStorage.setItem(KEY, JSON.stringify(cache));

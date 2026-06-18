@@ -28,6 +28,7 @@ export default function StoreProductsPage() {
   const [price, setPrice] = useState("");
   const [cat, setCat] = useState(categories[1]?.slug ?? "dairy");
   const [unit, setUnit] = useState("шт");
+  const [stock, setStock] = useState("");
   const [image, setImage] = useState<string>("");
 
   const catName = useMemo(
@@ -50,11 +51,13 @@ export default function StoreProductsPage() {
       price: Number(price),
       cat,
       unit,
+      stock: Number(stock) || 0,
       image: image || undefined,
       emoji,
     });
     setName("");
     setPrice("");
+    setStock("");
     setImage("");
     setAdding(false);
   };
@@ -95,6 +98,7 @@ export default function StoreProductsPage() {
                 <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="₸" className={inputCls} />
                 <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="шт / кг / л" className={inputCls} />
               </div>
+              <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} placeholder={t("store.stock")} className={inputCls} />
             </div>
           </div>
           <select value={cat} onChange={(e) => setCat(e.target.value)} className={inputCls}>
@@ -135,6 +139,9 @@ export default function StoreProductsPage() {
                       / {p.unit} · {catName[p.cat]}
                     </span>
                   </div>
+                  <Badge tone={p.stock > 0 ? "success" : "danger"}>
+                    {t("store.stock")}: {p.stock}
+                  </Badge>
                 </div>
                 <button
                   onClick={() => removeCustomProduct(store.slug, p.id)}
@@ -167,11 +174,16 @@ export default function StoreProductsPage() {
                   {formatPrice(p.price)}{" "}
                   <span className="text-xs font-normal text-faint">/ {p.unit}</span>
                 </div>
-                <button onClick={() => toggleAvailability(store.slug, p.id)} className="mt-1 cursor-pointer">
-                  <Badge tone={off ? "neutral" : "success"}>
-                    {off ? t("shop.closed") : t("shop.open")}
-                  </Badge>
-                </button>
+                <div className="mt-1 flex items-center gap-2">
+                  <button onClick={() => toggleAvailability(store.slug, p.id)} className="cursor-pointer">
+                    <Badge tone={off ? "neutral" : "success"}>
+                      {off ? t("shop.closed") : t("shop.open")}
+                    </Badge>
+                  </button>
+                  <span className="text-xs text-faint">
+                    {t("store.stock")}: {20 + ((p.id * 13) % 80)}
+                  </span>
+                </div>
               </div>
             </Card>
           );
