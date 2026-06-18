@@ -100,6 +100,13 @@ export function DashboardShell({
           <div className="flex items-center gap-2">
             <LangSwitch />
             <ThemeToggle />
+            <button
+              onClick={signOut}
+              aria-label={t("common.signout")}
+              className="grid h-9 w-9 place-items-center rounded-full border border-border text-muted transition-colors hover:bg-danger-soft hover:text-danger cursor-pointer lg:hidden"
+            >
+              <LogOut size={17} />
+            </button>
           </div>
         </header>
 
