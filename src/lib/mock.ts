@@ -54,6 +54,8 @@ export interface Store {
   open: boolean;
   emoji: string;
   cover: string;
+  /** square logo (512×512) — falls back to the emoji on the cover */
+  logo?: string;
 }
 
 export interface Promo {

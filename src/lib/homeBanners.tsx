@@ -10,6 +10,8 @@ export interface HomeBanner {
   gradient: string;
   /** optional promo code advertised on the banner (tap-to-copy) */
   promoCode?: string;
+  /** optional 16:9 background photo (1920×1080) layered under the gradient */
+  image?: string;
 }
 
 export const BANNER_GRADIENTS = [

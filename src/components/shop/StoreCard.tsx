@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Clock, Heart, Star } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useFavorites, toggleFavorite } from "@/lib/favorites";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { cn } from "@/lib/cn";
 import type { Store } from "@/lib/mock";
 
@@ -20,12 +21,21 @@ export function StoreCard({ store }: { store: Store }) {
         !store.open && "opacity-60",
       )}
     >
-      <div
-        className="grid h-[68px] w-[68px] shrink-0 place-items-center rounded-3xl text-3xl"
-        style={{ background: store.cover }}
-      >
-        {store.emoji}
-      </div>
+      <ResponsiveImage
+        src={store.logo}
+        kind="logo"
+        alt={store.name}
+        rounded="rounded-3xl"
+        className="h-[68px] w-[68px] shrink-0"
+        fallback={
+          <div
+            className="grid h-full w-full place-items-center text-3xl"
+            style={{ background: store.cover }}
+          >
+            {store.emoji}
+          </div>
+        }
+      />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <span className="truncate font-display text-lg font-bold">

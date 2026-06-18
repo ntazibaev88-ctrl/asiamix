@@ -2,26 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { resolveProductImage } from "@/lib/productImage";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 import { cn } from "@/lib/cn";
 import type { Product } from "@/lib/mock";
 
 /**
- * Product image with a graceful emoji placeholder. Real photos are loaded on a
- * white background with object-contain (no stretching/cropping). When a static
- * `image` is set it is used directly; otherwise we look it up by barcode via
- * Open Food Facts (browser-side, cached).
+ * Product image (1:1) rendered through the platform's responsive image system,
+ * so it stays sharp on every device and never shifts layout. A static `image`
+ * is used directly; otherwise the photo is resolved by barcode via Open Food
+ * Facts (browser-side, cached). Falls back to the product emoji.
  */
 export function ProductImage({
   product,
   className,
   emojiClassName = "text-6xl",
+  priority = false,
 }: {
   product: Product;
   className?: string;
   emojiClassName?: string;
+  priority?: boolean;
 }) {
   const [src, setSrc] = useState<string | null>(product.image ?? null);
-  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (product.image || !product.barcode) return;
@@ -34,22 +36,15 @@ export function ProductImage({
     };
   }, [product.image, product.barcode]);
 
-  const showImage = src && !failed;
-
   return (
-    <div className={cn("relative grid place-items-center bg-white", className)}>
-      {showImage ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt=""
-          loading="lazy"
-          onError={() => setFailed(true)}
-          className="h-full w-full object-contain p-3"
-        />
-      ) : (
-        <span className={emojiClassName}>{product.emoji}</span>
-      )}
-    </div>
+    <ResponsiveImage
+      src={src}
+      kind="product"
+      alt={product.name?.ru ?? ""}
+      fit="contain"
+      priority={priority}
+      className={cn("bg-white", className)}
+      fallback={<span className={emojiClassName}>{product.emoji}</span>}
+    />
   );
 }

@@ -121,6 +121,8 @@ const DICT: Dict = {
   "promo.kindDelivery": { kk: "Жеткізуге", ru: "На доставку", en: "On delivery" },
   "promo.copy": { kk: "Көшіру", ru: "Копировать", en: "Copy" },
   "promo.copied": { kk: "Көшірілді", ru: "Скопировано", en: "Copied" },
+  "img.upload": { kk: "Сурет жүктеу", ru: "Загрузить фото", en: "Upload image" },
+  "img.error": { kk: "Суретті өңдеу қатесі", ru: "Ошибка обработки фото", en: "Image processing error" },
   // Admin extra
   "nav.promocodes": { kk: "Промокодтар", ru: "Промокоды", en: "Promo codes" },
   "nav.notify": { kk: "Хабарлама", ru: "Рассылка", en: "Broadcast" },
@@ -142,6 +144,7 @@ const DICT: Dict = {
   "admin.notifyPh": { kk: "Хабарлама мәтіні…", ru: "Текст сообщения…", en: "Message text…" },
   "admin.send": { kk: "Жіберу", ru: "Отправить", en: "Send" },
   "admin.bannerTitle": { kk: "Басты баннерлер", ru: "Главные баннеры", en: "Home banners" },
+  "admin.bannerImage": { kk: "Баннер суреті (16:9)", ru: "Фото баннера (16:9)", en: "Banner image (16:9)" },
   // Cart scheduling
   "cart.when": { kk: "Жеткізу уақыты", ru: "Время доставки", en: "Delivery time" },
   "cart.asap": { kk: "Қазір", ru: "Сейчас", en: "ASAP" },

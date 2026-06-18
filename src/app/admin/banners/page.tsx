@@ -12,6 +12,7 @@ import {
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 import { cn } from "@/lib/cn";
 
 export default function AdminBannersPage() {
@@ -22,6 +23,7 @@ export default function AdminBannersPage() {
   const [emoji, setEmoji] = useState("🎉");
   const [gradient, setGradient] = useState(BANNER_GRADIENTS[0]);
   const [promoCode, setPromoCode] = useState("");
+  const [image, setImage] = useState<string | undefined>(undefined);
 
   const add = () => {
     if (!title.trim()) return;
@@ -31,10 +33,12 @@ export default function AdminBannersPage() {
       emoji,
       gradient,
       promoCode: promoCode.trim().toUpperCase() || undefined,
+      image,
     });
     setTitle("");
     setSubtitle("");
     setPromoCode("");
+    setImage(undefined);
   };
 
   return (
@@ -46,7 +50,15 @@ export default function AdminBannersPage() {
           className="relative flex h-32 flex-col justify-between overflow-hidden rounded-3xl p-5 text-white"
           style={{ background: gradient }}
         >
-          <span className="absolute -bottom-4 -right-2 text-7xl opacity-25">{emoji}</span>
+          {image ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-black/10" />
+            </>
+          ) : (
+            <span className="absolute -bottom-4 -right-2 text-7xl opacity-25">{emoji}</span>
+          )}
           <h3 className="z-10 font-display text-xl font-bold">{title || t("promo.title")}</h3>
           <div className="z-10 flex items-end justify-between gap-2">
             <p className="text-sm text-white/85">{subtitle}</p>
@@ -79,6 +91,7 @@ export default function AdminBannersPage() {
             />
           ))}
         </div>
+        <ImageUploader value={image} onChange={setImage} kind="banner" label={t("admin.bannerImage")} />
         <Button onClick={add} disabled={!title.trim()}>
           <Plus size={18} /> {t("admin.save")}
         </Button>
@@ -91,7 +104,15 @@ export default function AdminBannersPage() {
             className="relative flex h-28 items-center overflow-hidden rounded-3xl p-5 text-white"
             style={{ background: b.gradient }}
           >
-            <span className="absolute -bottom-3 right-10 text-6xl opacity-25">{b.emoji}</span>
+            {b.image ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={b.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-black/10" />
+              </>
+            ) : (
+              <span className="absolute -bottom-3 right-10 text-6xl opacity-25">{b.emoji}</span>
+            )}
             <div className="z-10">
               <div className="font-display text-lg font-bold">{b.title}</div>
               <div className="text-sm text-white/85">{b.subtitle}</div>

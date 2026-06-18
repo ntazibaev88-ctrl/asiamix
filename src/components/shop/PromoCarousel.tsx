@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Check, Copy } from "lucide-react";
 import { useHomeBanners } from "@/lib/homeBanners";
 import { useI18n } from "@/lib/i18n";
+import { IMAGE_SPECS, isLocalSrc } from "@/lib/images";
 import { cn } from "@/lib/cn";
 
 export function PromoCarousel() {
@@ -38,9 +40,26 @@ export function PromoCarousel() {
             className="relative flex h-40 w-[92%] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-3xl p-5 text-white"
             style={{ background: b.gradient }}
           >
-            <div className="pointer-events-none absolute -right-4 -bottom-6 text-[8rem] opacity-25" aria-hidden>
-              {b.emoji}
-            </div>
+            {b.image && (
+              <>
+                <Image
+                  src={b.image}
+                  alt={b.title}
+                  fill
+                  sizes={IMAGE_SPECS.banner.sizes}
+                  quality={IMAGE_SPECS.banner.quality}
+                  unoptimized={isLocalSrc(b.image)}
+                  className="object-cover"
+                />
+                {/* legibility scrim for the overlaid text */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-black/10" />
+              </>
+            )}
+            {!b.image && (
+              <div className="pointer-events-none absolute -right-4 -bottom-6 text-[8rem] opacity-25" aria-hidden>
+                {b.emoji}
+              </div>
+            )}
             <h3 className="z-10 max-w-[75%] font-display text-2xl font-bold leading-tight">
               {b.title}
             </h3>

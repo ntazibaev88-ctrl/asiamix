@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ImagePlus, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
 import { useActiveStore } from "@/lib/activeStore";
@@ -16,6 +16,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { ImageUploader } from "@/components/ui/ImageUploader";
+import { ResponsiveImage } from "@/components/ui/ResponsiveImage";
 
 export default function StoreProductsPage() {
   const { t, locale } = useI18n();
@@ -31,19 +33,12 @@ export default function StoreProductsPage() {
   const [stock, setStock] = useState("");
   const [brand, setBrand] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string | undefined>(undefined);
 
   const catName = useMemo(
     () => Object.fromEntries(categories.map((c) => [c.slug, c.name[locale]])),
     [locale],
   );
-
-  const onFile = (file?: File) => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setImage(String(reader.result));
-    reader.readAsDataURL(file);
-  };
 
   const create = () => {
     if (!name.trim() || !price) return;
@@ -64,7 +59,7 @@ export default function StoreProductsPage() {
     setStock("");
     setBrand("");
     setDescription("");
-    setImage("");
+    setImage(undefined);
     setAdding(false);
   };
 
@@ -84,20 +79,7 @@ export default function StoreProductsPage() {
       {adding && (
         <Card className="mb-5 flex flex-col gap-3 p-4">
           <div className="flex gap-3">
-            <label className="grid h-20 w-20 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-2xl border border-dashed border-border-strong bg-surface-2 text-faint">
-              {image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={image} alt="" className="h-full w-full object-contain p-1" />
-              ) : (
-                <ImagePlus size={22} />
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => onFile(e.target.files?.[0])}
-              />
-            </label>
+            <ImageUploader value={image} onChange={setImage} kind="product" className="w-24 shrink-0" />
             <div className="flex flex-1 flex-col gap-2">
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("store.productName")} className={inputCls} />
               <div className="flex gap-2">
@@ -137,14 +119,15 @@ export default function StoreProductsPage() {
           <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {data.custom.map((p) => (
               <Card key={p.id} className="flex items-center gap-4 p-4">
-                <div className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-white text-3xl">
-                  {p.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.image} alt="" className="h-full w-full object-contain p-1" />
-                  ) : (
-                    p.emoji
-                  )}
-                </div>
+                <ResponsiveImage
+                  src={p.image}
+                  kind="product"
+                  alt={p.name}
+                  fit="contain"
+                  rounded="rounded-xl"
+                  className="h-14 w-14 shrink-0 bg-white"
+                  fallback={<span className="text-3xl">{p.emoji}</span>}
+                />
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-semibold">{p.name}</div>
                   {p.brand && <div className="text-xs text-muted">{p.brand}</div>}
