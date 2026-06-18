@@ -1,41 +1,49 @@
 // Delivery pricing for NOMI. The delivery fee is also the courier's payout.
-// Pricing is WEIGHT-BASED (shared pure functions, also used by the server);
-// distance zones + weather are kept for reference but no longer set the price.
+// Model: a flat BASE fee + a WEIGHT SURCHARGE for heavier baskets (only added
+// above 7 kg). Shared pure functions, also used by the server.
 
 // ── Weight-based delivery pricing ─────────────────────────────────────────
+// Base delivery fee (₸). Light orders (≤7 кг) pay only this. Configurable.
+export const BASE_DELIVERY = Number(process.env.BASE_DELIVERY ?? 500);
+
 export interface WeightTier {
   maxKg: number;
-  price: number;
+  surcharge: number;
   label: string;
 }
 
-// 0–5 кг = 1000 ₸ · 5–10 = 1200 · 10–15 = 1500 · 15–30 = 2000 · 30–50 = 3000
+// Weight surcharge added on top of the base fee:
+//   ≤7 кг → +0 · 8–14 кг → +300 · 15–20 кг → +400 · 20–30 кг → +600
 export const weightTiers: WeightTier[] = [
-  { maxKg: 5, price: 1000, label: "0–5 кг" },
-  { maxKg: 10, price: 1200, label: "5–10 кг" },
-  { maxKg: 15, price: 1500, label: "10–15 кг" },
-  { maxKg: 30, price: 2000, label: "15–30 кг" },
-  { maxKg: 50, price: 3000, label: "30–50 кг" },
+  { maxKg: 7, surcharge: 0, label: "≤7 кг" },
+  { maxKg: 14, surcharge: 300, label: "8–14 кг" },
+  { maxKg: 20, surcharge: 400, label: "15–20 кг" },
+  { maxKg: 30, surcharge: 600, label: "20–30 кг" },
 ];
 
-/** Delivery fee for a basket of the given total weight (kg). */
-export function deliveryFeeByWeight(totalKg: number): number {
+/** Weight surcharge (₸) for a basket of the given total weight (kg). */
+export function weightSurcharge(totalKg: number): number {
   const kg = Math.max(0, totalKg);
-  for (const tier of weightTiers) if (kg <= tier.maxKg) return tier.price;
-  // Above the top tier we still charge the heaviest rate.
-  return weightTiers[weightTiers.length - 1].price;
+  for (const tier of weightTiers) if (kg <= tier.maxKg) return tier.surcharge;
+  // Above the top tier we keep the heaviest surcharge.
+  return weightTiers[weightTiers.length - 1].surcharge;
+}
+
+/** Total delivery fee = base + weight surcharge. */
+export function deliveryFeeByWeight(totalKg: number): number {
+  return BASE_DELIVERY + weightSurcharge(totalKg);
 }
 
 export type WeightSeverity = "normal" | "medium" | "heavy" | "very_heavy";
 
 /**
  * Courier-facing weight severity:
- *   ≥30 кг → 🚨 өте ауыр · ≥15 кг → ⚠️ ауыр · ≥10 кг → ⚠️ орташа ауыр.
+ *   ≥30 кг → 🚨 өте ауыр · ≥15 кг → ⚠️ ауыр · ≥8 кг → ⚠️ орташа ауыр.
  */
 export function weightSeverity(totalKg: number): WeightSeverity {
   if (totalKg >= 30) return "very_heavy";
   if (totalKg >= 15) return "heavy";
-  if (totalKg >= 10) return "medium";
+  if (totalKg >= 8) return "medium";
   return "normal";
 }
 
