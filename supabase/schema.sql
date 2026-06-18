@@ -359,3 +359,176 @@ create table if not exists audit_log (
 );
 create index if not exists audit_event_idx on audit_log(event);
 create index if not exists audit_at_idx on audit_log(at desc);
+
+-- ============================================================================
+-- Payments: secure, atomic split (store / courier / admin) with receipts,
+-- ledger, error log and admin notifications. ALL money math runs here on the
+-- server — clients never compute or move money.
+-- ============================================================================
+
+do $$ begin
+  create type payment_state2 as enum
+    ('unpaid','processing','paid','failed','refunded');
+exception when duplicate_object then null; end $$;
+
+-- One wallet per money owner (store / courier / platform-admin).
+create table if not exists wallets (
+  id          uuid primary key default uuid_generate_v4(),
+  owner_type  text not null check (owner_type in ('store','courier','admin')),
+  owner_id    uuid,                          -- store_id / courier profile id / null for platform
+  balance     bigint not null default 0 check (balance >= 0),
+  currency    text not null default 'KZT',
+  updated_at  timestamptz not null default now(),
+  unique (owner_type, owner_id)
+);
+
+-- The receipt — one row per processed payment.
+create table if not exists payment_transactions (
+  id               uuid primary key default uuid_generate_v4(),
+  txn_id           text unique not null,      -- human/audit Transaction ID
+  order_id         uuid not null references orders(id) on delete restrict,
+  customer_id      uuid references profiles(id) on delete set null,
+  store_id         uuid references stores(id) on delete set null,
+  courier_id       uuid references profiles(id) on delete set null,
+  subtotal         bigint not null,
+  delivery_fee     bigint not null,
+  store_amount     bigint not null,
+  admin_commission bigint not null,
+  service_fee      bigint not null,
+  total            bigint not null,
+  payment_method   payment_method not null,
+  status           payment_state2 not null default 'processing',
+  created_at       timestamptz not null default now(),
+  -- money is never created or destroyed
+  constraint split_balances
+    check (store_amount + delivery_fee + admin_commission + service_fee = total)
+);
+create index if not exists ptx_order_idx on payment_transactions(order_id);
+create index if not exists ptx_created_idx on payment_transactions(created_at desc);
+
+-- Immutable double-entry ledger: every credit is recorded.
+create table if not exists ledger_entries (
+  id          bigserial primary key,
+  txn_id      text not null references payment_transactions(txn_id) on delete restrict,
+  wallet_id   uuid not null references wallets(id),
+  reason      text not null,                 -- store_amount | delivery_fee | commission | service_fee
+  amount      bigint not null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists ledger_txn_idx on ledger_entries(txn_id);
+
+create table if not exists payment_errors (
+  id          bigserial primary key,
+  order_id    uuid,
+  txn_id      text,
+  message     text not null,
+  payload     jsonb not null default '{}',
+  created_at  timestamptz not null default now()
+);
+
+create table if not exists admin_notifications (
+  id          bigserial primary key,
+  kind        text not null,
+  message     text not null,
+  order_id    uuid,
+  is_read     boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+
+create or replace function upsert_wallet(p_type text, p_owner uuid)
+returns uuid language plpgsql as $$
+declare w_id uuid;
+begin
+  insert into wallets (owner_type, owner_id) values (p_type, p_owner)
+    on conflict (owner_type, owner_id) do nothing;
+  select id into w_id from wallets where owner_type = p_type
+    and owner_id is not distinct from p_owner;
+  return w_id;
+end; $$;
+
+-- ---- Atomic payment processing --------------------------------------------
+-- Computes the split from DB values (never from the client), credits each
+-- wallet, writes the receipt + ledger, and marks the order paid. Any failure
+-- rolls back ALL credits; the order is marked 'failed', the error is logged
+-- and the admin is notified. Returns the Transaction ID.
+create or replace function process_order_payment(
+  p_order_id uuid,
+  p_service_fee_pct numeric default 5
+) returns text language plpgsql as $$
+declare
+  o            orders%rowtype;
+  v_commpct    numeric;
+  v_subtotal   bigint;
+  v_delivery   bigint;
+  v_commission bigint;
+  v_service    bigint;
+  v_store_amt  bigint;
+  v_total      bigint;
+  v_txn        text := 'TXN-' || upper(replace(gen_random_uuid()::text,'-','')) ;
+  w_store uuid; w_courier uuid; w_admin uuid;
+begin
+  -- Lock the order so two payments can't race.
+  select * into o from orders where id = p_order_id for update;
+  if not found then raise exception 'order_not_found'; end if;
+  if o.payment_state = 'paid' then raise exception 'already_paid'; end if;
+
+  update orders set payment_state = 'processing' where id = p_order_id;
+
+  -- Server-side amounts (trust the DB, not the request).
+  select coalesce(commission_rate,3) into v_commpct from stores where id = o.store_id;
+  v_subtotal   := o.subtotal;
+  v_delivery   := o.delivery_fee;
+  v_commission := round(v_subtotal * v_commpct / 100.0);
+  v_service    := round(v_subtotal * p_service_fee_pct / 100.0);
+  v_store_amt  := v_subtotal - v_commission;
+  v_total      := v_subtotal + v_delivery + v_service;
+
+  if v_store_amt < 0 then raise exception 'commission_exceeds_subtotal'; end if;
+
+  -- Receipt (CHECK constraint guarantees the split balances exactly).
+  insert into payment_transactions(
+    txn_id, order_id, customer_id, store_id, courier_id,
+    subtotal, delivery_fee, store_amount, admin_commission, service_fee, total,
+    payment_method, status)
+  values (
+    v_txn, o.id, o.customer_id, o.store_id, o.courier_id,
+    v_subtotal, v_delivery, v_store_amt, v_commission, v_service, v_total,
+    o.payment, 'paid');
+
+  -- Resolve wallets and credit each recipient.
+  w_store   := upsert_wallet('store',   o.store_id);
+  w_courier := upsert_wallet('courier', o.courier_id);
+  w_admin   := upsert_wallet('admin',   null);
+
+  update wallets set balance = balance + v_store_amt,            updated_at = now() where id = w_store;
+  update wallets set balance = balance + v_delivery,             updated_at = now() where id = w_courier;
+  update wallets set balance = balance + v_commission + v_service, updated_at = now() where id = w_admin;
+
+  insert into ledger_entries(txn_id, wallet_id, reason, amount) values
+    (v_txn, w_store,   'store_amount', v_store_amt),
+    (v_txn, w_courier, 'delivery_fee', v_delivery),
+    (v_txn, w_admin,   'commission',   v_commission),
+    (v_txn, w_admin,   'service_fee',  v_service);
+
+  update orders set payment_state = 'paid' where id = p_order_id;
+  return v_txn;
+
+exception when others then
+  -- Rollback already happened for the credits above; record the failure.
+  update orders set payment_state = 'failed' where id = p_order_id;
+  insert into payment_errors(order_id, txn_id, message, payload)
+    values (p_order_id, v_txn, sqlerrm, jsonb_build_object('state','rolled_back'));
+  insert into admin_notifications(kind, message, order_id)
+    values ('payment_failed', 'Payment failed for order ' || p_order_id || ': ' || sqlerrm, p_order_id);
+  raise;
+end; $$;
+
+-- Aggregated admin report.
+create or replace view admin_payment_report as
+select
+  coalesce(sum(store_amount)      filter (where status='paid'),0) as paid_to_stores,
+  coalesce(sum(delivery_fee)      filter (where status='paid'),0) as paid_to_couriers,
+  coalesce(sum(admin_commission)  filter (where status='paid'),0) as commission_income,
+  coalesce(sum(service_fee)       filter (where status='paid'),0) as service_fee_income,
+  coalesce(sum(total)             filter (where status='paid'),0) as gross_revenue
+from payment_transactions;
