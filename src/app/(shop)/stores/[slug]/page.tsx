@@ -18,6 +18,7 @@ import { FeaturedSlider } from "@/components/shop/FeaturedSlider";
 import { PromoCarousel } from "@/components/shop/PromoCarousel";
 import { PromoSlider } from "@/components/shop/PromoSlider";
 import { CategoryCard } from "@/components/shop/CategoryCard";
+import { Reveal } from "@/components/shop/Reveal";
 
 export default function StoreDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -92,31 +93,58 @@ export default function StoreDetailPage() {
       {showCatalog ? (
         /* Catalog: hits/discounts slider + category tiles grouped like Рядом */
         <div className="flex flex-col gap-6">
-          <FeaturedSlider
-            title={t("store.hits")}
-            products={catalog.filter((pr) => pr.tag === "HIT" || pr.tag === "SALE")}
-            storeSlug={store.slug}
-          />
-          <PromoSlider storeSlug={store.slug} />
-          {catalogGroups.map((g) => {
+          <Reveal>
+            <PromoSlider storeSlug={store.slug} />
+          </Reveal>
+          <Reveal delay={0.05}>
+            <FeaturedSlider
+              title={t("store.hits")}
+              products={catalog.filter((pr) => pr.tag === "HIT")}
+              storeSlug={store.slug}
+            />
+          </Reveal>
+          <Reveal delay={0.05}>
+            <FeaturedSlider
+              title={t("store.sale")}
+              products={catalog.filter((pr) => pr.tag === "SALE" || pr.oldPrice)}
+              storeSlug={store.slug}
+            />
+          </Reveal>
+          <Reveal delay={0.05}>
+            <FeaturedSlider
+              title={t("store.new")}
+              products={catalog.filter((pr) => pr.tag === "NEW")}
+              storeSlug={store.slug}
+            />
+          </Reveal>
+          <Reveal delay={0.05}>
+            <FeaturedSlider
+              title={t("store.popular")}
+              products={[...catalog].sort((a, b) => b.rating - a.rating).slice(0, 8)}
+              storeSlug={store.slug}
+            />
+          </Reveal>
+          {catalogGroups.map((g, i) => {
             const cats = categories.filter((c) => c.group === g.key);
             if (cats.length === 0) return null;
             return (
-              <section key={g.key}>
-                <h2 className="mb-3 font-display text-xl font-bold">
-                  {g.name[locale]}
-                </h2>
-                <div className="grid grid-cols-2 gap-3">
-                  {cats.map((c) => (
-                    <CategoryCard
-                      key={c.slug}
-                      emoji={c.emoji}
-                      name={c.name[locale]}
-                      onClick={() => setCat(c.slug)}
-                    />
-                  ))}
-                </div>
-              </section>
+              <Reveal key={g.key} delay={Math.min(i * 0.03, 0.2)}>
+                <section>
+                  <h2 className="mb-3 font-display text-xl font-bold">
+                    {g.name[locale]}
+                  </h2>
+                  <div className="grid grid-cols-2 gap-3">
+                    {cats.map((c) => (
+                      <CategoryCard
+                        key={c.slug}
+                        emoji={c.emoji}
+                        name={c.name[locale]}
+                        onClick={() => setCat(c.slug)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </Reveal>
             );
           })}
         </div>

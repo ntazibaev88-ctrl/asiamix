@@ -125,8 +125,11 @@ const DICT: Dict = {
   "shop.favStores": { kk: "Таңдаулы дүкендер", ru: "Избранные магазины", en: "Favorite stores" },
   "shop.favProducts": { kk: "Таңдаулы тауарлар", ru: "Избранные товары", en: "Favorite products" },
 
-  // Store featured slider
-  "store.hits": { kk: "Хиттер мен жеңілдіктер 🔥", ru: "Хиты и скидки 🔥", en: "Hits & discounts 🔥" },
+  // Store featured sliders
+  "store.hits": { kk: "Хиттер 🔥", ru: "Хиты 🔥", en: "Hits 🔥" },
+  "store.new": { kk: "Жаңа түскен 🆕", ru: "Новинки 🆕", en: "New 🆕" },
+  "store.sale": { kk: "Жеңілдіктер 💸", ru: "Скидки 💸", en: "Discounts 💸" },
+  "store.popular": { kk: "Танымал ⭐", ru: "Популярное ⭐", en: "Popular ⭐" },
   "shop.specialOffers": { kk: "Арнайы ұсыныстар", ru: "Специальные предложения", en: "Special offers" },
 
   // Product detail
