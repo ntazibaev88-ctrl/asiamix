@@ -90,24 +90,23 @@ export default async function CourseDetailPage({
             </div>
             <div className="w-full lg:w-80 flex-shrink-0">
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
-                <div className="text-4xl font-bold mb-2" style={{ color }}>
-                  {course.price.toLocaleString()} ₸
-                </div>
-                <p className="text-[var(--muted)] text-sm mb-6">
-                  Бір рет төлем. Мәңгілік қолжетімділік.
-                </p>
                 {isEnrolled ? (
-                  <a
-                    href={`/courses/${slug}/lessons`}
-                    className="block w-full text-center py-3 px-4 rounded-xl bg-[var(--success)] text-white font-semibold"
-                  >
-                    Жалғастыру →
-                  </a>
+                  <>
+                    <div className="text-2xl font-bold mb-2 text-[var(--success)]">Курс ашық ✓</div>
+                    <p className="text-[var(--muted)] text-sm mb-6">Мәңгілік қолжетімділік</p>
+                    <a
+                      href={`/courses/${slug}/lessons`}
+                      className="block w-full text-center py-3 px-4 rounded-xl bg-[var(--success)] text-white font-semibold"
+                    >
+                      Жалғастыру →
+                    </a>
+                  </>
                 ) : (
                   <PaymentSection
                     courseId={course.id}
                     courseTitle={course.title}
                     price={course.price}
+                    salePrice={1990}
                     userId={user?.id}
                   />
                 )}

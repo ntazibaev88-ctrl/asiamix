@@ -18,12 +18,13 @@ export default function LoginPage() {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword(form);
     if (error) {
-      toast.error(
-        'Қате! ' +
-          (error.message === 'Invalid login credentials'
-            ? 'Email немесе құпия сөз дұрыс емес'
-            : error.message)
-      );
+      const msg =
+        error.message === 'Invalid login credentials'
+          ? 'Email немесе құпия сөз дұрыс емес'
+          : error.message.includes('fetch') || error.message.includes('network')
+          ? 'Желі қатесі. Vercel-да SUPABASE env variables орнатылған ба?'
+          : error.message;
+      toast.error(msg);
       setLoading(false);
       return;
     }

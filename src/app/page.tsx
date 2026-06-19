@@ -5,9 +5,9 @@ import { BookOpen, Code2, Palette, Zap, Award, Globe, ChevronRight, Star, Send, 
 import { CounterAnimation } from '@/components/ui/CounterAnimation';
 
 const courses = [
-  { icon: '🌐', title: 'HTML Fundamentals', slug: 'html', lessons: 15, price: 4990, free: 3, color: '#e34c26', desc: 'Веб-беттердің негізін үйреніңіз. Тегтер, атрибуттар, семантикалық HTML.' },
-  { icon: '🎨', title: 'CSS Fundamentals', slug: 'css', lessons: 15, price: 4990, free: 3, color: '#264de4', desc: 'Flexbox, Grid, анимациялар, responsive дизайн.' },
-  { icon: '⚡', title: 'JavaScript Fundamentals', slug: 'javascript', lessons: 15, price: 7990, free: 3, color: '#f7df1e', desc: 'DOM, Events, Fetch API, Async/Await.' },
+  { icon: '🌐', title: 'HTML Fundamentals', slug: 'html', lessons: 15, price: 4990, salePrice: 1990, free: 3, color: '#e34c26', desc: 'Веб-беттердің негізін үйреніңіз. Тегтер, атрибуттар, семантикалық HTML.' },
+  { icon: '🎨', title: 'CSS Fundamentals', slug: 'css', lessons: 15, price: 4990, salePrice: 1990, free: 3, color: '#264de4', desc: 'Flexbox, Grid, анимациялар, responsive дизайн.' },
+  { icon: '⚡', title: 'JavaScript Fundamentals', slug: 'javascript', lessons: 15, price: 7990, salePrice: 1990, free: 3, color: '#f7df1e', desc: 'DOM, Events, Fetch API, Async/Await.' },
 ];
 
 const benefits = [
@@ -134,7 +134,10 @@ export default function HomePage() {
                 <p className="text-[var(--muted)] text-sm mb-5 leading-relaxed flex-1">{course.desc}</p>
                 <div className="flex items-center justify-between mb-5 text-sm text-[var(--muted)]">
                   <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4" />{course.lessons} сабақ</span>
-                  <span className="font-bold text-xl text-[var(--fg)]">{course.price.toLocaleString()} ₸</span>
+                  <div className="text-right">
+                    <div className="font-bold text-xl text-[var(--brand)]">{course.salePrice.toLocaleString()} ₸</div>
+                    <div className="text-xs text-[var(--faint)] line-through">{course.price.toLocaleString()} ₸</div>
+                  </div>
                 </div>
                 <Link href={`/courses/${course.slug}`} className="block w-full text-center py-3 px-4 rounded-xl bg-[var(--brand)] text-white font-medium group-hover:bg-[var(--brand-hover)] transition-all shadow-[0_0_20px_var(--brand-glow)]">
                   Бастау →

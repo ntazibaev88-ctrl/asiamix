@@ -30,7 +30,13 @@ export default function RegisterPage() {
       options: { data: { full_name: form.full_name } },
     });
     if (error) {
-      toast.error(error.message);
+      const msg =
+        error.message.includes('fetch') || error.message.includes('network')
+          ? 'Желі қатесі. Vercel Settings → Environment Variables → NEXT_PUBLIC_SUPABASE_URL мен ANON_KEY қосыңыз'
+          : error.message.includes('already registered')
+          ? 'Бұл email тіркелген. Кіру бетіне өтіңіз.'
+          : error.message;
+      toast.error(msg);
       setLoading(false);
       return;
     }
