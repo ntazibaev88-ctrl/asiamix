@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Menu, X, Code2 } from 'lucide-react';
+import { Menu, X, Code2, Search } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 
 interface NavbarProps {
@@ -26,6 +26,12 @@ export function Navbar({ user }: NavbarProps) {
             </Link>
             <Link href="/courses" className="text-[var(--muted)] hover:text-[var(--fg)] transition-colors text-sm font-medium">
               Курстар
+            </Link>
+            <Link href="/leaderboard" className="text-[var(--muted)] hover:text-[var(--fg)] transition-colors text-sm font-medium">
+              Рейтинг
+            </Link>
+            <Link href="/search" className="text-[var(--muted)] hover:text-[var(--fg)] transition-colors">
+              <Search className="w-4 h-4" />
             </Link>
           </div>
 
@@ -78,6 +84,12 @@ export function Navbar({ user }: NavbarProps) {
           </Link>
           <Link href="/courses" onClick={() => setOpen(false)} className="text-[var(--muted)] hover:text-[var(--fg)] font-medium">
             Курстар
+          </Link>
+          <Link href="/leaderboard" onClick={() => setOpen(false)} className="text-[var(--muted)] hover:text-[var(--fg)] font-medium">
+            Рейтинг
+          </Link>
+          <Link href="/search" onClick={() => setOpen(false)} className="text-[var(--muted)] hover:text-[var(--fg)] font-medium">
+            Іздеу
           </Link>
           {user ? (
             <>
