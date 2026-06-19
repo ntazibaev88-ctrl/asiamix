@@ -8,7 +8,7 @@ interface Props {
 export function ProgressRing({ percent, size = 80, strokeWidth = 8, color = 'var(--brand)' }: Props) {
   const r = (size - strokeWidth) / 2;
   const circ = 2 * Math.PI * r;
-  const offset = circ - (percent / 100) * circ;
+  const offset = circ - (Math.min(percent, 100) / 100) * circ;
 
   return (
     <svg width={size} height={size} className="-rotate-90">
