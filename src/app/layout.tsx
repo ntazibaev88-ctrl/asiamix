@@ -1,55 +1,36 @@
-import type { Metadata, Viewport } from "next";
-import { Manrope, Space_Grotesk } from "next/font/google";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider, themeNoFlashScript } from "@/lib/theme";
-import { I18nProvider } from "@/lib/i18n";
+import { Toaster } from "sonner";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin", "cyrillic"],
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "NOMI — Доставка еды",
-  description:
-    "NOMI Delivery Platform — заказывайте любимую еду из ресторанов вашего города. Быстро, удобно, вкусно.",
-  applicationName: "NOMI",
+  title: { default: "CodeOrda — Бағдарламалауды қазақша үйрен", template: "%s | CodeOrda" },
+  description: "Қазақстанның IT мамандарын дайындайтын платформа. HTML, CSS, JavaScript курстарын қазақ тілінде оқыңыз.",
+  keywords: ["бағдарламалау", "курс", "қазақша", "HTML", "CSS", "JavaScript", "CodeOrda"],
+  authors: [{ name: "CodeOrda" }],
+  robots: { index: true, follow: true },
+  openGraph: {
+    title: "CodeOrda — Бағдарламалауды қазақша үйрен",
+    description: "Қазақстанның IT мамандарын дайындайтын платформа",
+    type: "website",
+    locale: "kk_KZ",
+    siteName: "CodeOrda",
+  },
+  twitter: { card: "summary_large_image", title: "CodeOrda", description: "Бағдарламалауды қазақша үйрен" },
 };
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b0f" },
-  ],
-  width: "device-width",
-  initialScale: 1,
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="ru"
-      suppressHydrationWarning
-      className={`${manrope.variable} ${spaceGrotesk.variable}`}
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeNoFlashScript }} />
-      </head>
-      <body className="min-h-screen">
-        <ThemeProvider>
-          <I18nProvider>{children}</I18nProvider>
-        </ThemeProvider>
+    <html lang="kk" suppressHydrationWarning className={inter.variable}>
+      <body className="min-h-screen bg-bg text-fg">
+        {children}
+        <Toaster theme="dark" position="top-right" richColors />
       </body>
     </html>
   );

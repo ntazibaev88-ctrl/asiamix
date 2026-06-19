@@ -1,77 +1,92 @@
-"use client";
+import { createClient } from '@/lib/supabase/server';
+import { Users } from 'lucide-react';
+import type { Metadata } from 'next';
 
-import { useState } from "react";
-import { useI18n } from "@/lib/i18n";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+export const metadata: Metadata = { title: 'Admin — Пайдаланушылар' };
 
-const users = [
-  { id: 1, name: "Айгерим Серикова", phone: "+7 701 111 22 33", role: "customer", orders: 24 },
-  { id: 2, name: "Ерлан Беков", phone: "+7 702 222 33 44", role: "courier", orders: 312 },
-  { id: 3, name: "NOMI Sushi", phone: "+7 727 333 44 55", role: "store_admin", orders: 312 },
-  { id: 4, name: "Дамир Касымов", phone: "+7 705 444 55 66", role: "customer", orders: 7 },
-];
+export default async function AdminUsersPage() {
+  const supabase = await createClient();
 
-export default function AdminUsersPage() {
-  const { t } = useI18n();
-  const [banned, setBanned] = useState<Record<number, boolean>>({});
+  const { data: users } = await supabase
+    .from('profiles')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  // Get enrollment counts per user
+  const { data: enrollmentCounts } = await supabase
+    .from('enrollments')
+    .select('user_id');
+
+  const countByUser: Record<string, number> = {};
+  enrollmentCounts?.forEach((e) => {
+    countByUser[e.user_id] = (countByUser[e.user_id] || 0) + 1;
+  });
 
   return (
-    <>
-      <PageHeader title={t("nav.users")} subtitle={t("role.admin")} />
-      <Card className="overflow-hidden">
+    <div>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">Пайдаланушылар</h1>
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-sm text-[var(--muted)]">
+          <Users className="w-4 h-4" />
+          Барлығы: <span className="font-bold text-[var(--fg)]">{users?.length || 0}</span>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-[var(--border)] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-faint">
-                <th className="px-5 py-3 font-semibold">{t("store.name")}</th>
-                <th className="hidden px-5 py-3 font-semibold sm:table-cell">
-                  {t("store.phone")}
-                </th>
-                <th className="px-5 py-3 font-semibold">Роль</th>
-                <th className="px-5 py-3 font-semibold">{t("nav.orders")}</th>
-                <th className="px-5 py-3" />
+              <tr className="border-b border-[var(--border)] bg-[var(--surface-2)]">
+                <th className="text-left px-6 py-4 text-[var(--muted)] font-medium">Пайдаланушы</th>
+                <th className="text-left px-6 py-4 text-[var(--muted)] font-medium">Email</th>
+                <th className="text-left px-6 py-4 text-[var(--muted)] font-medium">Рөлі</th>
+                <th className="text-left px-6 py-4 text-[var(--muted)] font-medium">Курстары</th>
+                <th className="text-left px-6 py-4 text-[var(--muted)] font-medium">Тіркелген күні</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((u) => (
+              {users?.map((u) => (
                 <tr
                   key={u.id}
-                  className="border-b border-border last:border-0 hover:bg-surface-2"
+                  className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--surface)] transition-colors"
                 >
-                  <td className="px-5 py-3 font-medium">{u.name}</td>
-                  <td className="hidden px-5 py-3 text-muted sm:table-cell">
-                    {u.phone}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[var(--brand-soft)] flex items-center justify-center text-[var(--brand)] font-semibold text-sm">
+                        {(u.full_name || u.email || '?')[0].toUpperCase()}
+                      </div>
+                      <span className="font-medium">{u.full_name || 'N/A'}</span>
+                    </div>
                   </td>
-                  <td className="px-5 py-3">
-                    <Badge tone="info">
-                      {t(
-                        u.role === "store_admin"
-                          ? "role.store"
-                          : `role.${u.role}`,
-                      )}
-                    </Badge>
-                  </td>
-                  <td className="px-5 py-3 font-semibold">{u.orders}</td>
-                  <td className="px-5 py-3 text-right">
-                    <button
-                      onClick={() =>
-                        setBanned((s) => ({ ...s, [u.id]: !s[u.id] }))
-                      }
-                      className="cursor-pointer"
+                  <td className="px-6 py-4 text-[var(--muted)]">{u.email}</td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        u.role === 'admin'
+                          ? 'bg-[var(--brand-soft)] text-[var(--brand)]'
+                          : 'bg-[var(--surface-2)] text-[var(--muted)]'
+                      }`}
                     >
-                      <Badge tone={banned[u.id] ? "danger" : "neutral"}>
-                        {banned[u.id] ? "BANNED" : "BAN"}
-                      </Badge>
-                    </button>
+                      {u.role === 'admin' ? 'Админ' : 'Пайдаланушы'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="font-semibold text-[var(--brand)]">
+                      {countByUser[u.id] || 0}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-[var(--muted)] text-xs">
+                    {new Date(u.created_at).toLocaleDateString('kk-KZ')}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </Card>
-    </>
+        {(!users || users.length === 0) && (
+          <div className="text-center py-12 text-[var(--muted)]">Пайдаланушылар жоқ</div>
+        )}
+      </div>
+    </div>
   );
 }

@@ -1,81 +1,45 @@
-"use client";
+import { createClient } from '@/lib/supabase/server';
+import { Users, BookOpen, CreditCard, TrendingUp } from 'lucide-react';
+import type { Metadata } from 'next';
 
-import { Bike, Receipt, Store, TrendingUp } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
-import { formatPrice } from "@/lib/format";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { StatCard } from "@/components/ui/StatCard";
-import { OrdersTable } from "@/components/OrdersTable";
-import { WeatherControl } from "@/components/admin/WeatherControl";
-import { Card } from "@/components/ui/Card";
-import { demoOrders } from "@/lib/mock";
-import { useManagedStores } from "@/lib/managedStores";
+export const metadata: Metadata = { title: 'Admin — Басқару тақтасы' };
 
-const WEEK = [
-  { day: "Пн", value: 480000 },
-  { day: "Вт", value: 620000 },
-  { day: "Ср", value: 540000 },
-  { day: "Чт", value: 710000 },
-  { day: "Пт", value: 920000 },
-  { day: "Сб", value: 1080000 },
-  { day: "Вс", value: 860000 },
-];
+export default async function AdminDashboardPage() {
+  const supabase = await createClient();
 
-export default function AdminDashboard() {
-  const { t } = useI18n();
-  const stores = useManagedStores();
-  const revenue = stores.reduce((s, x) => s + x.revenue, 0);
-  const orders = stores.reduce((s, x) => s + x.orders, 0);
+  const [
+    { count: usersCount },
+    { count: coursesCount },
+    { count: pendingCount },
+    { count: approvedCount },
+  ] = await Promise.all([
+    supabase.from('profiles').select('*', { count: 'exact', head: true }),
+    supabase.from('courses').select('*', { count: 'exact', head: true }),
+    supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'approved'),
+  ]);
+
+  const stats = [
+    { icon: Users, label: 'Пайдаланушылар', value: usersCount || 0, color: 'var(--brand)' },
+    { icon: BookOpen, label: 'Курстар', value: coursesCount || 0, color: 'var(--success)' },
+    { icon: CreditCard, label: 'Күтудегі төлемдер', value: pendingCount || 0, color: 'var(--warning)' },
+    { icon: TrendingUp, label: 'Расталған төлемдер', value: approvedCount || 0, color: 'var(--success)' },
+  ];
 
   return (
-    <>
-      <PageHeader title={t("nav.dashboard")} subtitle={t("role.admin")} />
-
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard
-          icon={TrendingUp}
-          label={t("dash.revenue")}
-          value={formatPrice(revenue)}
-          delta="+16%"
-        />
-        <StatCard
-          icon={Receipt}
-          label={t("dash.ordersCount")}
-          value={String(orders)}
-          delta="+64"
-        />
-        <StatCard icon={Store} label={t("nav.stores")} value={String(stores.length)} />
-        <StatCard icon={Bike} label={t("dash.activeCouriers")} value="3" />
+    <div>
+      <h1 className="text-3xl font-bold mb-8">Басқару тақтасы</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((s) => (
+          <div key={s.label} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+            <s.icon className="w-8 h-8 mb-4" style={{ color: s.color }} />
+            <div className="text-3xl font-bold mb-1" style={{ color: s.color }}>
+              {s.value}
+            </div>
+            <div className="text-sm text-[var(--muted)]">{s.label}</div>
+          </div>
+        ))}
       </div>
-
-      {/* Revenue chart */}
-      <Card className="mt-6 p-6">
-        <h2 className="mb-5 font-display text-lg font-bold">{t("admin.revenueChart")}</h2>
-        <div className="flex h-48 items-end justify-between gap-3">
-          {WEEK.map((d) => {
-            const max = Math.max(...WEEK.map((x) => x.value));
-            return (
-              <div key={d.day} className="flex flex-1 flex-col items-center gap-2">
-                <div
-                  className="w-full rounded-t-lg bg-brand transition-all"
-                  style={{ height: `${(d.value / max) * 100}%` }}
-                  title={formatPrice(d.value)}
-                />
-                <span className="text-xs text-muted">{d.day}</span>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
-      <div className="mt-6">
-        <WeatherControl />
-      </div>
-
-      <h2 className="mt-8 mb-4 font-display text-lg font-bold">
-        {t("dash.recentOrders")}
-      </h2>
-      <OrdersTable orders={demoOrders} />
-    </>
+    </div>
   );
 }
