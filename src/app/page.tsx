@@ -1,8 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BookOpen, Code2, Palette, Zap, Award, Globe, ChevronRight, Star, Send, Users, CheckCircle, Play, Lock } from 'lucide-react';
+import { BookOpen, Code2, Award, Globe, ChevronRight, Star, Send, Users, CheckCircle, Lock } from 'lucide-react';
 import { CounterAnimation } from '@/components/ui/CounterAnimation';
+import { VideoPlayer } from '@/components/ui/VideoPlayer';
 
 const courses = [
   { icon: '🌐', title: 'HTML Fundamentals', slug: 'html', lessons: 15, price: 4990, salePrice: 1990, free: 3, color: '#e34c26', desc: 'Веб-беттердің негізін үйреніңіз. Тегтер, атрибуттар, семантикалық HTML.' },
@@ -50,7 +51,7 @@ export default function HomePage() {
           </Link>
           <div className="hidden md:flex items-center gap-8">
             <Link href="#courses" className="text-sm text-[var(--muted)] hover:text-[var(--fg)] transition-colors">Курстар</Link>
-            <Link href="#about" className="text-sm text-[var(--muted)] hover:text-[var(--fg)] transition-colors">Артықшылықтар</Link>
+            <Link href="#about" className="text-sm text-[var(--muted)] hover:text-[var(--fg)] transition-colors">Платформа туралы</Link>
             <Link href="#testimonials" className="text-sm text-[var(--muted)] hover:text-[var(--fg)] transition-colors">Пікірлер</Link>
           </div>
           <div className="flex items-center gap-3">
@@ -96,8 +97,65 @@ export default function HomePage() {
         </motion.div>
       </section>
 
+      {/* Video Section */}
+      <section id="about" className="py-20 px-4 bg-[var(--bg-elevated)] border-y border-[var(--border)]">
+        <div className="max-w-7xl mx-auto">
+          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
+            {/* Section heading */}
+            <motion.div variants={fadeUp} className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--brand-soft)] bg-[var(--brand-soft)] text-[var(--brand)] text-sm font-medium mb-4">
+                <span className="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse" />
+                CodeOrda туралы
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold">Платформамен танысыңыз</h2>
+            </motion.div>
+
+            {/* Desktop: 3/5 video + 2/5 info — Mobile: stacked */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
+              {/* Video */}
+              <motion.div variants={fadeUp} className="lg:col-span-3">
+                {/* Replace the youtubeId value with your real YouTube video ID */}
+                <VideoPlayer youtubeId="" />
+              </motion.div>
+
+              {/* Info panel */}
+              <motion.div variants={fadeUp} className="lg:col-span-2 flex flex-col gap-6">
+                <p className="text-[var(--muted)] leading-relaxed text-base">
+                  <span className="font-semibold text-[var(--fg)]">CodeOrda</span> — қазақ тілінде бағдарламалауды үйренуге арналған платформа. HTML, CSS, JavaScript курстары, практикалық жобалар, тесттер және PDF сертификаттар арқылы студенттер IT саласына алғашқы қадамдарын жасайды.
+                </p>
+
+                {/* Checklist */}
+                <ul className="space-y-3">
+                  {[
+                    'Қазақ тіліндегі сабақтар',
+                    'Практикалық жобалар',
+                    'Тесттер мен тапсырмалар',
+                    'Сертификат беру',
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-[var(--success-soft)] flex items-center justify-center flex-shrink-0">
+                        <CheckCircle className="w-3.5 h-3.5 text-[var(--success)]" />
+                      </div>
+                      <span className="text-sm text-[var(--fg)]">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                <Link
+                  href="/register"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--brand)] text-white font-semibold hover:bg-[var(--brand-hover)] transition-all shadow-[0_0_20px_var(--brand-glow)] hover:shadow-[0_0_40px_var(--brand-glow)] hover:scale-105 active:scale-95 w-fit"
+                >
+                  Тегін бастау <ChevronRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Stats Counter */}
-      <section className="py-16 px-4 border-y border-[var(--border)] bg-[var(--bg-elevated)]">
+      <section className="py-16 px-4 border-b border-[var(--border)]">
         <div className="max-w-4xl mx-auto grid grid-cols-3 gap-8 text-center">
           {[
             { value: 1000, suffix: '+', label: 'Студент' },
@@ -165,7 +223,7 @@ export default function HomePage() {
       </section>
 
       {/* Benefits */}
-      <section id="about" className="py-20 px-4 bg-[var(--bg-elevated)]">
+      <section id="benefits" className="py-20 px-4 bg-[var(--bg-elevated)]">
         <div className="max-w-7xl mx-auto">
           <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
             <motion.div variants={fadeUp} className="text-center mb-12">
