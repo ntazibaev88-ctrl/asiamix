@@ -1,84 +1,89 @@
-# NOMI — Delivery Platform
+# CodeOrda — Қазақша IT Білім Платформасы
 
-Современная платформа доставки еды. Web-first, с архитектурой, готовой к
-переносу на мобильные приложения (React Native) в будущем.
+Kazakh-language online education platform for IT courses. Built with Next.js 16, TypeScript, Tailwind CSS v4, and Supabase.
 
-Стек: **Next.js 16** (App Router, Turbopack) · **React 19** · **Tailwind CSS v4**
-· **Supabase** (PostgreSQL + Auth) · **framer-motion** · **TypeScript**.
+## Tech Stack
 
-## Возможности (текущий каркас)
+- **Framework**: Next.js 16.2.6 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 (dark theme, CSS variables)
+- **Backend**: Supabase (Auth, Database, Storage)
+- **Notifications**: Sonner
+- **Icons**: Lucide React
 
-Заложена структура для всех четырёх ролей из ТЗ:
+## Features
 
-| Раздел | Маршрут | Что внутри |
-| --- | --- | --- |
-| 🛒 Клиент | `/` | Витрина: меню по категориям, корзина, оформление заказа, отзывы |
-| 🏍️ Курьер | `/courier` | Онлайн/офлайн, доступные заказы, доход, баланс, вывод средств |
-| 🏪 Магазин | `/store` | Дашборд продаж, заказы, товары (наличие/цена), аналитика |
-| 🛡️ Супер админ | `/admin` | Пользователи, курьеры, магазины, комиссии, финансы, бан |
-| 🔐 Вход | `/login` | Выбор роли (демо), затем редирект в нужный портал |
+- Dark-only premium design (black + blue)
+- Kazakh language UI throughout
+- Course catalog: HTML, CSS, JavaScript
+- Kaspi payment flow (screenshot upload + admin review)
+- User dashboard with enrollment tracking
+- Admin panel: users, courses, lessons, payments management
+- Row Level Security (RLS) on all tables
+- Mobile responsive
 
-Дополнительно реализовано:
+## Environment Variables
 
-- **Тёмная/светлая тема** — семантические дизайн-токены (`globals.css`),
-  без мигания при загрузке (inline-скрипт в `<head>`), переключатель в шапке.
-- **Мультиязычность** — Қазақша / Русский / English (`src/lib/i18n.tsx`).
-- **Премиальный UI** — единая система компонентов (`src/components/ui`),
-  плавные анимации framer-motion.
-- **Защита маршрутов** — `src/proxy.ts` (в Next.js 16 middleware называется
-  Proxy) делает оптимистичную проверку роли перед порталами.
+Create a `.env.local` file:
 
-## Структура проекта
-
-```
-src/
-  app/
-    layout.tsx            # шрифты, провайдеры темы и i18n, метаданные NOMI
-    page.tsx              # витрина клиента
-    login/                # вход и выбор роли
-    courier/              # портал курьера (layout + страницы)
-    store/                # портал магазина
-    admin/                # портал супер-админа
-    api/orders/route.ts   # приём заказа + уведомление в Telegram
-  components/
-    ui/                   # Button, Card, Badge, StatCard, PageHeader
-    DashboardShell.tsx    # сайдбар + топбар для всех порталов
-    OrdersTable.tsx, ThemeToggle.tsx, LangSwitch.tsx
-  lib/
-    i18n.tsx, theme.tsx   # локали и тема (useSyncExternalStore)
-    types.ts, brand.ts    # доменные типы и бренд
-    mock.ts               # демо-данные витрины и дашбордов
-    format.ts, cn.ts, cookies.ts
-    supabase/             # client, server, auth helpers
-  proxy.ts                # ролевая защита маршрутов
-supabase/
-  schema.sql              # полная схема БД (роли, магазины, заказы, RLS …)
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-## Запуск
+## Database Setup
+
+1. Go to your Supabase project's SQL Editor
+2. Run the contents of `supabase/schema.sql`
+3. This will create all tables, RLS policies, and seed data (3 courses with 15 lessons each)
+
+## Storage Setup
+
+Create a Supabase Storage bucket named `payment-screenshots` with public access enabled.
+
+## Local Development
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev
 ```
 
-Окружение (`.env.local`):
+Open [http://localhost:3000](http://localhost:3000)
 
+## Admin Access
+
+To make a user an admin, run in Supabase SQL Editor:
+
+```sql
+UPDATE profiles SET role = 'admin' WHERE email = 'your@email.com';
 ```
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-TELEGRAM_BOT_TOKEN=...      # опционально, уведомления о заказах
-TELEGRAM_CHAT_ID=...
+
+Then visit `/admin` after logging in.
+
+## Pages
+
+| Route | Description |
+|-------|-------------|
+| `/` | Home page |
+| `/courses` | Course listing |
+| `/courses/[slug]` | Course detail + payment |
+| `/login` | Login |
+| `/register` | Register |
+| `/forgot-password` | Password reset |
+| `/dashboard` | User dashboard |
+| `/admin` | Admin dashboard |
+| `/admin/users` | User management |
+| `/admin/courses` | Course management |
+| `/admin/lessons` | Lesson management |
+| `/admin/payments` | Payment approval |
+
+## Deployment
+
+Deploy to Vercel:
+
+```bash
+vercel --prod
 ```
 
-База данных: выполните `supabase/schema.sql` в SQL-редакторе Supabase.
-
-## Следующие шаги
-
-- Подключить реальную авторизацию Supabase (телефон/OTP) вместо демо-cookie
-  в `/login` и `src/proxy.ts`.
-- Заменить `src/lib/mock.ts` на запросы к Supabase.
-- Live-трекинг курьера на карте (Yandex/Google Maps) и real-time чат через
-  Supabase Realtime.
-- Платежи: Kaspi Pay, Visa, Mastercard.
-- Промокоды, рефералы, кэшбэк, программа лояльности (таблицы уже в схеме).
+Set environment variables in Vercel dashboard.
