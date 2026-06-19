@@ -26,6 +26,32 @@
   --shadow-brand: 0 0 40px rgba(59,130,246,0.2);
 }
 
+[data-theme="light"] {
+  --bg: #f8f9ff;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f1f3f9;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.15);
+  --fg: #0f0f1a;
+  --muted: #555577;
+  --faint: #9999bb;
+  --brand: #2563eb;
+  --brand-hover: #1d4ed8;
+  --brand-dark: #1e40af;
+  --brand-soft: rgba(37,99,235,0.10);
+  --brand-glow: rgba(37,99,235,0.2);
+  --success: #16a34a;
+  --success-soft: rgba(22,163,74,0.10);
+  --warning: #d97706;
+  --warning-soft: rgba(217,119,6,0.10);
+  --danger: #dc2626;
+  --danger-soft: rgba(220,38,38,0.10);
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 16px 64px rgba(0,0,0,0.12);
+  --shadow-brand: 0 0 40px rgba(37,99,235,0.15);
+}
+
 @theme inline {
   --color-bg: var(--bg);
   --color-bg-elevated: var(--bg-elevated);
@@ -72,3 +98,34 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); -
 .animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
 .animate-float { animation: float 6s ease-in-out infinite; }
 .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+[data-theme="light"] .glass {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.8);
+}
+
+/* Skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+/* Smooth transitions for theme switch */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+}

@@ -1,0 +1,16 @@
+{
+  "name": "CodeOrda",
+  "short_name": "CodeOrda",
+  "description": "Қазақстанның IT мамандарын дайындайтын платформа",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "categories": ["education"],
+  "lang": "kk"
+}

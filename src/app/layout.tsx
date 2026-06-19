@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { themeScript } from "@/lib/theme";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,14 +24,18 @@ export const metadata: Metadata = {
     siteName: "CodeOrda",
   },
   twitter: { card: "summary_large_image", title: "CodeOrda", description: "Бағдарламалауды қазақша үйрен" },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="kk" suppressHydrationWarning className={inter.variable}>
-      <body className="min-h-screen bg-bg text-fg">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
         {children}
-        <Toaster theme="dark" position="top-right" richColors />
+        <Toaster theme="system" position="top-right" richColors />
       </body>
     </html>
   );

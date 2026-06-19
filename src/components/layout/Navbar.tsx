@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Menu, X, Code2 } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 interface NavbarProps {
   user?: { email?: string } | null;
@@ -29,6 +30,7 @@ export function Navbar({ user }: NavbarProps) {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             {user ? (
               <>
                 <Link href="/dashboard" className="text-sm font-medium text-[var(--muted)] hover:text-[var(--fg)] transition-colors">

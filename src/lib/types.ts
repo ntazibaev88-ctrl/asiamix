@@ -71,3 +71,63 @@ export interface Certificate {
   issued_at: string;
   courses?: Course;
 }
+
+export interface QuizQuestion {
+  id: string;
+  course_id: string;
+  lesson_index: number;
+  question: string;
+  option_a: string;
+  option_b: string;
+  option_c: string;
+  option_d: string;
+  correct_option: 'a' | 'b' | 'c' | 'd';
+  order_index: number;
+}
+
+export interface QuizResult {
+  id: string;
+  user_id: string;
+  course_id: string;
+  lesson_index: number;
+  score: number;
+  total: number;
+  created_at: string;
+}
+
+export interface Achievement {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  icon: string;
+  points: number;
+}
+
+export interface UserAchievement {
+  id: string;
+  user_id: string;
+  achievement_id: string;
+  earned_at: string;
+  achievements?: Achievement;
+}
+
+export interface LessonComment {
+  id: string;
+  lesson_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  profiles?: { full_name: string | null; avatar_url: string | null };
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
+
+export type Theme = 'dark' | 'light';

@@ -340,3 +340,111 @@ $$ language plpgsql;
 
 -- Run seed data
 select seed_codeorda_data();
+
+-- ============================================================
+-- CodeOrda V2 Schema additions
+-- ============================================================
+
+-- Quiz questions (5 per quiz, one quiz per 3 lessons)
+create table if not exists quiz_questions (
+  id uuid primary key default gen_random_uuid(),
+  course_id uuid references courses(id) on delete cascade,
+  lesson_index integer not null, -- quiz appears after lesson 3,6,9,12,15
+  question text not null,
+  option_a text not null,
+  option_b text not null,
+  option_c text not null,
+  option_d text not null,
+  correct_option text not null check(correct_option in ('a','b','c','d')),
+  order_index integer not null default 0
+);
+
+-- Quiz results per user
+create table if not exists quiz_results (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references profiles(id) on delete cascade,
+  course_id uuid references courses(id) on delete cascade,
+  lesson_index integer not null,
+  score integer not null default 0,
+  total integer not null default 5,
+  created_at timestamptz default now()
+);
+
+-- Achievements definition
+create table if not exists achievements (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  title text not null,
+  description text not null,
+  icon text not null,
+  points integer not null default 50
+);
+
+-- User earned achievements
+create table if not exists user_achievements (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references profiles(id) on delete cascade,
+  achievement_id uuid references achievements(id) on delete cascade,
+  earned_at timestamptz default now(),
+  unique(user_id, achievement_id)
+);
+
+-- User points (leaderboard)
+create table if not exists user_points (
+  user_id uuid primary key references profiles(id) on delete cascade,
+  total_points integer not null default 0,
+  updated_at timestamptz default now()
+);
+
+-- Lesson comments
+create table if not exists lesson_comments (
+  id uuid primary key default gen_random_uuid(),
+  lesson_id uuid references lessons(id) on delete cascade,
+  user_id uuid references profiles(id) on delete cascade,
+  content text not null,
+  created_at timestamptz default now()
+);
+alter table lesson_comments enable row level security;
+create policy lc_read on lesson_comments for select using (true);
+create policy lc_insert on lesson_comments for insert with check (user_id = auth.uid());
+create policy lc_delete on lesson_comments for delete using (user_id = auth.uid());
+
+-- Favorites
+create table if not exists favorites (
+  user_id uuid references profiles(id) on delete cascade,
+  lesson_id uuid references lessons(id) on delete cascade,
+  created_at timestamptz default now(),
+  primary key(user_id, lesson_id)
+);
+alter table favorites enable row level security;
+create policy fav_all on favorites for all using (user_id = auth.uid());
+
+-- Notifications
+create table if not exists notifications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references profiles(id) on delete cascade,
+  title text not null,
+  message text not null,
+  is_read boolean default false,
+  created_at timestamptz default now()
+);
+alter table notifications enable row level security;
+create policy notif_own on notifications for all using (user_id = auth.uid());
+
+-- Profile extras (add columns if not exists)
+alter table profiles add column if not exists telegram text;
+alter table profiles add column if not exists specialty text;
+alter table profiles add column if not exists bio text;
+alter table profiles add column if not exists points integer default 0;
+alter table profiles add column if not exists theme text default 'dark';
+
+-- Seed achievements
+insert into achievements(slug,title,description,icon,points) values
+('first_lesson','Алғашқы қадам','Бірінші сабақты аяқтадыңыз!','🏅',50),
+('html_complete','HTML шебері','HTML курсын толық аяқтадыңыз!','🥇',200),
+('css_complete','CSS шебері','CSS курсын толық аяқтадыңыз!','🥈',200),
+('js_complete','JS шебері','JavaScript курсын толық аяқтадыңыз!','🥉',300),
+('all_complete','CodeOrda Чемпионы','Барлық курстарды аяқтадыңыз!','🏆',500),
+('quiz_ace','Тест жеңімпазы','Тестте 5/5 нәтиже көрсеттіңіз!','⭐',100),
+('streak_7','7 күн қатарынан','7 күн қатарынан оқыдыңыз!','🔥',150)
+on conflict(slug) do nothing;
