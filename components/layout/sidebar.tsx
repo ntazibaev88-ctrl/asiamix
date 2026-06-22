@@ -148,6 +148,8 @@ export function MobileSidebar() {
     { href: "/savings", icon: PiggyBank, label: "Жинақ" },
     { href: "/journal", icon: BookMarked, label: "Күнделік" },
     { href: "/education", icon: GraduationCap, label: "Білім" },
+    { href: "/books", icon: BookOpen, label: "Кітап" },
+    { href: "/movies", icon: Film, label: "Кино" },
   ];
 
   return (

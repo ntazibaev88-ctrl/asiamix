@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar, MobileSidebar } from "@/components/layout/sidebar";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
+import { AIChat } from "@/components/ai-chat";
 import type { UserProfile } from "@/types";
 
 export default async function DashboardLayout({
@@ -32,6 +33,7 @@ export default async function DashboardLayout({
         <main className="p-4 sm:p-6 pb-24 lg:pb-8">{children}</main>
       </div>
       <MobileSidebar />
+      <AIChat />
     </div>
   );
 }

@@ -2,17 +2,17 @@ import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
-import { GraduationCap, Clock, Eye, Crown, Lock } from "lucide-react";
+import { GraduationCap, Clock, Eye, Crown, Lock, BookOpen, Sparkles } from "lucide-react";
 import type { Article } from "@/types";
 
 const CATEGORIES = [
-  { value: "investing", label: "Инвестиция", emoji: "📈" },
-  { value: "bonds", label: "Облигациялар", emoji: "📊" },
-  { value: "gold", label: "Алтын", emoji: "🏅" },
-  { value: "silver", label: "Күміс", emoji: "🥈" },
-  { value: "savings", label: "Жинақ", emoji: "🐷" },
-  { value: "business", label: "Бизнес", emoji: "💼" },
-  { value: "personal_finance", label: "Жеке қаржы", emoji: "💰" },
+  { value: "investing", label: "Инвестиция", emoji: "📈", color: "from-blue-500 to-cyan-500" },
+  { value: "bonds", label: "Облигациялар", emoji: "📊", color: "from-indigo-500 to-blue-500" },
+  { value: "gold", label: "Алтын", emoji: "🏅", color: "from-amber-500 to-yellow-500" },
+  { value: "silver", label: "Күміс", emoji: "🥈", color: "from-slate-400 to-slate-500" },
+  { value: "savings", label: "Жинақ", emoji: "🐷", color: "from-emerald-500 to-teal-500" },
+  { value: "business", label: "Бизнес", emoji: "💼", color: "from-violet-500 to-purple-500" },
+  { value: "personal_finance", label: "Жеке қаржы", emoji: "💰", color: "from-rose-500 to-pink-500" },
 ];
 
 export default async function EducationPage({
@@ -26,11 +26,13 @@ export default async function EducationPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("plan")
+    .select("plan, vip_expires_at")
     .eq("id", user!.id)
     .single();
 
-  const isVip = profile?.plan === "vip";
+  const isVip = profile?.plan === "vip" &&
+    profile?.vip_expires_at &&
+    new Date(profile.vip_expires_at) > new Date();
 
   let query = supabase
     .from("articles")
@@ -38,125 +40,164 @@ export default async function EducationPage({
     .eq("published", true)
     .order("created_at", { ascending: false });
 
-  if (category) {
-    query = query.eq("category", category);
-  }
+  if (category) query = query.eq("category", category);
 
   const { data: articles } = await query;
 
+  const activeCat = CATEGORIES.find((c) => c.value === category);
+
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold">Қаржылық білім</h1>
-        <p className="text-sm text-[var(--muted-foreground)] mt-0.5">
-          Инвестиция, жинақ және бизнес туралы мақалалар
-        </p>
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 via-violet-600 to-indigo-700 p-8 text-white">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-4 right-8 text-8xl">📚</div>
+          <div className="absolute bottom-2 right-24 text-5xl">💡</div>
+        </div>
+        <div className="relative">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Қаржылық білім</h1>
+              <p className="text-sm text-white/70">
+                {articles?.length || 0} мақала • Инвестиция, жинақ және бизнес туралы
+              </p>
+            </div>
+          </div>
+          {!isVip && (
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-400/20 border border-amber-400/30 text-amber-300 text-sm">
+              <Crown className="h-4 w-4" />
+              VIP алу арқылы барлық Premium мақалаларды оқыңыз
+              <Link href="/premium" className="underline font-semibold">→ VIP алу</Link>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Categories */}
-      <div className="flex flex-wrap gap-2">
-        <Link
-          href="/education"
-          className={`px-4 py-1.5 rounded-xl text-sm font-medium transition-colors ${
-            !category
-              ? "bg-primary-600 text-white"
-              : "bg-[var(--secondary)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-          }`}
-        >
-          Барлығы
-        </Link>
-        {CATEGORIES.map((cat) => (
+      {/* Category Filter */}
+      <div>
+        <h2 className="text-sm font-semibold text-[var(--muted-foreground)] uppercase tracking-wider mb-3">Санаттар</h2>
+        <div className="flex flex-wrap gap-2">
           <Link
-            key={cat.value}
-            href={`/education?category=${cat.value}`}
-            className={`px-4 py-1.5 rounded-xl text-sm font-medium transition-colors ${
-              category === cat.value
-                ? "bg-primary-600 text-white"
-                : "bg-[var(--secondary)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+            href="/education"
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              !category
+                ? "bg-primary-600 text-white shadow-sm"
+                : "bg-[var(--secondary)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)]"
             }`}
           >
-            {cat.emoji} {cat.label}
+            🗂 Барлығы {!category && articles && `(${articles.length})`}
           </Link>
-        ))}
+          {CATEGORIES.map((cat) => (
+            <Link
+              key={cat.value}
+              href={`/education?category=${cat.value}`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                category === cat.value
+                  ? "bg-primary-600 text-white shadow-sm"
+                  : "bg-[var(--secondary)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)]"
+              }`}
+            >
+              {cat.emoji} {cat.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* AI Badge */}
+      <div className="flex items-center gap-2 p-3 rounded-xl bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 text-sm text-violet-700 dark:text-violet-300">
+        <Sparkles className="h-4 w-4 shrink-0" />
+        Мақалалар Claude AI арқылы күн сайын автоматты жарияланады
       </div>
 
       {/* Articles */}
       {!articles || articles.length === 0 ? (
         <div className="py-16 text-center">
-          <GraduationCap className="h-12 w-12 text-[var(--muted-foreground)] mx-auto mb-4" />
-          <p className="text-[var(--muted-foreground)]">Мақалалар табылмады</p>
+          <BookOpen className="h-16 w-16 text-[var(--muted-foreground)] mx-auto mb-4 opacity-50" />
+          <p className="font-medium text-[var(--muted-foreground)]">Мақалалар табылмады</p>
+          <p className="text-sm text-[var(--muted-foreground)] mt-1">Жақында жаңа мақалалар жарияланады</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {articles.map((article: Article) => {
+        <div className="grid md:grid-cols-2 gap-5">
+          {(articles as Article[]).map((article) => {
             const cat = CATEGORIES.find((c) => c.value === article.category);
             const isLocked = article.is_premium && !isVip;
 
             return (
               <div
                 key={article.id}
-                className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden card-hover"
+                className={`rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden group transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isLocked ? "opacity-90" : ""}`}
               >
                 {/* Cover */}
-                <div className="aspect-video bg-gradient-to-br from-primary-100 to-violet-100 dark:from-primary-950/50 dark:to-violet-950/50 relative flex items-center justify-center">
-                  <span className="text-5xl">{cat?.emoji || "📄"}</span>
+                <div className={`relative h-48 bg-gradient-to-br ${cat?.color || "from-primary-500 to-violet-500"} flex items-center justify-center`}>
+                  <span className="text-7xl drop-shadow-lg">{cat?.emoji || "📄"}</span>
+
                   {isLocked && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <div className="text-center text-white">
-                        <Lock className="h-8 w-8 mx-auto mb-2" />
-                        <p className="text-sm font-medium">VIP контент</p>
-                      </div>
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center gap-2">
+                      <Lock className="h-8 w-8 text-white" />
+                      <p className="text-white text-sm font-semibold">VIP мазмұны</p>
+                      <Link
+                        href="/premium"
+                        className="px-4 py-1.5 rounded-lg bg-amber-400 text-amber-900 text-xs font-bold hover:bg-amber-300 transition-colors"
+                      >
+                        VIP алу — ₸990
+                      </Link>
                     </div>
                   )}
+
                   {article.is_premium && (
-                    <div className="absolute top-3 right-3">
-                      <Badge variant="premium">
-                        <Crown className="h-3 w-3" />
-                        Premium
-                      </Badge>
+                    <div className="absolute top-3 left-3">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-400/90 text-amber-900 text-xs font-bold">
+                        <Crown className="h-3 w-3" /> Premium
+                      </span>
                     </div>
                   )}
+
+                  <div className="absolute top-3 right-3">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/40 text-white text-xs">
+                      <Eye className="h-3 w-3" /> {article.views}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="secondary">{cat?.label || article.category}</Badge>
-                    <span className="text-xs text-[var(--muted-foreground)] flex items-center gap-1">
-                      <Eye className="h-3 w-3" />
-                      {article.views}
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge variant="secondary" className="text-xs">
+                      {cat?.emoji} {cat?.label || article.category}
+                    </Badge>
+                    <span className="text-xs text-[var(--muted-foreground)] flex items-center gap-1 ml-auto">
+                      <Clock className="h-3 w-3" />
+                      {formatDate(article.created_at)}
                     </span>
                   </div>
 
-                  <h3 className="font-semibold mb-2 line-clamp-2">{article.title}</h3>
+                  <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+                    {article.title}
+                  </h3>
 
                   {article.excerpt && (
-                    <p className="text-sm text-[var(--muted-foreground)] line-clamp-2 mb-3">
+                    <p className="text-sm text-[var(--muted-foreground)] line-clamp-2 mb-4">
                       {article.excerpt}
                     </p>
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-[var(--muted-foreground)]">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {formatDate(article.created_at)}
-                    </span>
-                    {isLocked ? (
-                      <Link
-                        href="/premium"
-                        className="text-primary-600 font-medium hover:text-primary-700"
-                      >
-                        VIP алу →
-                      </Link>
-                    ) : (
-                      <Link
-                        href={`/education/${article.slug}`}
-                        className="text-primary-600 font-medium hover:text-primary-700"
-                      >
-                        Оқу →
-                      </Link>
-                    )}
-                  </div>
+                  {isLocked ? (
+                    <Link
+                      href="/premium"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 hover:text-amber-700"
+                    >
+                      <Crown className="h-3.5 w-3.5" /> VIP алу →
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`/education/${article.slug}`}
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 hover:text-primary-700"
+                    >
+                      <BookOpen className="h-3.5 w-3.5" /> Оқу →
+                    </Link>
+                  )}
                 </div>
               </div>
             );
