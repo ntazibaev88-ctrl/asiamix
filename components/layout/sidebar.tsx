@@ -18,6 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Bell,
+  User,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -146,10 +147,8 @@ export function MobileSidebar() {
     { href: "/dashboard", icon: LayoutDashboard, label: "Басты" },
     { href: "/goals", icon: Target, label: "Мақсат" },
     { href: "/savings", icon: PiggyBank, label: "Жинақ" },
-    { href: "/journal", icon: BookMarked, label: "Күнделік" },
     { href: "/education", icon: GraduationCap, label: "Білім" },
-    { href: "/books", icon: BookOpen, label: "Кітап" },
-    { href: "/movies", icon: Film, label: "Кино" },
+    { href: "/profile", icon: User, label: "Профиль" },
   ];
 
   return (

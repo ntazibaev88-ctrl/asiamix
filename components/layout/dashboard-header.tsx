@@ -18,6 +18,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import type { UserProfile } from "@/types";
+import { BookOpen, Film, BookMarked } from "lucide-react";
 
 interface DashboardHeaderProps {
   profile: UserProfile | null;
@@ -90,7 +91,7 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
               </span>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52 rounded-xl">
+          <DropdownMenuContent align="end" className="w-56 rounded-xl">
             <div className="px-3 py-2">
               <p className="text-sm font-medium truncate">{profile?.full_name || "Пайдаланушы"}</p>
               <p className="text-xs text-[var(--muted-foreground)] truncate">{profile?.email}</p>
@@ -103,7 +104,23 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
               <Link href="/settings">Баптаулар</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/premium">Premium</Link>
+              <Link href="/premium">Premium ✨</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/books" className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" /> Кітаптар
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/movies" className="flex items-center gap-2">
+                <Film className="h-4 w-4" /> Фильмдер
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/journal" className="flex items-center gap-2">
+                <BookMarked className="h-4 w-4" /> Күнделік
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500">
