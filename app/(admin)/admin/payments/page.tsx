@@ -2,6 +2,21 @@ import { createClient } from "@/lib/supabase/server";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ApprovePaymentButton } from "@/components/admin/approve-payment-button";
+import { AIVerifyPaymentButton } from "@/components/admin/ai-verify-payment-button";
+
+interface Payment {
+  id: string;
+  user_id: string;
+  amount: number;
+  months: number;
+  bonus_months: number;
+  status: string;
+  proof_url: string | null;
+  created_at: string;
+  ai_verdict: string | null;
+  ai_notes: string | null;
+  profiles: { full_name?: string; email?: string } | null;
+}
 
 export default async function AdminPaymentsPage() {
   const supabase = await createClient();
@@ -39,21 +54,22 @@ export default async function AdminPaymentsPage() {
                 <th className="text-left p-4 font-semibold">Күні</th>
                 <th className="text-left p-4 font-semibold">Статус</th>
                 <th className="text-left p-4 font-semibold">Дәлел</th>
+                <th className="text-left p-4 font-semibold">AI тексеру</th>
                 <th className="text-left p-4 font-semibold">Әрекет</th>
               </tr>
             </thead>
             <tbody>
-              {(payments || []).map((payment) => (
+              {((payments || []) as Payment[]).map((payment) => (
                 <tr
                   key={payment.id}
                   className="border-b border-[var(--border)] hover:bg-[var(--secondary)] transition-colors"
                 >
                   <td className="p-4">
                     <div className="font-medium">
-                      {(payment.profiles as { full_name?: string; email?: string })?.full_name || "—"}
+                      {payment.profiles?.full_name || "—"}
                     </div>
                     <div className="text-xs text-[var(--muted-foreground)]">
-                      {(payment.profiles as { full_name?: string; email?: string })?.email}
+                      {payment.profiles?.email}
                     </div>
                   </td>
                   <td className="p-4">
@@ -78,6 +94,19 @@ export default async function AdminPaymentsPage() {
                       </a>
                     ) : (
                       <span className="text-[var(--muted-foreground)]">—</span>
+                    )}
+                  </td>
+                  <td className="p-4">
+                    {payment.proof_url ? (
+                      <AIVerifyPaymentButton
+                        paymentId={payment.id}
+                        proofUrl={payment.proof_url}
+                        userId={payment.user_id}
+                        aiVerdict={payment.ai_verdict}
+                        aiNotes={payment.ai_notes}
+                      />
+                    ) : (
+                      <span className="text-[var(--muted-foreground)] text-xs">Дәлел жоқ</span>
                     )}
                   </td>
                   <td className="p-4">

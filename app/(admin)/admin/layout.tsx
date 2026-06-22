@@ -10,6 +10,8 @@ import {
   CreditCard,
   Footprints,
   Bell,
+  Ban,
+  Cpu,
 } from "lucide-react";
 
 const adminLinks = [
@@ -20,6 +22,8 @@ const adminLinks = [
   { href: "/admin/books", icon: BookOpen, label: "Кітаптар" },
   { href: "/admin/movies", icon: Film, label: "Фильмдер" },
   { href: "/admin/notifications", icon: Bell, label: "Хабарландыру" },
+  { href: "/admin/blacklist", icon: Ban, label: "Қара тізім" },
+  { href: "/admin/ai", icon: Cpu, label: "AI басқару" },
 ];
 
 export default async function AdminLayout({

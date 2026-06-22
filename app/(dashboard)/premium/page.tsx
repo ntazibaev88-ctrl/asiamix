@@ -32,7 +32,9 @@ const VIP_FEATURES = [
   "Ерте рұқсат мүмкіндіктері",
 ];
 
-const KASPI_NUMBER = "+7 777 777 7777"; // Replace with real number
+const KASPI_PHONE = "+7 771 263 46 85";
+const KASPI_CARD = "4400 4303 6564 9653";
+const KASPI_RECIPIENT = "Арайлым С";
 
 export default function PremiumPage() {
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
@@ -57,9 +59,14 @@ export default function PremiumPage() {
     loadProfile();
   });
 
-  const handleCopyKaspi = () => {
-    navigator.clipboard.writeText(KASPI_NUMBER);
-    toast.success("Нөмір көшірілді!");
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText(KASPI_PHONE);
+    toast.success("Телефон нөмірі көшірілді!");
+  };
+
+  const handleCopyCard = () => {
+    navigator.clipboard.writeText(KASPI_CARD);
+    toast.success("Карта нөмірі көшірілді!");
   };
 
   const handleCopyReferral = () => {
@@ -236,16 +243,32 @@ export default function PremiumPage() {
               </p>
             </div>
 
-            {/* Kaspi Number */}
-            <div className="p-4 rounded-xl bg-[var(--secondary)] border border-[var(--border)]">
-              <div className="text-sm text-[var(--muted-foreground)] mb-1">Kaspi нөміріне аударыңыз:</div>
+            {/* Kaspi Rekvizits */}
+            <div className="p-4 rounded-xl bg-[var(--secondary)] border border-[var(--border)] space-y-3">
+              <div className="text-sm font-medium">Kaspi реквизиттері:</div>
+
               <div className="flex items-center justify-between gap-3">
-                <div className="text-2xl font-bold font-mono">{KASPI_NUMBER}</div>
-                <Button variant="outline" size="icon-sm" onClick={handleCopyKaspi}>
+                <div>
+                  <div className="text-xs text-[var(--muted-foreground)]">Телефон нөміріне:</div>
+                  <div className="text-lg font-bold font-mono">{KASPI_PHONE}</div>
+                </div>
+                <Button variant="outline" size="icon-sm" onClick={handleCopyPhone}>
                   <Copy className="h-3.5 w-3.5" />
                 </Button>
               </div>
-              <div className="text-sm text-[var(--muted-foreground)] mt-2">
+
+              <div className="border-t border-[var(--border)] pt-3 flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs text-[var(--muted-foreground)]">Немесе картаға:</div>
+                  <div className="text-lg font-bold font-mono">{KASPI_CARD}</div>
+                  <div className="text-xs text-[var(--muted-foreground)]">Алушы: {KASPI_RECIPIENT}</div>
+                </div>
+                <Button variant="outline" size="icon-sm" onClick={handleCopyCard}>
+                  <Copy className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+
+              <div className="border-t border-[var(--border)] pt-2 text-sm text-[var(--muted-foreground)]">
                 Сома: <strong className="text-[var(--foreground)]">₸990</strong> •
                 Хабарлама: <strong className="text-[var(--foreground)]">VIP Qadam</strong>
               </div>
