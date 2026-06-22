@@ -8,10 +8,8 @@ import {
   Film,
   GraduationCap,
   CreditCard,
-  BarChart3,
   Footprints,
-  Settings,
-  LogOut,
+  Bell,
 } from "lucide-react";
 
 const adminLinks = [
@@ -21,6 +19,7 @@ const adminLinks = [
   { href: "/admin/content", icon: GraduationCap, label: "Мақалалар" },
   { href: "/admin/books", icon: BookOpen, label: "Кітаптар" },
   { href: "/admin/movies", icon: Film, label: "Фильмдер" },
+  { href: "/admin/notifications", icon: Bell, label: "Хабарландыру" },
 ];
 
 export default async function AdminLayout({
