@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Bell, Moon, Sun, Search, Menu } from "lucide-react";
+import { Bell, Moon, Sun, Search, Menu, BookOpen, Film, BookMarked } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,6 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import type { UserProfile } from "@/types";
-import { BookOpen, Film, BookMarked } from "lucide-react";
 
 interface DashboardHeaderProps {
   profile: UserProfile | null;
