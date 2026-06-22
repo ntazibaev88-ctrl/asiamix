@@ -56,7 +56,7 @@ export function AIChat({ isFirstVisit }: { isFirstVisit?: boolean }) {
       });
       const data = await res.json() as { reply?: string; error?: string };
       if (data.reply) {
-        setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+        setMessages((prev) => [...prev, { role: "assistant", content: data.reply! }]);
       } else {
         setMessages((prev) => [...prev, { role: "assistant", content: "Кешіріңіз, жауап алу сәтсіз болды. Қайталап көріңіз." }]);
       }
