@@ -100,8 +100,9 @@ export default function RegisterPage() {
       }
 
       setSuccess(true);
-    } catch {
-      toast.error("Қате орын алды", "Қайталап көріңіз");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      toast.error("Қате орын алды", msg);
     } finally {
       setLoading(false);
     }
