@@ -75,16 +75,21 @@ export async function proxy(request: NextRequest) {
     }
 
     if (isAdminPage && user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
+      const ADMIN_EMAILS = ["tazhibaev_99@bk.ru"];
+      const isAdminEmail = ADMIN_EMAILS.includes(user.email || "");
 
-      if (profile?.role !== "admin") {
-        const url = request.nextUrl.clone();
-        url.pathname = "/dashboard";
-        return NextResponse.redirect(url);
+      if (!isAdminEmail) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+
+        if (profile?.role !== "admin") {
+          const url = request.nextUrl.clone();
+          url.pathname = "/dashboard";
+          return NextResponse.redirect(url);
+        }
       }
     }
   } catch {
