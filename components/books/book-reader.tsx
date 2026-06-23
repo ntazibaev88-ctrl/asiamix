@@ -3,40 +3,49 @@
 import { useState } from "react";
 import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
-export function BookReaderClient({ pdfUrl, title }: { pdfUrl: string; title: string }) {
+export function BookReaderClient({
+  pdfUrl,
+  title,
+}: {
+  pdfUrl: string;
+  title: string;
+}) {
   const [zoom, setZoom] = useState(100);
 
+  const zoomIn = () => setZoom((z) => Math.min(z + 10, 150));
+  const zoomOut = () => setZoom((z) => Math.max(z - 10, 60));
+  const reset = () => setZoom(100);
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--card)] border border-[var(--border)]">
-        <span className="text-sm font-medium truncate">{title}</span>
-        <div className="flex items-center gap-2 shrink-0 ml-3">
-          <button
-            onClick={() => setZoom((z) => Math.max(60, z - 10))}
-            className="p-1.5 rounded-lg hover:bg-[var(--secondary)] transition-colors"
-          >
-            <ZoomOut className="h-4 w-4" />
-          </button>
-          <span className="text-xs min-w-[3rem] text-center">{zoom}%</span>
-          <button
-            onClick={() => setZoom((z) => Math.min(150, z + 10))}
-            className="p-1.5 rounded-lg hover:bg-[var(--secondary)] transition-colors"
-          >
-            <ZoomIn className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => setZoom(100)}
-            className="p-1.5 rounded-lg hover:bg-[var(--secondary)] transition-colors"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </button>
-        </div>
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={zoomOut}
+          disabled={zoom <= 60}
+          className="p-2 rounded-lg bg-[var(--secondary)] hover:bg-[var(--border)] transition-colors disabled:opacity-40"
+          title="Кішірейту"
+        >
+          <ZoomOut className="h-4 w-4" />
+        </button>
+        <span className="text-sm font-medium w-12 text-center">{zoom}%</span>
+        <button
+          onClick={zoomIn}
+          disabled={zoom >= 150}
+          className="p-2 rounded-lg bg-[var(--secondary)] hover:bg-[var(--border)] transition-colors disabled:opacity-40"
+          title="Үлкейту"
+        >
+          <ZoomIn className="h-4 w-4" />
+        </button>
+        <button
+          onClick={reset}
+          className="p-2 rounded-lg bg-[var(--secondary)] hover:bg-[var(--border)] transition-colors"
+          title="Қалпына келтіру"
+        >
+          <RotateCcw className="h-4 w-4" />
+        </button>
       </div>
 
-      <div
-        className="rounded-2xl overflow-hidden border border-[var(--border)] bg-white"
-        style={{ height: "75vh" }}
-      >
+      <div className="rounded-2xl overflow-hidden border border-[var(--border)]" style={{ height: "75vh" }}>
         <iframe
           src={`${pdfUrl}#toolbar=1&view=FitH&zoom=${zoom}`}
           title={title}

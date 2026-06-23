@@ -107,10 +107,10 @@ export interface Movie {
   year: number | null;
   rating: number | null;
   duration: number | null;
-  xp_reward: number | null;
   is_premium: boolean;
   watch_url: string | null;
   published: boolean;
+  xp_reward: number | null;
   created_at: string;
 }
 

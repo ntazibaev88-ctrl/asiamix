@@ -29,36 +29,43 @@ function MovieForm({ initial, onSave, onClose }: { initial?: Record<string, unkn
     poster_url: (initial?.poster_url as string) || "",
     banner_url: (initial?.banner_url as string) || "",
     video_url: (initial?.video_url as string) || "",
-    trailer_url: (initial?.trailer_url as string) || "",
     watch_url: (initial?.watch_url as string) || "",
+    trailer_url: (initial?.trailer_url as string) || "",
     category: (initial?.category as string) || "money",
-    year: (initial?.year as string) || "",
-    rating: (initial?.rating as string) || "",
-    duration: (initial?.duration as string) || "",
-    xp_reward: (initial?.xp_reward as string) || "50",
-    is_premium: Boolean(initial?.is_premium) || false,
-    published: initial?.published !== false,
+    year: String(initial?.year || ""),
+    rating: String(initial?.rating || ""),
+    duration: String(initial?.duration || ""),
+    xp_reward: String(initial?.xp_reward || ""),
+    is_premium: Boolean(initial?.is_premium),
+    published: initial?.published !== undefined ? Boolean(initial.published) : true,
   });
 
   const handleSave = async () => {
-    if (!form.title) { toast.error("Атауы міндетті"); return; }
+    if (!form.title) {
+      toast.error("Атауы міндетті");
+      return;
+    }
     setLoading(true);
     try {
       const supabase = createClient();
       const payload = {
-        ...form,
-        year: form.year ? parseInt(form.year) : null,
-        rating: form.rating ? parseFloat(form.rating) : null,
-        duration: form.duration ? parseInt(form.duration) : null,
-        xp_reward: form.xp_reward ? parseInt(form.xp_reward) : 50,
+        title: form.title,
         director: form.director || null,
+        description: form.description || null,
         poster_url: form.poster_url || null,
         banner_url: form.banner_url || null,
         video_url: form.video_url || null,
-        trailer_url: form.trailer_url || null,
         watch_url: form.watch_url || null,
-        description: form.description || null,
+        trailer_url: form.trailer_url || null,
+        category: form.category,
+        year: form.year ? parseInt(form.year) : null,
+        rating: form.rating ? parseFloat(form.rating) : null,
+        duration: form.duration ? parseInt(form.duration) : null,
+        xp_reward: form.xp_reward ? parseInt(form.xp_reward) : null,
+        is_premium: form.is_premium,
+        published: form.published,
       };
+
       if (initial?.id) {
         const { error } = await supabase.from("movies").update(payload).eq("id", initial.id);
         if (error) throw error;
@@ -68,8 +75,13 @@ function MovieForm({ initial, onSave, onClose }: { initial?: Record<string, unkn
         if (error) throw error;
         toast.success("Фильм қосылды");
       }
-      onSave(); onClose();
-    } catch { toast.error("Қате орын алды"); } finally { setLoading(false); }
+      onSave();
+      onClose();
+    } catch {
+      toast.error("Қате орын алды");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -105,7 +117,7 @@ function MovieForm({ initial, onSave, onClose }: { initial?: Record<string, unkn
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label>Ұзақтық (мин)</Label>
+          <Label>Ұзақтығы (мин)</Label>
           <Input type="number" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} placeholder="120" />
         </div>
         <div className="space-y-1.5">
@@ -118,33 +130,33 @@ function MovieForm({ initial, onSave, onClose }: { initial?: Record<string, unkn
         <Input value={form.poster_url} onChange={(e) => setForm({ ...form, poster_url: e.target.value })} placeholder="https://..." />
       </div>
       <div className="space-y-1.5">
-        <Label>Баннер URL (кең сурет)</Label>
-        <Input value={form.banner_url} onChange={(e) => setForm({ ...form, banner_url: e.target.value })} placeholder="https://..." />
+        <Label>Баннер URL (hero)</Label>
+        <Input value={form.banner_url} onChange={(e) => setForm({ ...form, banner_url: e.target.value })} placeholder="https://... (кең сурет)" />
       </div>
       <div className="space-y-1.5">
-        <Label>Бейне URL (YouTube немесе MP4)</Label>
-        <Input value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })} placeholder="https://youtube.com/watch?v=..." />
+        <Label>Видео URL (YouTube/MP4)</Label>
+        <Input value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })} placeholder="https://youtube.com/watch?v=... немесе .mp4" />
+      </div>
+      <div className="space-y-1.5">
+        <Label>Сыртқы қарау сілтемесі</Label>
+        <Input value={form.watch_url} onChange={(e) => setForm({ ...form, watch_url: e.target.value })} placeholder="https://..." />
       </div>
       <div className="space-y-1.5">
         <Label>Трейлер URL</Label>
         <Input value={form.trailer_url} onChange={(e) => setForm({ ...form, trailer_url: e.target.value })} placeholder="https://..." />
       </div>
       <div className="space-y-1.5">
-        <Label>Сыртқы сілтеме</Label>
-        <Input value={form.watch_url} onChange={(e) => setForm({ ...form, watch_url: e.target.value })} placeholder="https://..." />
-      </div>
-      <div className="space-y-1.5">
         <Label>Сипаттама</Label>
         <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Фильм туралы..." className="min-h-[80px]" />
       </div>
-      <div className="flex gap-4">
+      <div className="flex items-center gap-4">
         <label className="flex items-center gap-2 text-sm cursor-pointer">
           <input type="checkbox" checked={form.is_premium} onChange={(e) => setForm({ ...form, is_premium: e.target.checked })} className="rounded" />
           Premium (VIP ғана)
         </label>
         <label className="flex items-center gap-2 text-sm cursor-pointer">
           <input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} className="rounded" />
-          Жарияланды
+          Жарияланған
         </label>
       </div>
       <div className="flex gap-3 pt-2">
@@ -180,7 +192,9 @@ export default function AdminMoviesPage() {
 
   const togglePublished = async (id: string, current: boolean) => {
     const supabase = createClient();
-    await supabase.from("movies").update({ published: !current }).eq("id", id);
+    const { error } = await supabase.from("movies").update({ published: !current }).eq("id", id);
+    if (error) { toast.error("Қате орын алды"); return; }
+    toast.success(!current ? "Жарияланды" : "Жасырылды");
     loadMovies();
   };
 
@@ -192,7 +206,7 @@ export default function AdminMoviesPage() {
           <DialogTrigger asChild>
             <Button variant="gradient"><Plus className="h-4 w-4" />Фильм қосу</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg">
+          <DialogContent>
             <DialogHeader><DialogTitle>Жаңа фильм</DialogTitle></DialogHeader>
             <MovieForm onSave={loadMovies} onClose={() => setIsOpen(false)} />
           </DialogContent>
@@ -205,31 +219,35 @@ export default function AdminMoviesPage() {
           const isPublished = movie.published !== false;
           return (
             <div key={movie.id as string} className={`rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden ${!isPublished ? "opacity-60" : ""}`}>
-              {movie.poster_url ? (
-                <div className="aspect-video relative">
-                  <img src={movie.poster_url as string} alt={movie.title as string} className="w-full h-full object-cover" />
-                  {!isPublished && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <EyeOff className="h-8 w-8 text-white/60" />
-                    </div>
-                  )}
+              {/* Poster preview */}
+              {Boolean(movie.poster_url) && (
+                <div className="aspect-video bg-gray-900">
+                  <img
+                    src={movie.poster_url as string}
+                    alt={movie.title as string}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              ) : (
-                <div className="aspect-video bg-[var(--secondary)] flex items-center justify-center">
-                  <Film className="h-10 w-10 text-[var(--muted-foreground)]" />
+              )}
+              {!movie.poster_url && (
+                <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                  <Film className="h-10 w-10 text-gray-600" />
                 </div>
               )}
               <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start justify-between mb-3">
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold truncate">{movie.title as string}</div>
-                    <div className="text-xs text-[var(--muted-foreground)]">
-                      {(movie.director as string) || "—"} {movie.year ? `• ${movie.year}` : ""}
-                      {movie.duration ? ` • ${movie.duration}мин` : ""}
+                    <div className="text-sm text-[var(--muted-foreground)]">
+                      {(movie.director as string) || "—"}{movie.year ? ` • ${movie.year}` : ""}{movie.duration ? ` • ${movie.duration} мин` : ""}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 ml-2 shrink-0">
-                    <button onClick={() => togglePublished(movie.id as string, isPublished)} className="p-1.5 rounded-lg hover:bg-[var(--secondary)] transition-colors text-[var(--muted-foreground)]">
+                  <div className="flex items-center gap-1 ml-2">
+                    <button
+                      onClick={() => togglePublished(movie.id as string, isPublished)}
+                      className={`p-1.5 rounded-lg transition-colors ${isPublished ? "text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950" : "text-[var(--muted-foreground)] hover:bg-[var(--secondary)]"}`}
+                      title={isPublished ? "Жасыру" : "Жариялау"}
+                    >
                       {isPublished ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
                     </button>
                     <button onClick={() => setEditMovie(movie)} className="p-1.5 rounded-lg hover:bg-[var(--secondary)] transition-colors text-[var(--muted-foreground)]">
@@ -244,7 +262,7 @@ export default function AdminMoviesPage() {
                   <Badge variant="secondary">{cat?.label}</Badge>
                   {Boolean(movie.is_premium) && <Badge variant="premium"><Crown className="h-3 w-3" /></Badge>}
                   {movie.rating != null && <span className="text-xs text-amber-600">⭐ {String(movie.rating as number)}/10</span>}
-                  {!isPublished && <span className="text-xs text-[var(--muted-foreground)]">Жасырын</span>}
+                  {!isPublished && <Badge variant="secondary" className="text-orange-500">Жасырылған</Badge>}
                 </div>
               </div>
             </div>
@@ -253,7 +271,7 @@ export default function AdminMoviesPage() {
       </div>
 
       <Dialog open={!!editMovie} onOpenChange={(open) => !open && setEditMovie(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent>
           <DialogHeader><DialogTitle>Фильмді өзгерту</DialogTitle></DialogHeader>
           {editMovie && <MovieForm initial={editMovie} onSave={loadMovies} onClose={() => setEditMovie(null)} />}
         </DialogContent>

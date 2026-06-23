@@ -117,7 +117,7 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
               )}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 max-w-[calc(100vw-1rem)] rounded-2xl p-0 overflow-hidden">
+          <DropdownMenuContent align="end" className="w-80 rounded-2xl p-0 overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
               <span className="font-semibold text-sm flex items-center gap-2">
                 <Bell className="h-4 w-4" /> Хабарламалар

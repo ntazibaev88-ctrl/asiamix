@@ -4,8 +4,8 @@ import { useState, useMemo } from "react";
 import { Calculator } from "lucide-react";
 
 export function FinancialCalculator() {
-  const [principal, setPrincipal] = useState("100000");
-  const [monthly, setMonthly] = useState("20000");
+  const [principal, setPrincipal] = useState("1000000");
+  const [monthly, setMonthly] = useState("50000");
   const [rate, setRate] = useState("12");
   const [years, setYears] = useState("5");
 
@@ -14,53 +14,73 @@ export function FinancialCalculator() {
     const M = parseFloat(monthly) || 0;
     const r = (parseFloat(rate) || 0) / 100 / 12;
     const n = (parseFloat(years) || 0) * 12;
-    if (n === 0) return { total: P, interest: 0, invested: P };
-    const growthFactor = Math.pow(1 + r, n);
-    const fv = r > 0
-      ? P * growthFactor + M * ((growthFactor - 1) / r)
-      : P + M * n;
-    const invested = P + M * n;
-    return { total: fv, interest: fv - invested, invested };
+    if (n === 0) return { future: P, interest: 0, deposited: P };
+    const growth = Math.pow(1 + r, n);
+    const fv = r === 0 ? P + M * n : P * growth + (M * (growth - 1)) / r;
+    const deposited = P + M * n;
+    return { future: fv, interest: fv - deposited, deposited };
   }, [principal, monthly, rate, years]);
 
-  const fmt = (v: number) => Math.round(v).toLocaleString("ru-RU") + " ₸";
+  const fmt = (n: number) => Math.round(n).toLocaleString("ru-RU") + " ₸";
 
   return (
-    <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] p-5">
-      <h2 className="font-semibold flex items-center gap-2 mb-4">
-        <Calculator className="h-4 w-4 text-primary-500" /> Қаржы калькуляторы
-      </h2>
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        {[
-          { label: "Бастапқы сома (₸)", value: principal, onChange: setPrincipal },
-          { label: "Ай сайын (₸)", value: monthly, onChange: setMonthly },
-          { label: "Жылдық пайыз (%)", value: rate, onChange: setRate },
-          { label: "Жыл саны", value: years, onChange: setYears },
-        ].map(({ label, value, onChange }) => (
-          <div key={label} className="space-y-1">
-            <label className="text-xs text-[var(--muted-foreground)]">{label}</label>
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[var(--secondary)] border border-[var(--border)] text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/30"
-            />
-          </div>
-        ))}
+    <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] p-5 space-y-4">
+      <div className="flex items-center gap-2">
+        <Calculator className="h-5 w-5 text-primary-600" />
+        <h2 className="font-semibold">Жинақ калькуляторы</h2>
       </div>
-      <div className="rounded-xl bg-gradient-to-br from-primary-500/10 to-violet-500/10 border border-primary-500/20 p-4 space-y-3">
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1">
+          <label className="text-xs text-[var(--muted-foreground)]">Бастапқы сома (₸)</label>
+          <input
+            type="number"
+            value={principal}
+            onChange={(e) => setPrincipal(e.target.value)}
+            className="w-full px-3 py-2 text-sm rounded-xl bg-[var(--secondary)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs text-[var(--muted-foreground)]">Ай сайынғы (₸)</label>
+          <input
+            type="number"
+            value={monthly}
+            onChange={(e) => setMonthly(e.target.value)}
+            className="w-full px-3 py-2 text-sm rounded-xl bg-[var(--secondary)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs text-[var(--muted-foreground)]">Жылдық пайыз (%)</label>
+          <input
+            type="number"
+            value={rate}
+            onChange={(e) => setRate(e.target.value)}
+            className="w-full px-3 py-2 text-sm rounded-xl bg-[var(--secondary)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs text-[var(--muted-foreground)]">Мерзім (жыл)</label>
+          <input
+            type="number"
+            value={years}
+            onChange={(e) => setYears(e.target.value)}
+            className="w-full px-3 py-2 text-sm rounded-xl bg-[var(--secondary)] border border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+      </div>
+
+      <div className="rounded-xl bg-primary-50 dark:bg-primary-950/30 p-4 space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-[var(--muted-foreground)]">Жалпы салым</span>
-          <span className="font-medium">{fmt(result.invested)}</span>
+          <span className="text-[var(--muted-foreground)]">Салынған сома:</span>
+          <span className="font-medium">{fmt(result.deposited)}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-[var(--muted-foreground)]">Пайыз табысы</span>
-          <span className="font-semibold text-emerald-500">+{fmt(result.interest)}</span>
+          <span className="text-[var(--muted-foreground)]">Пайыздан кіріс:</span>
+          <span className="font-medium text-emerald-600">+{fmt(result.interest)}</span>
         </div>
-        <div className="h-px bg-[var(--border)]" />
-        <div className="flex justify-between">
-          <span className="font-semibold">Жалпы сома</span>
-          <span className="font-bold text-lg text-primary-500">{fmt(result.total)}</span>
+        <div className="flex justify-between border-t border-[var(--border)] pt-2">
+          <span className="font-semibold">Жалпы сома:</span>
+          <span className="font-bold text-primary-600">{fmt(result.future)}</span>
         </div>
       </div>
     </div>

@@ -26,33 +26,39 @@ function BookForm({ initial, onSave, onClose }: { initial?: Record<string, unkno
     author: (initial?.author as string) || "",
     description: (initial?.description as string) || "",
     cover_url: (initial?.cover_url as string) || "",
-    pdf_url: (initial?.pdf_url as string) || "",
-    epub_url: (initial?.epub_url as string) || "",
-    buy_url: (initial?.buy_url as string) || "",
     category: (initial?.category as string) || "money",
-    rating: (initial?.rating as string) || "",
-    pages: (initial?.pages as string) || "",
-    xp_reward: (initial?.xp_reward as string) || "30",
-    is_premium: Boolean(initial?.is_premium) || false,
-    published: initial?.published !== false,
+    rating: String(initial?.rating || ""),
+    is_premium: Boolean(initial?.is_premium),
+    buy_url: (initial?.buy_url as string) || "",
+    pdf_url: (initial?.pdf_url as string) || "",
+    pages: String(initial?.pages || ""),
+    xp_reward: String(initial?.xp_reward || ""),
+    published: initial?.published !== undefined ? Boolean(initial.published) : true,
   });
 
   const handleSave = async () => {
-    if (!form.title || !form.author) { toast.error("Тақырыбы мен автор міндетті"); return; }
+    if (!form.title || !form.author) {
+      toast.error("Тақырыбы мен автор міндетті");
+      return;
+    }
     setLoading(true);
     try {
       const supabase = createClient();
       const payload = {
-        ...form,
-        rating: form.rating ? parseFloat(form.rating) : null,
-        pages: form.pages ? parseInt(form.pages) : null,
-        xp_reward: form.xp_reward ? parseInt(form.xp_reward) : 30,
-        cover_url: form.cover_url || null,
-        pdf_url: form.pdf_url || null,
-        epub_url: form.epub_url || null,
-        buy_url: form.buy_url || null,
+        title: form.title,
+        author: form.author,
         description: form.description || null,
+        cover_url: form.cover_url || null,
+        category: form.category,
+        rating: form.rating ? parseFloat(form.rating) : null,
+        is_premium: form.is_premium,
+        buy_url: form.buy_url || null,
+        pdf_url: form.pdf_url || null,
+        pages: form.pages ? parseInt(form.pages) : null,
+        xp_reward: form.xp_reward ? parseInt(form.xp_reward) : null,
+        published: form.published,
       };
+
       if (initial?.id) {
         const { error } = await supabase.from("books").update(payload).eq("id", initial.id);
         if (error) throw error;
@@ -62,8 +68,13 @@ function BookForm({ initial, onSave, onClose }: { initial?: Record<string, unkno
         if (error) throw error;
         toast.success("Кітап қосылды");
       }
-      onSave(); onClose();
-    } catch { toast.error("Қате орын алды"); } finally { setLoading(false); }
+      onSave();
+      onClose();
+    } catch {
+      toast.error("Қате орын алды");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -93,8 +104,8 @@ function BookForm({ initial, onSave, onClose }: { initial?: Record<string, unkno
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label>Бет саны</Label>
-          <Input type="number" value={form.pages} onChange={(e) => setForm({ ...form, pages: e.target.value })} placeholder="300" />
+          <Label>Беттер саны</Label>
+          <Input type="number" value={form.pages} onChange={(e) => setForm({ ...form, pages: e.target.value })} placeholder="320" />
         </div>
         <div className="space-y-1.5">
           <Label>XP сыйақы</Label>
@@ -106,12 +117,8 @@ function BookForm({ initial, onSave, onClose }: { initial?: Record<string, unkno
         <Input value={form.cover_url} onChange={(e) => setForm({ ...form, cover_url: e.target.value })} placeholder="https://..." />
       </div>
       <div className="space-y-1.5">
-        <Label>PDF URL (онлайн оқу)</Label>
-        <Input value={form.pdf_url} onChange={(e) => setForm({ ...form, pdf_url: e.target.value })} placeholder="https://..." />
-      </div>
-      <div className="space-y-1.5">
-        <Label>EPUB URL</Label>
-        <Input value={form.epub_url} onChange={(e) => setForm({ ...form, epub_url: e.target.value })} placeholder="https://..." />
+        <Label>PDF URL</Label>
+        <Input value={form.pdf_url} onChange={(e) => setForm({ ...form, pdf_url: e.target.value })} placeholder="https://... (.pdf файл)" />
       </div>
       <div className="space-y-1.5">
         <Label>Сатып алу сілтемесі</Label>
@@ -121,14 +128,14 @@ function BookForm({ initial, onSave, onClose }: { initial?: Record<string, unkno
         <Label>Сипаттама</Label>
         <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Кітап туралы..." className="min-h-[80px]" />
       </div>
-      <div className="flex gap-4">
+      <div className="flex items-center gap-4">
         <label className="flex items-center gap-2 text-sm cursor-pointer">
           <input type="checkbox" checked={form.is_premium} onChange={(e) => setForm({ ...form, is_premium: e.target.checked })} className="rounded" />
           Premium (VIP ғана)
         </label>
         <label className="flex items-center gap-2 text-sm cursor-pointer">
           <input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} className="rounded" />
-          Жарияланды
+          Жарияланған
         </label>
       </div>
       <div className="flex gap-3 pt-2">
@@ -164,7 +171,9 @@ export default function AdminBooksPage() {
 
   const togglePublished = async (id: string, current: boolean) => {
     const supabase = createClient();
-    await supabase.from("books").update({ published: !current }).eq("id", id);
+    const { error } = await supabase.from("books").update({ published: !current }).eq("id", id);
+    if (error) { toast.error("Қате орын алды"); return; }
+    toast.success(!current ? "Жарияланды" : "Жасырылды");
     loadBooks();
   };
 
@@ -176,7 +185,7 @@ export default function AdminBooksPage() {
           <DialogTrigger asChild>
             <Button variant="gradient"><Plus className="h-4 w-4" />Кітап қосу</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg">
+          <DialogContent>
             <DialogHeader><DialogTitle>Жаңа кітап</DialogTitle></DialogHeader>
             <BookForm onSave={loadBooks} onClose={() => setIsOpen(false)} />
           </DialogContent>
@@ -189,38 +198,50 @@ export default function AdminBooksPage() {
           const isPublished = book.published !== false;
           return (
             <div key={book.id as string} className={`rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden ${!isPublished ? "opacity-60" : ""}`}>
-              <div className="flex">
-                {book.cover_url ? (
-                  <img src={book.cover_url as string} alt={book.title as string} className="w-16 h-20 object-cover shrink-0" />
+              {/* Cover preview */}
+              <div className="aspect-[3/2] bg-gradient-to-br from-primary-100 to-violet-100 dark:from-primary-950/50 dark:to-violet-950/50 flex items-center justify-center relative">
+                {Boolean(book.cover_url) ? (
+                  <img
+                    src={book.cover_url as string}
+                    alt={book.title as string}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <div className="w-16 h-20 bg-[var(--secondary)] flex items-center justify-center shrink-0">
-                    <BookOpen className="h-6 w-6 text-[var(--muted-foreground)]" />
-                  </div>
+                  <BookOpen className="h-10 w-10 text-primary-300" />
                 )}
-                <div className="flex-1 min-w-0 p-3">
-                  <div className="flex items-start justify-between">
-                    <div className="min-w-0 flex-1">
-                      <div className="font-semibold truncate text-sm">{book.title as string}</div>
-                      <div className="text-xs text-[var(--muted-foreground)] truncate">{book.author as string}</div>
-                    </div>
-                    <div className="flex items-center gap-0.5 ml-1 shrink-0">
-                      <button onClick={() => togglePublished(book.id as string, isPublished)} className="p-1 rounded-lg hover:bg-[var(--secondary)] transition-colors text-[var(--muted-foreground)]">
-                        {isPublished ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
-                      </button>
-                      <button onClick={() => setEditBook(book)} className="p-1 rounded-lg hover:bg-[var(--secondary)] transition-colors text-[var(--muted-foreground)]">
-                        <Pencil className="h-3.5 w-3.5" />
-                      </button>
-                      <button onClick={() => handleDelete(book.id as string)} className="p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-950 transition-colors text-[var(--muted-foreground)] hover:text-red-500">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
+                {Boolean(book.pdf_url) && (
+                  <span className="absolute bottom-2 left-2 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                    <FileText className="h-2.5 w-2.5" />PDF
+                  </span>
+                )}
+              </div>
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold truncate">{book.title as string}</div>
+                    <div className="text-sm text-[var(--muted-foreground)]">{book.author as string}</div>
                   </div>
-                  <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                    <Badge variant="secondary" className="text-[10px]">{cat?.label}</Badge>
-                    {Boolean(book.is_premium) && <Badge variant="premium" className="text-[10px]"><Crown className="h-2.5 w-2.5" /></Badge>}
-                    {Boolean(book.pdf_url) && <span className="text-[10px] text-emerald-600 flex items-center gap-0.5"><FileText className="h-2.5 w-2.5" />PDF</span>}
-                    {book.rating != null && <span className="text-[10px] text-amber-600">⭐ {String(book.rating as number)}</span>}
+                  <div className="flex items-center gap-1 ml-2">
+                    <button
+                      onClick={() => togglePublished(book.id as string, isPublished)}
+                      className={`p-1.5 rounded-lg transition-colors ${isPublished ? "text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950" : "text-[var(--muted-foreground)] hover:bg-[var(--secondary)]"}`}
+                      title={isPublished ? "Жасыру" : "Жариялау"}
+                    >
+                      {isPublished ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                    </button>
+                    <button onClick={() => setEditBook(book)} className="p-1.5 rounded-lg hover:bg-[var(--secondary)] transition-colors text-[var(--muted-foreground)]">
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                    <button onClick={() => handleDelete(book.id as string)} className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950 transition-colors text-[var(--muted-foreground)] hover:text-red-500">
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
                   </div>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="secondary">{cat?.label}</Badge>
+                  {Boolean(book.is_premium) && <Badge variant="premium"><Crown className="h-3 w-3" /></Badge>}
+                  {book.rating != null && <span className="text-xs text-amber-600">⭐ {String(book.rating as number)}</span>}
+                  {!isPublished && <Badge variant="secondary" className="text-orange-500">Жасырылған</Badge>}
                 </div>
               </div>
             </div>
@@ -229,7 +250,7 @@ export default function AdminBooksPage() {
       </div>
 
       <Dialog open={!!editBook} onOpenChange={(open) => !open && setEditBook(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent>
           <DialogHeader><DialogTitle>Кітапты өзгерту</DialogTitle></DialogHeader>
           {editBook && <BookForm initial={editBook} onSave={loadBooks} onClose={() => setEditBook(null)} />}
         </DialogContent>

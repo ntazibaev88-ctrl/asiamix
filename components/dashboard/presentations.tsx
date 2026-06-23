@@ -118,41 +118,40 @@ export function Presentations() {
 
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex gap-2">
         {presentations.map((p, i) => (
           <button
             key={p.id}
             onClick={() => switchPresentation(i)}
-            title={p.title}
-            className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all border truncate ${
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all border ${
               activePresentation === i
                 ? `bg-gradient-to-r ${p.color} ${p.borderColor} ${p.accentColor}`
                 : "border-[var(--border)] text-[var(--muted-foreground)] hover:border-[var(--muted-foreground)]"
             }`}
           >
-            {p.emoji} {p.title.split(" ").slice(0, 2).join(" ")}…
+            {p.emoji} {p.title.split(" ").slice(0, 3).join(" ")}…
           </button>
         ))}
       </div>
 
       <div className={`rounded-2xl bg-gradient-to-br ${pres.color} border ${pres.borderColor} overflow-hidden`}>
-        <div className={`px-4 sm:px-5 py-3 border-b ${pres.borderColor} flex items-center justify-between gap-2`}>
-          <span className={`font-semibold text-sm ${pres.accentColor} truncate`}>
+        <div className={`px-5 py-3 border-b ${pres.borderColor} flex items-center justify-between`}>
+          <span className={`font-semibold text-sm ${pres.accentColor}`}>
             {pres.emoji} {pres.title}
           </span>
-          <span className="text-xs text-[var(--muted-foreground)] shrink-0">
+          <span className="text-xs text-[var(--muted-foreground)]">
             {currentSlide + 1} / {total}
           </span>
         </div>
 
-        <div className="p-4 sm:p-5 min-h-[200px] flex flex-col justify-between">
+        <div className="p-5 min-h-[180px] flex flex-col justify-between">
           <div>
             <div className={`text-xs font-bold ${pres.accentColor} mb-2`}>
               {slide.num} / 0{total}
             </div>
             <div className="flex items-start gap-3 mb-3">
-              <span className="text-2xl sm:text-3xl shrink-0">{slide.emoji}</span>
-              <h3 className="font-bold text-sm sm:text-base leading-snug">{slide.title}</h3>
+              <span className="text-3xl">{slide.emoji}</span>
+              <h3 className="font-bold text-base leading-snug">{slide.title}</h3>
             </div>
             <p className="text-sm text-[var(--muted-foreground)] leading-relaxed whitespace-pre-line">
               {slide.body}

@@ -33,6 +33,7 @@ const dailyTips = [
   { tip: "Қаржылық жастықша жасаңыз: 3–6 айлық шығындарыңызды депозитке салыңыз.", emoji: "🛡️" },
 ];
 
+
 const categoryIcons: Record<string, string> = {
   house: "🏠", car: "🚗", business: "💼", education: "🎓",
   travel: "✈️", family: "👨‍👩‍👧", health: "💪", other: "🎯",
@@ -42,8 +43,6 @@ const categoryLabels: Record<string, string> = {
   investing: "Инвестиция", bonds: "Облигация", gold: "Алтын",
   silver: "Күміс", savings: "Жинақ", business: "Бизнес", personal_finance: "Қаржы",
 };
-
-const positionEmojis = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -75,14 +74,13 @@ export default async function DashboardPage() {
   const start = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
   const todayTip = dailyTips[dayOfYear % dailyTips.length];
-
   return (
     <div className="max-w-2xl mx-auto space-y-4 pb-6">
 
       {/* Greeting */}
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold">{greeting}, {name}! 👋</h1>
+          <h1 className="text-2xl font-bold">{greeting}, {name}! 👋</h1>
           <p className="text-sm text-[var(--muted-foreground)] mt-0.5">{T("dashboard_subtitle")}</p>
         </div>
         {isVip ? (
@@ -95,29 +93,29 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <Link href="/goals">
-          <div className="p-3 sm:p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center">
-            <div className="text-xl sm:text-2xl font-bold text-primary-500">{goals?.length ?? 0}</div>
-            <div className="text-[10px] sm:text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
-              <Target className="h-3 w-3 shrink-0" /> <span className="truncate">{T("dashboard_goals")}</span>
+          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center">
+            <div className="text-2xl font-bold text-primary-500">{goals?.length ?? 0}</div>
+            <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
+              <Target className="h-3 w-3" /> {T("dashboard_goals")}
             </div>
           </div>
         </Link>
         <Link href="/savings">
-          <div className="p-3 sm:p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center">
-            <div className="text-xl sm:text-2xl font-bold text-emerald-500">{savings?.length ?? 0}</div>
-            <div className="text-[10px] sm:text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
-              <PiggyBank className="h-3 w-3 shrink-0" /> <span className="truncate">{T("dashboard_savings")}</span>
+          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center">
+            <div className="text-2xl font-bold text-emerald-500">{savings?.length ?? 0}</div>
+            <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
+              <PiggyBank className="h-3 w-3" /> {T("dashboard_savings")}
             </div>
           </div>
         </Link>
-        <div className="p-3 sm:p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] text-center">
-          <div className="text-xl sm:text-2xl font-bold text-orange-500 flex items-center justify-center gap-1">
+        <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] text-center">
+          <div className="text-2xl font-bold text-orange-500 flex items-center justify-center gap-1">
             {streak}
           </div>
-          <div className="text-[10px] sm:text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
-            <Flame className="h-3 w-3 text-orange-500 shrink-0" /> <span className="truncate">{T("dashboard_streak")}</span>
+          <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
+            <Flame className="h-3 w-3 text-orange-500" /> {T("dashboard_streak")}
           </div>
         </div>
       </div>
@@ -142,11 +140,10 @@ export default async function DashboardPage() {
                 <Link key={goal.id} href={`/goals/${goal.id}`}>
                   <div className="p-3 rounded-xl bg-[var(--secondary)] hover:bg-[var(--border)] transition-colors">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium flex items-center gap-2 min-w-0">
-                        <span className="shrink-0">{categoryIcons[goal.category] || "🎯"}</span>
-                        <span className="truncate">{goal.title}</span>
+                      <span className="text-sm font-medium flex items-center gap-2">
+                        {categoryIcons[goal.category] || "🎯"} {goal.title}
                       </span>
-                      <span className="text-xs font-bold text-primary-500 shrink-0 ml-2">{progress}%</span>
+                      <span className="text-xs font-bold text-primary-500">{progress}%</span>
                     </div>
                     <Progress value={progress} className="h-1.5" />
                     <div className="flex justify-between mt-1.5">
@@ -170,13 +167,13 @@ export default async function DashboardPage() {
       </div>
 
       {/* Daily Tip */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600/15 to-violet-700/15 border border-primary-500/20 p-4 sm:p-5">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600/15 to-violet-700/15 border border-primary-500/20 p-5">
         <div className="absolute -top-8 -right-8 w-28 h-28 bg-primary-600/20 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-violet-600/15 rounded-full blur-xl pointer-events-none" />
         <div className="relative">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">🔥</span>
-            <span className="font-semibold text-primary-400 text-xs tracking-wide uppercase">{T("dashboard_tip_label")}</span>
+            <span className="font-semibold text-primary-400 text-sm tracking-wide uppercase text-xs">{T("dashboard_tip_label")}</span>
           </div>
           <p className="text-sm leading-relaxed text-[var(--foreground)]">
             <span className="text-xl mr-2">{todayTip.emoji}</span>
@@ -197,28 +194,28 @@ export default async function DashboardPage() {
       {/* TOP Users */}
       {topUsers && topUsers.length > 0 && (
         <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
-          <div className="px-5 pt-4 pb-3">
-            <h2 className="font-semibold flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-amber-500" /> ТОП пайдаланушылар
-            </h2>
+          <div className="flex items-center gap-2 px-5 pt-4 pb-3">
+            <Trophy className="h-4 w-4 text-amber-500" />
+            <h2 className="font-semibold">ТОП пайдаланушылар</h2>
           </div>
-          <div className="px-5 pb-5 space-y-2">
-            {topUsers.map((u, i) => (
-              <div key={u.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--secondary)] transition-colors">
-                <span className="text-lg w-6 text-center shrink-0">{positionEmojis[i] || `${i + 1}`}</span>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-violet-500 flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
+          <div className="px-5 pb-5 space-y-3">
+            {topUsers.map((u, i) => {
+              const positionEmojis = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
+              return (
+                <div key={u.id} className="flex items-center gap-3">
+                  <span className="text-lg w-7 text-center">{positionEmojis[i]}</span>
                   {u.avatar_url ? (
-                    <img src={u.avatar_url as string} alt={u.full_name as string || ""} className="w-full h-full object-cover" />
+                    <img src={u.avatar_url} alt={u.full_name || ""} className="w-8 h-8 rounded-full object-cover" />
                   ) : (
-                    <span>{(u.full_name as string)?.[0]?.toUpperCase() || "?"}</span>
+                    <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-950 flex items-center justify-center text-primary-600 font-bold text-sm">
+                      {(u.full_name || "?")[0]}
+                    </div>
                   )}
+                  <span className="flex-1 text-sm font-medium truncate">{u.full_name}</span>
+                  {u.plan === "vip" && <Badge variant="premium" className="text-[10px] py-0">VIP</Badge>}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium truncate">{u.full_name as string}</div>
-                </div>
-                {u.plan === "vip" && <Badge variant="premium" className="text-[10px] shrink-0"><Crown className="h-2.5 w-2.5" /></Badge>}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -236,7 +233,7 @@ export default async function DashboardPage() {
               </Button>
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {articles.map((article) => (
               <Link key={article.id} href="/education">
                 <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover h-full flex flex-col gap-2">
@@ -259,19 +256,19 @@ export default async function DashboardPage() {
 
       {/* VIP Banner */}
       {!isVip && (
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 to-violet-700 text-white p-4 sm:p-5">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 to-violet-700 text-white p-5">
           <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-white/10 rounded-full pointer-events-none" />
           <div className="absolute -top-6 -left-6 w-20 h-20 bg-white/5 rounded-full pointer-events-none" />
-          <div className="relative flex items-center justify-between gap-3">
-            <div className="min-w-0">
+          <div className="relative flex items-center justify-between gap-4">
+            <div>
               <div className="flex items-center gap-2 mb-1">
-                <Crown className="h-5 w-5 text-amber-300 shrink-0" />
-                <span className="font-bold text-base sm:text-lg truncate">{T("dashboard_vip_title")}</span>
+                <Crown className="h-5 w-5 text-amber-300" />
+                <span className="font-bold text-lg">{T("dashboard_vip_title")}</span>
               </div>
               <p className="text-xs opacity-75">{T("dashboard_vip_desc")}</p>
             </div>
-            <Link href="/premium" className="shrink-0">
-              <Button className="bg-white/20 hover:bg-white/30 text-white border-0 whitespace-nowrap font-semibold" size="sm">
+            <Link href="/premium">
+              <Button className="shrink-0 bg-white/20 hover:bg-white/30 text-white border-0 whitespace-nowrap font-semibold" size="sm">
                 <Crown className="h-4 w-4 text-amber-300" /> {T("dashboard_vip_btn")}
               </Button>
             </Link>
