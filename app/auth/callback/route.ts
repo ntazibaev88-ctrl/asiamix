@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
 
   if (code) {
-    // Collect all cookies with their full options
     const collectedCookies: Array<{ name: string; value: string; options: Record<string, unknown> }> = [];
 
     const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -27,7 +26,6 @@ export async function GET(request: NextRequest) {
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             request.cookies.set(name, value);
-            // Merge: latest value wins
             const idx = collectedCookies.findIndex((c) => c.name === name);
             if (idx >= 0) collectedCookies[idx] = { name, value, options: options as Record<string, unknown> };
             else collectedCookies.push({ name, value, options: options as Record<string, unknown> });
@@ -41,13 +39,11 @@ export async function GET(request: NextRequest) {
     if (!error) {
       const { data: { user } } = await supabase.auth.getUser();
 
-      // Email-based admin check — no DB required
       const isAdmin = user && ADMIN_EMAILS.includes(user.email || "");
       const dest = isAdmin ? "/admin" : "/dashboard";
 
       const response = NextResponse.redirect(`${origin}${dest}`);
 
-      // Apply all session cookies with full options
       collectedCookies.forEach(({ name, value, options }) => {
         response.cookies.set(name, value, options as Parameters<typeof response.cookies.set>[2]);
       });

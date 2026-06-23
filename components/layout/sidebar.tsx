@@ -17,7 +17,6 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  User,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
