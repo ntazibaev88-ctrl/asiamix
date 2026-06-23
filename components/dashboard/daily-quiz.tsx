@@ -2,8 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { CheckCircle, XCircle, Brain } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
-const quizzes = [
+type QuizData = {
+  question: string;
+  options: string[];
+  correct: number;
+  explanation: string;
+  xp?: number;
+};
+
+const fallbackQuizzes: QuizData[] = [
   {
     question: "Инфляция дегеніміз не?",
     options: ["Ақша санының өсуі", "Тауарлар бағасының жалпы өсуі", "Банктің пайдасы", "Валюта бағамы"],
@@ -74,35 +83,63 @@ const quizzes = [
 ];
 
 export function DailyQuiz({ dayOfYear }: { dayOfYear: number }) {
-  const quiz = quizzes[dayOfYear % quizzes.length];
-  const todayKey = `quiz_${dayOfYear}`;
-
+  const [quiz, setQuiz] = useState<QuizData | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [answered, setAnswered] = useState(false);
+  const todayKey = `quiz_${dayOfYear}`;
 
   useEffect(() => {
+    const loadQuiz = async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from("financial_quizzes")
+        .select("question, options, correct_index, explanation, xp")
+        .eq("is_active", true)
+        .order("created_at", { ascending: true });
+
+      let quizList: QuizData[];
+      if (data && data.length > 0) {
+        quizList = data.map((q) => ({
+          question: q.question,
+          options: q.options,
+          correct: q.correct_index,
+          explanation: q.explanation || "",
+          xp: q.xp || 10,
+        }));
+      } else {
+        quizList = fallbackQuizzes;
+      }
+
+      setQuiz(quizList[dayOfYear % quizList.length]);
+    };
+
+    loadQuiz();
+
     const saved = localStorage.getItem(todayKey);
     if (saved !== null) {
       setSelected(parseInt(saved));
       setAnswered(true);
     }
-  }, [todayKey]);
+  }, [dayOfYear, todayKey]);
 
   const handleAnswer = (index: number) => {
-    if (answered) return;
+    if (answered || !quiz) return;
     setSelected(index);
     setAnswered(true);
     localStorage.setItem(todayKey, String(index));
   };
 
+  if (!quiz) return null;
+
   const isCorrect = selected === quiz.correct;
+  const xp = quiz.xp || 10;
 
   return (
     <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
       <div className="bg-gradient-to-r from-violet-600/20 to-primary-600/20 px-5 py-3 flex items-center gap-2 border-b border-[var(--border)]">
         <Brain className="h-4 w-4 text-violet-400" />
         <span className="font-semibold text-sm">🧮 Қаржы сауаттылығы</span>
-        <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-400 font-medium">+10 XP</span>
+        <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-400 font-medium">+{xp} XP</span>
       </div>
       <div className="p-5">
         <p className="text-sm font-semibold mb-4 leading-relaxed">{quiz.question}</p>
@@ -141,7 +178,7 @@ export function DailyQuiz({ dayOfYear }: { dayOfYear: number }) {
                 : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
             }`}
           >
-            {isCorrect ? "✅ Дұрыс! +10 XP алдыңыз 🎉 — " : "❌ Қате. "}
+            {isCorrect ? `✅ Дұрыс! +${xp} XP алдыңыз 🎉 — ` : "❌ Қате. "}
             {quiz.explanation}
           </div>
         )}

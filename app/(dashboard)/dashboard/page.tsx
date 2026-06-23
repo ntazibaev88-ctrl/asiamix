@@ -5,7 +5,6 @@ import { formatCurrency, calculateProgress } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DailyQuiz } from "@/components/dashboard/daily-quiz";
 import { DailyBonus } from "@/components/dashboard/daily-bonus";
 import { CurrencyRates } from "@/components/dashboard/currency-rates";
 import { Presentations } from "@/components/dashboard/presentations";
@@ -182,9 +181,6 @@ export default async function DashboardPage() {
 
       {/* Currency Rates */}
       <CurrencyRates titleLabel={T("currency_title")} />
-
-      {/* Finance Quiz */}
-      <DailyQuiz dayOfYear={dayOfYear} />
 
       {/* Presentations */}
       <Presentations />
