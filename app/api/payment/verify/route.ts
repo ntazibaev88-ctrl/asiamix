@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   // Must be admin
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  const ADMIN_EMAILS = ["tazhibaev_99@bk.ru"];
+  const ADMIN_EMAILS = ["ntazibaev88@gmail.com"];
   const isAdmin = profile?.role === "admin" || ADMIN_EMAILS.includes(user.email || "");
   if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

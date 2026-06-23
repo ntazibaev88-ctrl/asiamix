@@ -43,7 +43,7 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  const ADMIN_EMAILS = ["tazhibaev_99@bk.ru"];
+  const ADMIN_EMAILS = ["ntazibaev88@gmail.com"];
   const isAdmin = profile?.role === "admin" || ADMIN_EMAILS.includes(user.email || "");
   if (!isAdmin) redirect("/dashboard");
 
