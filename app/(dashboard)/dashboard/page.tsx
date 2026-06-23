@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { DailyBonus } from "@/components/dashboard/daily-bonus";
 import { CurrencyRates } from "@/components/dashboard/currency-rates";
 import { Presentations } from "@/components/dashboard/presentations";
+import { FinancialCalculator } from "@/components/dashboard/financial-calculator";
 import Link from "next/link";
 import {
   Target,
@@ -17,6 +18,7 @@ import {
   Flame,
   Plus,
   Newspaper,
+  Trophy,
 } from "lucide-react";
 import { t as translate, DEFAULT_LANG, LANG_COOKIE } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
@@ -52,13 +54,14 @@ export default async function DashboardPage() {
   const lang: Lang = (["kk", "ru", "en"].includes(langCookie ?? "") ? langCookie : DEFAULT_LANG) as Lang;
   const T = (key: Parameters<typeof translate>[1]) => translate(lang, key);
 
-  const [{ data: profile }, { data: goals }, { data: savings }, { data: articles }] =
+  const [{ data: profile }, { data: goals }, { data: savings }, { data: articles }, { data: topUsers }] =
     await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).single(),
       supabase.from("goals").select("*").eq("user_id", user.id).eq("status", "active")
         .order("created_at", { ascending: false }).limit(3),
       supabase.from("savings_plans").select("*").eq("user_id", user.id).limit(2),
       supabase.from("articles").select("id, title, excerpt, category, slug").eq("published", true).limit(4),
+      supabase.from("profiles").select("id, full_name, avatar_url, plan").not("full_name", "is", null).order("created_at", { ascending: true }).limit(5),
     ]);
 
   const name = profile?.full_name?.split(" ")[0] || "Пайдаланушы";
@@ -182,8 +185,40 @@ export default async function DashboardPage() {
       {/* Currency Rates */}
       <CurrencyRates titleLabel={T("currency_title")} />
 
+      {/* Financial Calculator */}
+      <FinancialCalculator />
+
       {/* Presentations */}
       <Presentations />
+
+      {/* TOP Users */}
+      {topUsers && topUsers.length > 0 && (
+        <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
+          <div className="flex items-center gap-2 px-5 pt-4 pb-3">
+            <Trophy className="h-4 w-4 text-amber-500" />
+            <h2 className="font-semibold">ТОП пайдаланушылар</h2>
+          </div>
+          <div className="px-5 pb-5 space-y-3">
+            {topUsers.map((u, i) => {
+              const positionEmojis = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
+              return (
+                <div key={u.id} className="flex items-center gap-3">
+                  <span className="text-lg w-7 text-center">{positionEmojis[i]}</span>
+                  {u.avatar_url ? (
+                    <img src={u.avatar_url} alt={u.full_name || ""} className="w-8 h-8 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-950 flex items-center justify-center text-primary-600 font-bold text-sm">
+                      {(u.full_name || "?")[0]}
+                    </div>
+                  )}
+                  <span className="flex-1 text-sm font-medium truncate">{u.full_name}</span>
+                  {u.plan === "vip" && <Badge variant="premium" className="text-[10px] py-0">VIP</Badge>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Articles */}
       {articles && articles.length > 0 && (
