@@ -14,6 +14,13 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Read language cookie first before Supabase client creation
+  const cookieStore = await cookies();
+  const langCookie = cookieStore.get(LANG_COOKIE)?.value;
+  const lang: Lang = (["kk", "ru", "en"] as const).includes(langCookie as Lang)
+    ? (langCookie as Lang)
+    : DEFAULT_LANG;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -28,10 +35,6 @@ export default async function DashboardLayout({
     .select("*")
     .eq("id", user.id)
     .single();
-
-  const cookieStore = await cookies();
-  const langCookie = cookieStore.get(LANG_COOKIE)?.value;
-  const lang: Lang = (["kk", "ru", "en"].includes(langCookie ?? "") ? langCookie : DEFAULT_LANG) as Lang;
 
   return (
     <LanguageProvider initialLang={lang}>
