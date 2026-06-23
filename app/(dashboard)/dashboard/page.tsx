@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { DailyBonus } from "@/components/dashboard/daily-bonus";
 import { CurrencyRates } from "@/components/dashboard/currency-rates";
 import { Presentations } from "@/components/dashboard/presentations";
+import { FinancialCalculator } from "@/components/dashboard/financial-calculator";
 import Link from "next/link";
 import {
   Target,
@@ -17,6 +18,7 @@ import {
   Flame,
   Plus,
   Newspaper,
+  Trophy,
 } from "lucide-react";
 import { t as translate, DEFAULT_LANG, LANG_COOKIE } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
@@ -31,7 +33,6 @@ const dailyTips = [
   { tip: "Қаржылық жастықша жасаңыз: 3–6 айлық шығындарыңызды депозитке салыңыз.", emoji: "🛡️" },
 ];
 
-
 const categoryIcons: Record<string, string> = {
   house: "🏠", car: "🚗", business: "💼", education: "🎓",
   travel: "✈️", family: "👨‍👩‍👧", health: "💪", other: "🎯",
@@ -41,6 +42,8 @@ const categoryLabels: Record<string, string> = {
   investing: "Инвестиция", bonds: "Облигация", gold: "Алтын",
   silver: "Күміс", savings: "Жинақ", business: "Бизнес", personal_finance: "Қаржы",
 };
+
+const positionEmojis = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -52,13 +55,14 @@ export default async function DashboardPage() {
   const lang: Lang = (["kk", "ru", "en"].includes(langCookie ?? "") ? langCookie : DEFAULT_LANG) as Lang;
   const T = (key: Parameters<typeof translate>[1]) => translate(lang, key);
 
-  const [{ data: profile }, { data: goals }, { data: savings }, { data: articles }] =
+  const [{ data: profile }, { data: goals }, { data: savings }, { data: articles }, { data: topUsers }] =
     await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).single(),
       supabase.from("goals").select("*").eq("user_id", user.id).eq("status", "active")
         .order("created_at", { ascending: false }).limit(3),
       supabase.from("savings_plans").select("*").eq("user_id", user.id).limit(2),
       supabase.from("articles").select("id, title, excerpt, category, slug").eq("published", true).limit(4),
+      supabase.from("profiles").select("id, full_name, avatar_url, plan").not("full_name", "is", null).order("created_at", { ascending: true }).limit(5),
     ]);
 
   const name = profile?.full_name?.split(" ")[0] || "Пайдаланушы";
@@ -71,6 +75,7 @@ export default async function DashboardPage() {
   const start = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
   const todayTip = dailyTips[dayOfYear % dailyTips.length];
+
   return (
     <div className="max-w-2xl mx-auto space-y-4 pb-6">
 
@@ -183,8 +188,40 @@ export default async function DashboardPage() {
       {/* Currency Rates */}
       <CurrencyRates titleLabel={T("currency_title")} />
 
+      {/* Financial Calculator */}
+      <FinancialCalculator />
+
       {/* Presentations */}
       <Presentations />
+
+      {/* TOP Users */}
+      {topUsers && topUsers.length > 0 && (
+        <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
+          <div className="px-5 pt-4 pb-3">
+            <h2 className="font-semibold flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-amber-500" /> ТОП пайдаланушылар
+            </h2>
+          </div>
+          <div className="px-5 pb-5 space-y-2">
+            {topUsers.map((u, i) => (
+              <div key={u.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--secondary)] transition-colors">
+                <span className="text-lg w-6 text-center shrink-0">{positionEmojis[i] || `${i + 1}`}</span>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-violet-500 flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
+                  {u.avatar_url ? (
+                    <img src={u.avatar_url as string} alt={u.full_name as string || ""} className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{(u.full_name as string)?.[0]?.toUpperCase() || "?"}</span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium truncate">{u.full_name as string}</div>
+                </div>
+                {u.plan === "vip" && <Badge variant="premium" className="text-[10px] shrink-0"><Crown className="h-2.5 w-2.5" /></Badge>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Articles */}
       {articles && articles.length > 0 && (
