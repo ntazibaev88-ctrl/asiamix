@@ -75,7 +75,7 @@ export async function proxy(request: NextRequest) {
     }
 
     if (isAdminPage && user) {
-      const ADMIN_EMAILS = ["tazhibaev_99@bk.ru"];
+      const ADMIN_EMAILS = ["ntazibaev88@gmail.com"];
       const isAdminEmail = ADMIN_EMAILS.includes(user.email || "");
 
       if (!isAdminEmail) {
