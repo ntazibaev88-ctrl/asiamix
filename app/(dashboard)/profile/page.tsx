@@ -15,14 +15,11 @@ export default async function ProfilePage() {
     .single();
 
   if (!profile) {
-    const referral_code = Math.random().toString(36).substring(2, 10).toUpperCase();
-    await supabase.from("profiles").insert({
-      id: user.id,
-      email: user.email,
-      plan: "free",
-      role: "user",
-      referral_code,
-    });
+    // Profile missing (trigger may have failed) — upsert with DB-generated referral_code
+    await supabase.from("profiles").upsert(
+      { id: user.id, email: user.email || "", plan: "free", role: "user" },
+      { onConflict: "id", ignoreDuplicates: true }
+    );
     const res = await supabase.from("profiles").select("*").eq("id", user.id).single();
     if (!res.data) {
       return (
