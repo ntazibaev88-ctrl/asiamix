@@ -8,22 +8,26 @@ export default async function ProfilePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  let { data: profile } = await supabase
+  const { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
     .single();
 
   if (!profile) {
-    await supabase.from("profiles").insert({
-      id: user.id,
-      email: user.email,
-      plan: "free",
-      role: "user",
-    });
-    const res = await supabase.from("profiles").select("*").eq("id", user.id).single();
-    profile = res.data;
+    return (
+      <div className="max-w-2xl mx-auto py-16 text-center space-y-4">
+        <p className="text-lg font-medium">Профиль табылмады</p>
+        <p className="text-sm text-[var(--muted-foreground)]">
+          Шығып, қайта кіріңіз — профиль автоматты жасалады.
+        </p>
+        <a href="/signout" className="inline-block px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">
+          Шығу
+        </a>
+      </div>
+    );
   }
 
   return <ProfileForm profile={profile as UserProfile} email={user.email || ""} />;
 }
+
