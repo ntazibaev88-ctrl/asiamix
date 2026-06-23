@@ -17,7 +17,6 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  User,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -150,7 +149,6 @@ export function MobileSidebar() {
     { href: "/goals", icon: Target, labelKey: "mobile_goals" as const },
     { href: "/savings", icon: PiggyBank, labelKey: "mobile_savings" as const },
     { href: "/education", icon: GraduationCap, labelKey: "mobile_education" as const },
-    { href: "/profile", icon: User, labelKey: "mobile_profile" as const },
   ];
 
   return (
