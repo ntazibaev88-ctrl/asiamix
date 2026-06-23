@@ -1,48 +1,46 @@
 "use client";
 
-import { createContext, useContext, useCallback } from "react";
-import type { Lang } from "@/lib/i18n";
+import { useState, useCallback, useEffect } from "react";
 import { LANG_COOKIE, translations, DEFAULT_LANG } from "@/lib/i18n";
-import type { TranslationKey } from "@/lib/i18n";
+import type { Lang, TranslationKey } from "@/lib/i18n";
 
-interface LanguageContextValue {
-  lang: Lang;
-  setLang: (lang: Lang) => void;
-  t: (key: TranslationKey) => string;
-}
-
-const LanguageContext = createContext<LanguageContextValue>({
-  lang: DEFAULT_LANG,
-  setLang: () => {},
-  t: (key) => translations[DEFAULT_LANG][key] ?? key,
-});
-
-export function LanguageProvider({
-  children,
-  initialLang,
-}: {
-  children: React.ReactNode;
-  initialLang: Lang;
-}) {
-  const setLang = useCallback((lang: Lang) => {
-    document.cookie = `${LANG_COOKIE}=${lang};path=/;max-age=31536000`;
-    window.location.reload();
-  }, []);
-
-  const translate = useCallback(
-    (key: TranslationKey): string =>
-      translations[initialLang][key] ?? translations[DEFAULT_LANG][key] ?? key,
-    [initialLang]
-  );
-
-  return (
-    <LanguageContext.Provider value={{ lang: initialLang, setLang, t: translate }}>
-      {children}
-    </LanguageContext.Provider>
-  );
+function getLangFromCookie(): Lang {
+  if (typeof document === "undefined") return DEFAULT_LANG;
+  const match = document.cookie.match(new RegExp(`(?:^|; )${LANG_COOKIE}=([^;]+)`));
+  const val = match?.[1];
+  return (["kk", "ru", "en"] as const).includes(val as Lang)
+    ? (val as Lang)
+    : DEFAULT_LANG;
 }
 
 export function useLanguage() {
-  return useContext(LanguageContext);
+  const [lang, setLangState] = useState<Lang>(DEFAULT_LANG);
+
+  useEffect(() => {
+    setLangState(getLangFromCookie());
+  }, []);
+
+  const setLang = useCallback((newLang: Lang) => {
+    document.cookie = `${LANG_COOKIE}=${newLang};path=/;max-age=31536000`;
+    window.location.reload();
+  }, []);
+
+  const t = useCallback(
+    (key: TranslationKey): string =>
+      translations[lang][key] ?? translations[DEFAULT_LANG][key] ?? key,
+    [lang]
+  );
+
+  return { lang, setLang, t };
 }
 
+// Keep LanguageProvider for backward compat but it's now a no-op wrapper
+export function LanguageProvider({
+  children,
+  initialLang: _initialLang,
+}: {
+  children: React.ReactNode;
+  initialLang?: string;
+}) {
+  return <>{children}</>;
+}
