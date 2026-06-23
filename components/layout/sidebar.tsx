@@ -17,32 +17,33 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Bell,
   User,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-
-const navItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Басты бет", labelRu: "Главная" },
-  { href: "/goals", icon: Target, label: "Мақсаттар", labelRu: "Цели" },
-  { href: "/savings", icon: PiggyBank, label: "Жинақтар", labelRu: "Сбережения" },
-  { href: "/education", icon: GraduationCap, label: "Білім", labelRu: "Образование" },
-  { href: "/books", icon: BookOpen, label: "Кітаптар", labelRu: "Книги" },
-  { href: "/movies", icon: Film, label: "Фильмдер", labelRu: "Фильмы" },
-  { href: "/journal", icon: BookMarked, label: "Күнделік", labelRu: "Дневник" },
-];
-
-const bottomItems = [
-  { href: "/premium", icon: Crown, label: "Premium", labelRu: "Премиум" },
-  { href: "/settings", icon: Settings, label: "Баптаулар", labelRu: "Настройки" },
-];
+import { useLanguage } from "@/contexts/language";
 
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { href: "/dashboard", icon: LayoutDashboard, labelKey: "nav_dashboard" as const },
+    { href: "/goals", icon: Target, labelKey: "nav_goals" as const },
+    { href: "/savings", icon: PiggyBank, labelKey: "nav_savings" as const },
+    { href: "/education", icon: GraduationCap, labelKey: "nav_education" as const },
+    { href: "/books", icon: BookOpen, labelKey: "nav_books" as const },
+    { href: "/movies", icon: Film, labelKey: "nav_movies" as const },
+    { href: "/journal", icon: BookMarked, labelKey: "nav_journal" as const },
+  ];
+
+  const bottomItems = [
+    { href: "/premium", icon: Crown, labelKey: "nav_premium" as const },
+    { href: "/settings", icon: Settings, labelKey: "nav_settings" as const },
+  ];
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -82,10 +83,10 @@ export function Sidebar() {
                 isActive && "active",
                 collapsed && "justify-center px-2"
               )}
-              title={collapsed ? item.label : undefined}
+              title={collapsed ? t(item.labelKey) : undefined}
             >
               <item.icon className={cn("h-5 w-5 shrink-0", isActive && "text-primary-600")} />
-              {!collapsed && <span>{item.label}</span>}
+              {!collapsed && <span>{t(item.labelKey)}</span>}
             </Link>
           );
         })}
@@ -105,10 +106,10 @@ export function Sidebar() {
                 item.href === "/premium" && !isActive && "text-amber-500 hover:text-amber-600",
                 collapsed && "justify-center px-2"
               )}
-              title={collapsed ? item.label : undefined}
+              title={collapsed ? t(item.labelKey) : undefined}
             >
               <item.icon className={cn("h-5 w-5 shrink-0", item.href === "/premium" && "text-amber-500")} />
-              {!collapsed && <span>{item.label}</span>}
+              {!collapsed && <span>{t(item.labelKey)}</span>}
             </Link>
           );
         })}
@@ -118,10 +119,10 @@ export function Sidebar() {
             "sidebar-link w-full text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950",
             collapsed && "justify-center px-2"
           )}
-          title={collapsed ? "Шығу" : undefined}
+          title={collapsed ? t("nav_logout") : undefined}
         >
           <LogOut className="h-5 w-5 shrink-0" />
-          {!collapsed && <span>Шығу</span>}
+          {!collapsed && <span>{t("nav_logout")}</span>}
         </button>
       </div>
 
@@ -142,13 +143,14 @@ export function Sidebar() {
 
 export function MobileSidebar() {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const mobileItems = [
-    { href: "/dashboard", icon: LayoutDashboard, label: "Басты" },
-    { href: "/goals", icon: Target, label: "Мақсат" },
-    { href: "/savings", icon: PiggyBank, label: "Жинақ" },
-    { href: "/education", icon: GraduationCap, label: "Білім" },
-    { href: "/profile", icon: User, label: "Профиль" },
+    { href: "/dashboard", icon: LayoutDashboard, labelKey: "mobile_home" as const },
+    { href: "/goals", icon: Target, labelKey: "mobile_goals" as const },
+    { href: "/savings", icon: PiggyBank, labelKey: "mobile_savings" as const },
+    { href: "/education", icon: GraduationCap, labelKey: "mobile_education" as const },
+    { href: "/profile", icon: User, labelKey: "mobile_profile" as const },
   ];
 
   return (
@@ -168,7 +170,7 @@ export function MobileSidebar() {
               )}
             >
               <item.icon className="h-5 w-5" />
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-[10px] font-medium">{t(item.labelKey)}</span>
             </Link>
           );
         })}
