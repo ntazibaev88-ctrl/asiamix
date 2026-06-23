@@ -4,281 +4,302 @@ import { formatCurrency, calculateProgress } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DailyQuiz } from "@/components/dashboard/daily-quiz";
+import { DailyBonus } from "@/components/dashboard/daily-bonus";
 import Link from "next/link";
 import {
   Target,
   PiggyBank,
-  BookMarked,
-  TrendingUp,
   Crown,
   ArrowRight,
   Flame,
   Plus,
-  GraduationCap,
+  Trophy,
+  Newspaper,
 } from "lucide-react";
+
+const dailyTips = [
+  { tip: "Кірісіңіздің 20%-ін жинаққа салыңыз. 50/30/20 ережесі: 50% қажеттілік, 30% тілек, 20% жинақ.", emoji: "💡" },
+  { tip: "Депозит ашу — ақшаңызды жұмысқа жіберудің ең қауіпсіз жолы. Қазақстанда жылдық 14–16% пайыз бар.", emoji: "🏦" },
+  { tip: "Шығындарыңызды жазып отырыңыз. Не жұмсайтыныңызды білмей, жинауға болмайды.", emoji: "📊" },
+  { tip: "Кредит картасының қарызын толығымен өтеңіз. Айлық пайыз жылдық 30–40%-ке жетуі мүмкін.", emoji: "💳" },
+  { tip: "Алтынға инвестиция — инфляциядан қорғаудың классикалық әдісі. Ұлттық Банктен монета сатып алуға болады.", emoji: "🥇" },
+  { tip: "Апта сайын кем дегенде 1 қаржы мақаласын оқыңыз. Білім — ең жақсы инвестиция.", emoji: "📚" },
+  { tip: "Қаржылық жастықша жасаңыз: 3–6 айлық шығындарыңызды депозитке салыңыз.", emoji: "🛡️" },
+];
+
+const weeklyChallenges = [
+  {
+    title: "Кофе мен тамақ шығынын 20% азайт",
+    xp: 50,
+    steps: ["Үйде тамақ пісіру", "Сыртта аз жеу", "Нәтижені жаз"],
+    done: 1,
+  },
+  {
+    title: "Жаңа жинақ мақсатын қой",
+    xp: 30,
+    steps: ["Мақсатты анықта", "Соманы есепте", "Мерзім қой"],
+    done: 0,
+  },
+  {
+    title: "3 қаржы мақаласын оқы",
+    xp: 40,
+    steps: ["1-ші мақала", "2-ші мақала", "3-ші мақала"],
+    done: 0,
+  },
+  {
+    title: "Апта бойы күнделік жаз",
+    xp: 60,
+    steps: ["Дүйсенбі", "Сейсенбі", "Сәрсенбі", "Бейсенбі", "Жұма"],
+    done: 0,
+  },
+];
+
+const categoryIcons: Record<string, string> = {
+  house: "🏠", car: "🚗", business: "💼", education: "🎓",
+  travel: "✈️", family: "👨‍👩‍👧", health: "💪", other: "🎯",
+};
+
+const categoryLabels: Record<string, string> = {
+  investing: "Инвестиция", bonds: "Облигация", gold: "Алтын",
+  silver: "Күміс", savings: "Жинақ", business: "Бизнес", personal_finance: "Қаржы",
+};
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: goals }, { data: savings }, { data: journalCount }] =
+  const [{ data: profile }, { data: goals }, { data: savings }, { data: articles }] =
     await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).single(),
-      supabase
-        .from("goals")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(3),
-      supabase
-        .from("savings_plans")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(3),
-      supabase
-        .from("journal_entries")
-        .select("id", { count: "exact" })
-        .eq("user_id", user.id),
+      supabase.from("goals").select("*").eq("user_id", user.id).eq("status", "active")
+        .order("created_at", { ascending: false }).limit(3),
+      supabase.from("savings_plans").select("*").eq("user_id", user.id).limit(2),
+      supabase.from("articles").select("id, title, excerpt, category, slug").eq("published", true).limit(4),
     ]);
 
   const name = profile?.full_name?.split(" ")[0] || "Пайдаланушы";
   const isVip = profile?.plan === "vip";
   const hour = new Date().getHours();
-  const greeting =
-    hour < 12 ? "Қайырлы таң" : hour < 17 ? "Қайырлы күн" : "Қайырлы кеш";
+  const greeting = hour < 12 ? "Қайырлы таң" : hour < 17 ? "Қайырлы күн" : "Қайырлы кеш";
+  const streak = 7;
 
-  const motivations = [
-    "Үлкен мақсаттар кішкентай қадамдардан басталады. Бүгін бір қадам жаса! 🚀",
-    "Жинақ — бостандықтың бастауы. Бүгін жинасаң, ертең еркін боласың! 💪",
-    "Білім — ең жақсы инвестиция. Бүгін бірдеңе үйренің! 📚",
-    "Сенің болашағың сенің бүгінгі таңдауларыңда жатыр! ⭐",
-  ];
-  const motivation = motivations[new Date().getDay() % motivations.length];
-
-  const statsCards = [
-    {
-      icon: Target,
-      label: "Белсенді мақсаттар",
-      value: goals?.length ?? 0,
-      color: "text-primary-600",
-      bg: "bg-primary-50 dark:bg-primary-950/30",
-      href: "/goals",
-    },
-    {
-      icon: PiggyBank,
-      label: "Жинақ жоспарлары",
-      value: savings?.length ?? 0,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50 dark:bg-emerald-950/30",
-      href: "/savings",
-    },
-    {
-      icon: BookMarked,
-      label: "Күнделік жазбалар",
-      value: journalCount?.length ?? 0,
-      color: "text-rose-600",
-      bg: "bg-rose-50 dark:bg-rose-950/30",
-      href: "/journal",
-    },
-    {
-      icon: Flame,
-      label: "Қатар күндер",
-      value: 7,
-      color: "text-orange-600",
-      bg: "bg-orange-50 dark:bg-orange-950/30",
-      href: "/dashboard",
-    },
-  ];
-
-  const categoryIcons: Record<string, string> = {
-    house: "🏠",
-    car: "🚗",
-    business: "💼",
-    education: "🎓",
-    travel: "✈️",
-    family: "👨‍👩‍👧",
-    health: "💪",
-    other: "🎯",
-  };
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
+  const todayTip = dailyTips[dayOfYear % dailyTips.length];
+  const weekOfYear = Math.floor(dayOfYear / 7);
+  const challenge = weeklyChallenges[weekOfYear % weeklyChallenges.length];
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-2xl mx-auto space-y-4 pb-6">
+
       {/* Greeting */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--foreground)]">
-            {greeting}, {name}! 👋
-          </h1>
-          <p className="text-[var(--muted-foreground)] mt-1 text-sm">{motivation}</p>
+          <h1 className="text-2xl font-bold">{greeting}, {name}! 👋</h1>
+          <p className="text-sm text-[var(--muted-foreground)] mt-0.5">Бүгін де алға қарай жыл!</p>
         </div>
-        {!isVip && (
+        {isVip ? (
+          <Badge variant="premium">✨ VIP</Badge>
+        ) : (
           <Link href="/premium">
-            <Button variant="gradient" size="sm">
-              <Crown className="h-4 w-4" />
-              VIP алу
-            </Button>
+            <Button variant="gradient" size="sm"><Crown className="h-4 w-4" />VIP</Button>
           </Link>
         )}
-        {isVip && <Badge variant="premium">✨ VIP</Badge>}
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {statsCards.map((stat) => (
-          <Link key={stat.label} href={stat.href}>
-            <div className="p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover">
-              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-              </div>
-              <div className="text-2xl font-bold text-[var(--foreground)]">{stat.value}</div>
-              <div className="text-xs text-[var(--muted-foreground)] mt-0.5">{stat.label}</div>
+      <div className="grid grid-cols-3 gap-3">
+        <Link href="/goals">
+          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center">
+            <div className="text-2xl font-bold text-primary-500">{goals?.length ?? 0}</div>
+            <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
+              <Target className="h-3 w-3" /> Мақсат
             </div>
-          </Link>
-        ))}
+          </div>
+        </Link>
+        <Link href="/savings">
+          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center">
+            <div className="text-2xl font-bold text-emerald-500">{savings?.length ?? 0}</div>
+            <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
+              <PiggyBank className="h-3 w-3" /> Жинақ
+            </div>
+          </div>
+        </Link>
+        <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] text-center">
+          <div className="text-2xl font-bold text-orange-500 flex items-center justify-center gap-1">
+            {streak}
+          </div>
+          <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
+            <Flame className="h-3 w-3 text-orange-500" /> Streak
+          </div>
+        </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Goals */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Белсенді мақсаттар</h2>
+      {/* Goals */}
+      <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
+        <div className="flex items-center justify-between px-5 pt-4 pb-3">
+          <h2 className="font-semibold flex items-center gap-2">
+            <Target className="h-4 w-4 text-primary-500" /> Белсенді мақсаттар
+          </h2>
+          <Link href="/goals">
+            <Button variant="ghost" size="sm" className="text-xs gap-1">
+              Барлығы <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        </div>
+        {goals && goals.length > 0 ? (
+          <div className="px-5 pb-5 space-y-3">
+            {goals.map((goal) => {
+              const progress = calculateProgress(goal.current_amount, goal.target_amount);
+              return (
+                <Link key={goal.id} href={`/goals/${goal.id}`}>
+                  <div className="p-3 rounded-xl bg-[var(--secondary)] hover:bg-[var(--border)] transition-colors">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium flex items-center gap-2">
+                        {categoryIcons[goal.category] || "🎯"} {goal.title}
+                      </span>
+                      <span className="text-xs font-bold text-primary-500">{progress}%</span>
+                    </div>
+                    <Progress value={progress} className="h-1.5" />
+                    <div className="flex justify-between mt-1.5">
+                      <span className="text-xs text-[var(--muted-foreground)]">{formatCurrency(goal.current_amount)}</span>
+                      <span className="text-xs text-[var(--muted-foreground)]">{formatCurrency(goal.target_amount)}</span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="px-5 pb-6 text-center">
+            <Target className="h-8 w-8 text-[var(--muted-foreground)] mx-auto mb-2 opacity-30" />
+            <p className="text-sm text-[var(--muted-foreground)] mb-3">Әлі мақсат жоқ</p>
             <Link href="/goals">
-              <Button variant="ghost" size="sm">
-                Барлығы
-                <ArrowRight className="h-4 w-4" />
+              <Button variant="gradient" size="sm"><Plus className="h-4 w-4" />Мақсат қосу</Button>
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Daily Tip */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600/15 to-violet-700/15 border border-primary-500/20 p-5">
+        <div className="absolute -top-8 -right-8 w-28 h-28 bg-primary-600/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-violet-600/15 rounded-full blur-xl pointer-events-none" />
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-base">🔥</span>
+            <span className="font-semibold text-primary-400 text-sm tracking-wide uppercase text-xs">Бүгінгі кеңес</span>
+          </div>
+          <p className="text-sm leading-relaxed text-[var(--foreground)]">
+            <span className="text-xl mr-2">{todayTip.emoji}</span>
+            {todayTip.tip}
+          </p>
+        </div>
+      </div>
+
+      {/* Finance Quiz */}
+      <DailyQuiz dayOfYear={dayOfYear} />
+
+      {/* Articles */}
+      {articles && articles.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-semibold flex items-center gap-2">
+              <Newspaper className="h-4 w-4 text-amber-500" /> Пайдалы мақалалар
+            </h2>
+            <Link href="/education">
+              <Button variant="ghost" size="sm" className="text-xs gap-1">
+                Барлығы <ArrowRight className="h-3 w-3" />
               </Button>
             </Link>
           </div>
-
-          {goals && goals.length > 0 ? (
-            <div className="space-y-3">
-              {goals.map((goal) => {
-                const progress = calculateProgress(
-                  goal.current_amount,
-                  goal.target_amount
-                );
-                return (
-                  <Link key={goal.id} href={`/goals/${goal.id}`}>
-                    <div className="p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">
-                            {categoryIcons[goal.category] || "🎯"}
-                          </span>
-                          <div>
-                            <div className="font-semibold text-sm">{goal.title}</div>
-                            <div className="text-xs text-[var(--muted-foreground)]">
-                              {formatCurrency(goal.current_amount)} / {formatCurrency(goal.target_amount)}
-                            </div>
-                          </div>
-                        </div>
-                        <Badge
-                          variant={progress === 100 ? "success" : "default"}
-                        >
-                          {progress}%
-                        </Badge>
-                      </div>
-                      <Progress value={progress} className="h-2" />
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="p-8 rounded-2xl bg-[var(--card)] border border-[var(--border)] border-dashed text-center">
-              <Target className="h-10 w-10 text-[var(--muted-foreground)] mx-auto mb-3" />
-              <p className="text-sm text-[var(--muted-foreground)] mb-4">Әлі мақсат жоқ</p>
-              <Link href="/goals">
-                <Button variant="gradient" size="sm">
-                  <Plus className="h-4 w-4" />
-                  Мақсат қосу
-                </Button>
+          <div className="grid grid-cols-2 gap-3">
+            {articles.map((article) => (
+              <Link key={article.id} href="/education">
+                <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover h-full flex flex-col gap-2">
+                  <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 font-medium w-fit">
+                    {categoryLabels[article.category] || article.category}
+                  </span>
+                  <p className="text-sm font-semibold leading-snug line-clamp-2">{article.title}</p>
+                  {article.excerpt && (
+                    <p className="text-xs text-[var(--muted-foreground)] line-clamp-2">{article.excerpt}</p>
+                  )}
+                </div>
               </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Right column */}
-        <div className="space-y-4">
-          {/* Quick Actions */}
-          <div className="p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)]">
-            <h3 className="font-semibold mb-4">Жылдам әрекеттер</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { href: "/goals", icon: Target, label: "Мақсат қосу", emoji: "🎯" },
-                { href: "/savings", icon: PiggyBank, label: "Жинақ", emoji: "💰" },
-                { href: "/journal", icon: BookMarked, label: "Күнделік", emoji: "📝" },
-                { href: "/education", icon: GraduationCap, label: "Оқу", emoji: "📚" },
-              ].map((action) => (
-                <Link key={action.href} href={action.href}>
-                  <div className="p-3 rounded-xl bg-[var(--secondary)] hover:bg-[var(--border)] transition-colors text-center">
-                    <div className="text-xl mb-1">{action.emoji}</div>
-                    <div className="text-xs font-medium text-[var(--foreground)]">{action.label}</div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            ))}
           </div>
+        </div>
+      )}
 
-          {/* Savings Summary */}
-          {savings && savings.length > 0 && (
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-              <div className="flex items-center gap-2 mb-4">
-                <PiggyBank className="h-5 w-5" />
-                <span className="font-semibold">Жинақтар</span>
+      {/* Weekly Challenge */}
+      <div className="rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-amber-500" />
+            <span className="font-semibold">🏆 Апта челленджі</span>
+          </div>
+          <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 font-semibold">
+            +{challenge.xp} XP
+          </span>
+        </div>
+        <p className="text-sm font-medium mb-4">{challenge.title}</p>
+        <div className="space-y-2.5">
+          {challenge.steps.map((step, i) => (
+            <div key={i} className="flex items-center gap-3 text-sm">
+              <div
+                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 ${
+                  i < challenge.done
+                    ? "border-amber-500 bg-amber-500 text-white"
+                    : "border-[var(--border)] text-[var(--muted-foreground)]"
+                }`}
+              >
+                {i < challenge.done ? "✓" : i + 1}
               </div>
-              {savings.slice(0, 2).map((s) => {
-                const p = calculateProgress(s.current_amount, s.goal_amount);
-                return (
-                  <div key={s.id} className="mb-3">
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span className="opacity-90">{s.name}</span>
-                      <span className="font-medium">{p}%</span>
-                    </div>
-                    <div className="h-1.5 bg-white/20 rounded-full">
-                      <div
-                        className="h-1.5 bg-white rounded-full transition-all"
-                        style={{ width: `${p}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-              <Link href="/savings">
-                <Button
-                  className="mt-2 w-full bg-white/20 hover:bg-white/30 text-white border-0 text-sm"
-                  size="sm"
-                >
-                  Толығырақ
-                  <ArrowRight className="h-3 w-3" />
-                </Button>
-              </Link>
+              <span className={i < challenge.done ? "line-through text-[var(--muted-foreground)]" : ""}>{step}</span>
             </div>
-          )}
-
-          {/* Premium CTA */}
-          {!isVip && (
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-primary-600 to-violet-700 text-white">
-              <Crown className="h-6 w-6 text-amber-300 mb-3" />
-              <h3 className="font-bold mb-1">VIP-ке өтіңіз</h3>
-              <p className="text-xs opacity-80 mb-4">
-                Шексіз мақсаттар, аналитика және Premium контент
-              </p>
-              <Link href="/premium">
-                <Button className="w-full bg-white/20 hover:bg-white/30 text-white border-0 text-sm" size="sm">
-                  <Crown className="h-4 w-4 text-amber-300" />
-                  ₸990/ай
-                </Button>
-              </Link>
-            </div>
-          )}
+          ))}
+        </div>
+        <div className="mt-4">
+          <div className="flex justify-between text-xs text-[var(--muted-foreground)] mb-1.5">
+            <span>Прогресс</span>
+            <span>{challenge.done}/{challenge.steps.length}</span>
+          </div>
+          <div className="h-2 bg-[var(--secondary)] rounded-full overflow-hidden">
+            <div
+              className="h-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all"
+              style={{ width: `${(challenge.done / challenge.steps.length) * 100}%` }}
+            />
+          </div>
         </div>
       </div>
+
+      {/* Daily Bonus */}
+      <DailyBonus streak={streak} />
+
+      {/* VIP Banner */}
+      {!isVip && (
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 to-violet-700 text-white p-5">
+          <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-white/10 rounded-full pointer-events-none" />
+          <div className="absolute -top-6 -left-6 w-20 h-20 bg-white/5 rounded-full pointer-events-none" />
+          <div className="relative flex items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Crown className="h-5 w-5 text-amber-300" />
+                <span className="font-bold text-lg">VIP-ке өтіңіз</span>
+              </div>
+              <p className="text-xs opacity-75">Шексіз мақсаттар, AI кеңес және Premium контент</p>
+            </div>
+            <Link href="/premium">
+              <Button className="shrink-0 bg-white/20 hover:bg-white/30 text-white border-0 whitespace-nowrap font-semibold" size="sm">
+                <Crown className="h-4 w-4 text-amber-300" /> ₸990/ай
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
