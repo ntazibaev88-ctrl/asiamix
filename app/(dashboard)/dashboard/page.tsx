@@ -17,7 +17,6 @@ import {
   ArrowRight,
   Flame,
   Plus,
-  Trophy,
   Newspaper,
 } from "lucide-react";
 import { t as translate, DEFAULT_LANG, LANG_COOKIE } from "@/lib/i18n";
@@ -33,32 +32,6 @@ const dailyTips = [
   { tip: "Қаржылық жастықша жасаңыз: 3–6 айлық шығындарыңызды депозитке салыңыз.", emoji: "🛡️" },
 ];
 
-const weeklyChallenges = [
-  {
-    title: "Кофе мен тамақ шығынын 20% азайт",
-    xp: 50,
-    steps: ["Үйде тамақ пісіру", "Сыртта аз жеу", "Нәтижені жаз"],
-    done: 1,
-  },
-  {
-    title: "Жаңа жинақ мақсатын қой",
-    xp: 30,
-    steps: ["Мақсатты анықта", "Соманы есепте", "Мерзім қой"],
-    done: 0,
-  },
-  {
-    title: "3 қаржы мақаласын оқы",
-    xp: 40,
-    steps: ["1-ші мақала", "2-ші мақала", "3-ші мақала"],
-    done: 0,
-  },
-  {
-    title: "Апта бойы күнделік жаз",
-    xp: 60,
-    steps: ["Дүйсенбі", "Сейсенбі", "Сәрсенбі", "Бейсенбі", "Жұма"],
-    done: 0,
-  },
-];
 
 const categoryIcons: Record<string, string> = {
   house: "🏠", car: "🚗", business: "💼", education: "🎓",
@@ -99,9 +72,6 @@ export default async function DashboardPage() {
   const start = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
   const todayTip = dailyTips[dayOfYear % dailyTips.length];
-  const weekOfYear = Math.floor(dayOfYear / 7);
-  const challenge = weeklyChallenges[weekOfYear % weeklyChallenges.length];
-
   return (
     <div className="max-w-2xl mx-auto space-y-4 pb-6">
 
@@ -249,48 +219,6 @@ export default async function DashboardPage() {
           </div>
         </div>
       )}
-
-      {/* Weekly Challenge */}
-      <div className="rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 p-5">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-amber-500" />
-            <span className="font-semibold">🏆 {T("dashboard_challenge")}</span>
-          </div>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 font-semibold">
-            +{challenge.xp} XP
-          </span>
-        </div>
-        <p className="text-sm font-medium mb-4">{challenge.title}</p>
-        <div className="space-y-2.5">
-          {challenge.steps.map((step, i) => (
-            <div key={i} className="flex items-center gap-3 text-sm">
-              <div
-                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 ${
-                  i < challenge.done
-                    ? "border-amber-500 bg-amber-500 text-white"
-                    : "border-[var(--border)] text-[var(--muted-foreground)]"
-                }`}
-              >
-                {i < challenge.done ? "✓" : i + 1}
-              </div>
-              <span className={i < challenge.done ? "line-through text-[var(--muted-foreground)]" : ""}>{step}</span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4">
-          <div className="flex justify-between text-xs text-[var(--muted-foreground)] mb-1.5">
-            <span>{T("dashboard_progress")}</span>
-            <span>{challenge.done}/{challenge.steps.length}</span>
-          </div>
-          <div className="h-2 bg-[var(--secondary)] rounded-full overflow-hidden">
-            <div
-              className="h-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all"
-              style={{ width: `${(challenge.done / challenge.steps.length) * 100}%` }}
-            />
-          </div>
-        </div>
-      </div>
 
       {/* Daily Bonus */}
       <DailyBonus streak={streak} />
