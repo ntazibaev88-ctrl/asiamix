@@ -15,17 +15,25 @@ export default async function ProfilePage() {
     .single();
 
   if (!profile) {
-    return (
-      <div className="max-w-2xl mx-auto py-16 text-center space-y-4">
-        <p className="text-lg font-medium">Профиль табылмады</p>
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Шығып, қайта кіріңіз — профиль автоматты жасалады.
-        </p>
-        <a href="/signout" className="inline-block px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">
-          Шығу
-        </a>
-      </div>
-    );
+    const referral_code = Math.random().toString(36).substring(2, 10).toUpperCase();
+    await supabase.from("profiles").insert({
+      id: user.id,
+      email: user.email,
+      plan: "free",
+      role: "user",
+      referral_code,
+    });
+    const res = await supabase.from("profiles").select("*").eq("id", user.id).single();
+    if (!res.data) {
+      return (
+        <div className="max-w-2xl mx-auto py-16 text-center space-y-4">
+          <p className="text-lg font-medium">Профиль жасалмады</p>
+          <p className="text-sm text-[var(--muted-foreground)]">Шығып, қайта кіріңіз.</p>
+          <a href="/signout" className="inline-block px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">Шығу</a>
+        </div>
+      );
+    }
+    return <ProfileForm profile={res.data as UserProfile} email={user.email || ""} />;
   }
 
   return <ProfileForm profile={profile as UserProfile} email={user.email || ""} />;
