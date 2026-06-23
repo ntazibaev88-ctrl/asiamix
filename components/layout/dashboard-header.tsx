@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { Bell, Moon, Sun, Search, BookOpen, Film, BookMarked, CheckCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getInitials } from "@/lib/utils";
@@ -68,6 +69,10 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
+  const handleNotifOpen = (open: boolean) => {
+    setNotifOpen(open);
+  };
+
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -79,6 +84,7 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
       {/* Left */}
       <div className="flex items-center gap-3">
         <div className="lg:hidden">
+          {/* Mobile: show logo */}
           <Link href="/dashboard" className="text-lg font-bold gradient-text">Qadam</Link>
         </div>
         <div className="hidden lg:flex relative">
@@ -102,8 +108,7 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
           </button>
         )}
 
-        {/* Notification Bell */}
-        <DropdownMenu open={notifOpen} onOpenChange={setNotifOpen}>
+        <DropdownMenu open={notifOpen} onOpenChange={handleNotifOpen}>
           <DropdownMenuTrigger asChild>
             <button className="relative p-2 rounded-xl hover:bg-[var(--secondary)] transition-colors text-[var(--muted-foreground)]">
               <Bell className="h-4 w-4" />
@@ -112,7 +117,7 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
               )}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 rounded-2xl p-0 overflow-hidden">
+          <DropdownMenuContent align="end" className="w-80 max-w-[calc(100vw-1rem)] rounded-2xl p-0 overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
               <span className="font-semibold text-sm flex items-center gap-2">
                 <Bell className="h-4 w-4" /> Хабарламалар
@@ -166,7 +171,6 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
           </Badge>
         )}
 
-        {/* Profile Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 rounded-xl hover:bg-[var(--secondary)] p-1.5 transition-colors">
