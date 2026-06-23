@@ -218,7 +218,7 @@ export default function AdminBooksPage() {
                   <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                     <Badge variant="secondary" className="text-[10px]">{cat?.label}</Badge>
                     {Boolean(book.is_premium) && <Badge variant="premium" className="text-[10px]"><Crown className="h-2.5 w-2.5" /></Badge>}
-                    {book.pdf_url && <span className="text-[10px] text-emerald-600 flex items-center gap-0.5"><FileText className="h-2.5 w-2.5" />PDF</span>}
+                    {Boolean(book.pdf_url) && <span className="text-[10px] text-emerald-600 flex items-center gap-0.5"><FileText className="h-2.5 w-2.5" />PDF</span>}
                     {book.rating != null && <span className="text-[10px] text-amber-600">⭐ {String(book.rating as number)}</span>}
                   </div>
                 </div>
