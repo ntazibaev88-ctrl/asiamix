@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import type { Lang } from "@/lib/i18n";
 import { LANG_COOKIE, translations, DEFAULT_LANG } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/i18n";
@@ -25,15 +24,10 @@ export function LanguageProvider({
   children: React.ReactNode;
   initialLang: Lang;
 }) {
-  const router = useRouter();
-
-  const setLang = useCallback(
-    (lang: Lang) => {
-      document.cookie = `${LANG_COOKIE}=${lang};path=/;max-age=31536000`;
-      router.refresh();
-    },
-    [router]
-  );
+  const setLang = useCallback((lang: Lang) => {
+    document.cookie = `${LANG_COOKIE}=${lang};path=/;max-age=31536000`;
+    window.location.reload();
+  }, []);
 
   const translate = useCallback(
     (key: TranslationKey): string =>
@@ -51,3 +45,4 @@ export function LanguageProvider({
 export function useLanguage() {
   return useContext(LanguageContext);
 }
+
