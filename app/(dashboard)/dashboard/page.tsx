@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { formatCurrency, calculateProgress } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DailyQuiz } from "@/components/dashboard/daily-quiz";
 import { DailyBonus } from "@/components/dashboard/daily-bonus";
+import { CurrencyRates } from "@/components/dashboard/currency-rates";
 import Link from "next/link";
 import {
   Target,
@@ -17,6 +19,8 @@ import {
   Trophy,
   Newspaper,
 } from "lucide-react";
+import { t as translate, DEFAULT_LANG, LANG_COOKIE } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 
 const dailyTips = [
   { tip: "Кірісіңіздің 20%-ін жинаққа салыңыз. 50/30/20 ережесі: 50% қажеттілік, 30% тілек, 20% жинақ.", emoji: "💡" },
@@ -70,6 +74,11 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const cookieStore = await cookies();
+  const langCookie = cookieStore.get(LANG_COOKIE)?.value;
+  const lang: Lang = (["kk", "ru", "en"].includes(langCookie ?? "") ? langCookie : DEFAULT_LANG) as Lang;
+  const T = (key: Parameters<typeof translate>[1]) => translate(lang, key);
+
   const [{ data: profile }, { data: goals }, { data: savings }, { data: articles }] =
     await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).single(),
@@ -82,7 +91,7 @@ export default async function DashboardPage() {
   const name = profile?.full_name?.split(" ")[0] || "Пайдаланушы";
   const isVip = profile?.plan === "vip";
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Қайырлы таң" : hour < 17 ? "Қайырлы күн" : "Қайырлы кеш";
+  const greeting = hour < 12 ? T("greeting_morning") : hour < 17 ? T("greeting_day") : T("greeting_evening");
   const streak = 7;
 
   const now = new Date();
@@ -99,7 +108,7 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{greeting}, {name}! 👋</h1>
-          <p className="text-sm text-[var(--muted-foreground)] mt-0.5">Бүгін де алға қарай жыл!</p>
+          <p className="text-sm text-[var(--muted-foreground)] mt-0.5">{T("dashboard_subtitle")}</p>
         </div>
         {isVip ? (
           <Badge variant="premium">✨ VIP</Badge>
@@ -116,7 +125,7 @@ export default async function DashboardPage() {
           <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center">
             <div className="text-2xl font-bold text-primary-500">{goals?.length ?? 0}</div>
             <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
-              <Target className="h-3 w-3" /> Мақсат
+              <Target className="h-3 w-3" /> {T("dashboard_goals")}
             </div>
           </div>
         </Link>
@@ -124,7 +133,7 @@ export default async function DashboardPage() {
           <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center">
             <div className="text-2xl font-bold text-emerald-500">{savings?.length ?? 0}</div>
             <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
-              <PiggyBank className="h-3 w-3" /> Жинақ
+              <PiggyBank className="h-3 w-3" /> {T("dashboard_savings")}
             </div>
           </div>
         </Link>
@@ -133,7 +142,7 @@ export default async function DashboardPage() {
             {streak}
           </div>
           <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
-            <Flame className="h-3 w-3 text-orange-500" /> Streak
+            <Flame className="h-3 w-3 text-orange-500" /> {T("dashboard_streak")}
           </div>
         </div>
       </div>
@@ -142,11 +151,11 @@ export default async function DashboardPage() {
       <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
         <div className="flex items-center justify-between px-5 pt-4 pb-3">
           <h2 className="font-semibold flex items-center gap-2">
-            <Target className="h-4 w-4 text-primary-500" /> Белсенді мақсаттар
+            <Target className="h-4 w-4 text-primary-500" /> {T("dashboard_active_goals")}
           </h2>
           <Link href="/goals">
             <Button variant="ghost" size="sm" className="text-xs gap-1">
-              Барлығы <ArrowRight className="h-3 w-3" />
+              {T("dashboard_all")} <ArrowRight className="h-3 w-3" />
             </Button>
           </Link>
         </div>
@@ -176,9 +185,9 @@ export default async function DashboardPage() {
         ) : (
           <div className="px-5 pb-6 text-center">
             <Target className="h-8 w-8 text-[var(--muted-foreground)] mx-auto mb-2 opacity-30" />
-            <p className="text-sm text-[var(--muted-foreground)] mb-3">Әлі мақсат жоқ</p>
+            <p className="text-sm text-[var(--muted-foreground)] mb-3">{T("dashboard_no_goals")}</p>
             <Link href="/goals">
-              <Button variant="gradient" size="sm"><Plus className="h-4 w-4" />Мақсат қосу</Button>
+              <Button variant="gradient" size="sm"><Plus className="h-4 w-4" />{T("dashboard_add_goal")}</Button>
             </Link>
           </div>
         )}
@@ -191,7 +200,7 @@ export default async function DashboardPage() {
         <div className="relative">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">🔥</span>
-            <span className="font-semibold text-primary-400 text-sm tracking-wide uppercase text-xs">Бүгінгі кеңес</span>
+            <span className="font-semibold text-primary-400 text-sm tracking-wide uppercase text-xs">{T("dashboard_tip_label")}</span>
           </div>
           <p className="text-sm leading-relaxed text-[var(--foreground)]">
             <span className="text-xl mr-2">{todayTip.emoji}</span>
@@ -199,6 +208,9 @@ export default async function DashboardPage() {
           </p>
         </div>
       </div>
+
+      {/* Currency Rates */}
+      <CurrencyRates titleLabel={T("currency_title")} />
 
       {/* Finance Quiz */}
       <DailyQuiz dayOfYear={dayOfYear} />
@@ -208,11 +220,11 @@ export default async function DashboardPage() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold flex items-center gap-2">
-              <Newspaper className="h-4 w-4 text-amber-500" /> Пайдалы мақалалар
+              <Newspaper className="h-4 w-4 text-amber-500" /> {T("dashboard_articles")}
             </h2>
             <Link href="/education">
               <Button variant="ghost" size="sm" className="text-xs gap-1">
-                Барлығы <ArrowRight className="h-3 w-3" />
+                {T("dashboard_all")} <ArrowRight className="h-3 w-3" />
               </Button>
             </Link>
           </div>
@@ -239,7 +251,7 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-amber-500" />
-            <span className="font-semibold">🏆 Апта челленджі</span>
+            <span className="font-semibold">🏆 {T("dashboard_challenge")}</span>
           </div>
           <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 font-semibold">
             +{challenge.xp} XP
@@ -264,7 +276,7 @@ export default async function DashboardPage() {
         </div>
         <div className="mt-4">
           <div className="flex justify-between text-xs text-[var(--muted-foreground)] mb-1.5">
-            <span>Прогресс</span>
+            <span>{T("dashboard_progress")}</span>
             <span>{challenge.done}/{challenge.steps.length}</span>
           </div>
           <div className="h-2 bg-[var(--secondary)] rounded-full overflow-hidden">
@@ -288,13 +300,13 @@ export default async function DashboardPage() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Crown className="h-5 w-5 text-amber-300" />
-                <span className="font-bold text-lg">VIP-ке өтіңіз</span>
+                <span className="font-bold text-lg">{T("dashboard_vip_title")}</span>
               </div>
-              <p className="text-xs opacity-75">Шексіз мақсаттар, AI кеңес және Premium контент</p>
+              <p className="text-xs opacity-75">{T("dashboard_vip_desc")}</p>
             </div>
             <Link href="/premium">
               <Button className="shrink-0 bg-white/20 hover:bg-white/30 text-white border-0 whitespace-nowrap font-semibold" size="sm">
-                <Crown className="h-4 w-4 text-amber-300" /> ₸990/ай
+                <Crown className="h-4 w-4 text-amber-300" /> {T("dashboard_vip_btn")}
               </Button>
             </Link>
           </div>
