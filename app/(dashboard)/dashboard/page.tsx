@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { DailyQuiz } from "@/components/dashboard/daily-quiz";
 import { DailyBonus } from "@/components/dashboard/daily-bonus";
 import { CurrencyRates } from "@/components/dashboard/currency-rates";
+import { Presentations } from "@/components/dashboard/presentations";
 import Link from "next/link";
 import {
   Target,
@@ -214,6 +215,9 @@ export default async function DashboardPage() {
 
       {/* Finance Quiz */}
       <DailyQuiz dayOfYear={dayOfYear} />
+
+      {/* Presentations */}
+      <Presentations />
 
       {/* Articles */}
       {articles && articles.length > 0 && (
