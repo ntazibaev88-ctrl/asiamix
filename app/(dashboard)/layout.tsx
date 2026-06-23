@@ -1,12 +1,9 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar, MobileSidebar } from "@/components/layout/sidebar";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { AIChat } from "@/components/ai-chat";
 import type { UserProfile } from "@/types";
-import type { Lang } from "@/lib/i18n";
-import { DEFAULT_LANG, LANG_COOKIE } from "@/lib/i18n";
 
 export default async function DashboardLayout({
   children,
@@ -28,14 +25,8 @@ export default async function DashboardLayout({
     .eq("id", user.id)
     .single();
 
-  const cookieStore = await cookies();
-  const langCookie = cookieStore.get(LANG_COOKIE)?.value;
-  const lang: Lang = (["kk", "ru", "en"] as const).includes(langCookie as Lang)
-    ? (langCookie as Lang)
-    : DEFAULT_LANG;
-
   return (
-    <div className="min-h-screen bg-[var(--background)]" data-lang={lang}>
+    <div className="min-h-screen bg-[var(--background)]">
       <Sidebar />
       <div className="lg:pl-64 transition-all duration-300">
         <DashboardHeader profile={profile as UserProfile} />
