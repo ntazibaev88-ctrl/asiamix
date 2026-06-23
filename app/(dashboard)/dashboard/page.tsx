@@ -31,7 +31,6 @@ const dailyTips = [
   { tip: "Қаржылық жастықша жасаңыз: 3–6 айлық шығындарыңызды депозитке салыңыз.", emoji: "🛡️" },
 ];
 
-
 const categoryIcons: Record<string, string> = {
   house: "🏠", car: "🚗", business: "💼", education: "🎓",
   travel: "✈️", family: "👨‍👩‍👧", health: "💪", other: "🎯",
@@ -71,6 +70,7 @@ export default async function DashboardPage() {
   const start = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
   const todayTip = dailyTips[dayOfYear % dailyTips.length];
+
   return (
     <div className="max-w-2xl mx-auto space-y-4 pb-6">
 
@@ -181,9 +181,6 @@ export default async function DashboardPage() {
 
       {/* Currency Rates */}
       <CurrencyRates titleLabel={T("currency_title")} />
-
-      {/* Presentations */}
-      <Presentations />
 
       {/* Presentations */}
       <Presentations />
