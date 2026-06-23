@@ -86,6 +86,11 @@ export interface Book {
   rating: number | null;
   is_premium: boolean;
   buy_url: string | null;
+  pdf_url: string | null;
+  epub_url: string | null;
+  pages: number | null;
+  published: boolean;
+  xp_reward: number | null;
   created_at: string;
 }
 
@@ -95,11 +100,17 @@ export interface Movie {
   director: string | null;
   description: string | null;
   poster_url: string | null;
+  banner_url: string | null;
+  video_url: string | null;
+  trailer_url: string | null;
   category: string;
   year: number | null;
   rating: number | null;
+  duration: number | null;
+  xp_reward: number | null;
   is_premium: boolean;
   watch_url: string | null;
+  published: boolean;
   created_at: string;
 }
 
