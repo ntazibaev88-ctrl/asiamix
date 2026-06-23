@@ -7,10 +7,10 @@ import { AlertTriangle } from "lucide-react";
 
 export default function DashboardError({
   error,
-  reset,
+  unstable_retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  unstable_retry: () => void;
 }) {
   useEffect(() => {
     console.error("Dashboard error:", error);
@@ -24,10 +24,10 @@ export default function DashboardError({
         </div>
         <h2 className="text-xl font-bold">Бет жүктелмеді</h2>
         <p className="text-sm text-[var(--muted-foreground)]">
-          {error.message || "Күтпеген қате орын алды."}
+          {error?.message || "Күтпеген қате орын алды."}
         </p>
         <div className="flex gap-3 justify-center">
-          <Button variant="gradient" onClick={reset}>
+          <Button variant="gradient" onClick={unstable_retry}>
             Қайталап көру
           </Button>
           <Button variant="outline" asChild>
