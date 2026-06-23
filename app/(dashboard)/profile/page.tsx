@@ -16,21 +16,31 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [form, setForm] = useState({ full_name: "", phone: "" });
 
   useEffect(() => {
     const loadProfile = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      setEmail(user.email || "");
-      const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-      if (data) {
-        setProfile(data as UserProfile);
-        setForm({
-          full_name: data.full_name || "",
-          phone: (data as UserProfile & { phone?: string }).phone || "",
-        });
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setIsLoading(false); return; }
+        setEmail(user.email || "");
+        let { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+        if (!data) {
+          await supabase.from("profiles").insert({ id: user.id, email: user.email, plan: "free", role: "user" });
+          const res = await supabase.from("profiles").select("*").eq("id", user.id).single();
+          data = res.data;
+        }
+        if (data) {
+          setProfile(data as UserProfile);
+          setForm({
+            full_name: data.full_name || "",
+            phone: (data as UserProfile & { phone?: string }).phone || "",
+          });
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
     loadProfile();
@@ -62,10 +72,18 @@ export default function ProfilePage() {
     toast.success("Реферал сілтемесі көшірілді!");
   };
 
-  if (!profile) {
+  if (isLoading) {
     return (
       <div className="max-w-2xl mx-auto space-y-4">
         {[1, 2, 3].map((i) => <div key={i} className="h-32 rounded-2xl shimmer" />)}
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="max-w-2xl mx-auto py-16 text-center">
+        <p className="text-[var(--muted-foreground)]">Профиль жүктелмеді. Қайта кіріп көріңіз.</p>
       </div>
     );
   }
