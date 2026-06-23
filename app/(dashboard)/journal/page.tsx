@@ -12,6 +12,7 @@ import { formatDate, formatRelativeDate } from "@/lib/utils";
 import { toast } from "@/components/ui/toaster";
 import { Plus, BookMarked, Search, Smile, Tag, Trash2, Pencil, Lock } from "lucide-react";
 import type { JournalEntry, Mood } from "@/types";
+import { DailyQuiz } from "@/components/dashboard/daily-quiz";
 
 const MOODS: { value: Mood; emoji: string; label: string; color: string }[] = [
   { value: "great", emoji: "😄", label: "Тамаша", color: "text-emerald-500" },
@@ -355,6 +356,9 @@ export default function JournalPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Daily Finance Quiz */}
+      <DailyQuiz dayOfYear={Math.floor(Date.now() / 86400000)} />
     </div>
   );
 }

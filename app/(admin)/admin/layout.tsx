@@ -12,6 +12,7 @@ import {
   Bell,
   Ban,
   Cpu,
+  Brain,
 } from "lucide-react";
 
 const adminLinks = [
@@ -21,6 +22,7 @@ const adminLinks = [
   { href: "/admin/content", icon: GraduationCap, label: "Мақалалар" },
   { href: "/admin/books", icon: BookOpen, label: "Кітаптар" },
   { href: "/admin/movies", icon: Film, label: "Фильмдер" },
+  { href: "/admin/quiz", icon: Brain, label: "Қаржы ойындары" },
   { href: "/admin/notifications", icon: Bell, label: "Хабарландыру" },
   { href: "/admin/blacklist", icon: Ban, label: "Қара тізім" },
   { href: "/admin/ai", icon: Cpu, label: "AI басқару" },
