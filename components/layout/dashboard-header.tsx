@@ -1,12 +1,12 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Bell, Moon, Sun, Search, Menu, BookOpen, Film, BookMarked } from "lucide-react";
+import { Bell, Moon, Sun, Search, BookOpen, Film, BookMarked, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getInitials } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -17,18 +17,61 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import type { UserProfile } from "@/types";
+import type { UserProfile, Notification } from "@/types";
 
 interface DashboardHeaderProps {
   profile: UserProfile | null;
 }
 
+const notifTypeColor: Record<string, string> = {
+  info: "bg-blue-500",
+  success: "bg-emerald-500",
+  warning: "bg-amber-500",
+  error: "bg-red-500",
+};
+
 export function DashboardHeader({ profile }: DashboardHeaderProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifOpen, setNotifOpen] = useState(false);
   const router = useRouter();
 
-  useEffect(() => setMounted(true), []);
+  const loadNotifications = useCallback(async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
+    setNotifications((data || []) as Notification[]);
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
+    loadNotifications();
+  }, [loadNotifications]);
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const markAllRead = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase
+      .from("notifications")
+      .update({ read: true })
+      .eq("user_id", user.id)
+      .eq("read", false);
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
+
+  const handleNotifOpen = (open: boolean) => {
+    setNotifOpen(open);
+  };
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -65,10 +108,62 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
           </button>
         )}
 
-        <button className="relative p-2 rounded-xl hover:bg-[var(--secondary)] transition-colors text-[var(--muted-foreground)]">
-          <Bell className="h-4 w-4" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
-        </button>
+        <DropdownMenu open={notifOpen} onOpenChange={handleNotifOpen}>
+          <DropdownMenuTrigger asChild>
+            <button className="relative p-2 rounded-xl hover:bg-[var(--secondary)] transition-colors text-[var(--muted-foreground)]">
+              <Bell className="h-4 w-4" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
+              )}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-80 rounded-2xl p-0 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
+              <span className="font-semibold text-sm flex items-center gap-2">
+                <Bell className="h-4 w-4" /> Хабарламалар
+                {unreadCount > 0 && (
+                  <span className="text-xs px-1.5 py-0.5 rounded-full bg-red-500 text-white font-bold">
+                    {unreadCount}
+                  </span>
+                )}
+              </span>
+              {unreadCount > 0 && (
+                <button
+                  onClick={markAllRead}
+                  className="text-xs text-primary-600 hover:text-primary-700 flex items-center gap-1"
+                >
+                  <CheckCheck className="h-3 w-3" /> Барлығын оқыдым
+                </button>
+              )}
+            </div>
+            <div className="max-h-80 overflow-y-auto">
+              {notifications.length === 0 ? (
+                <div className="py-10 text-center text-sm text-[var(--muted-foreground)]">
+                  <Bell className="h-8 w-8 mx-auto mb-2 opacity-20" />
+                  Хабарлама жоқ
+                </div>
+              ) : (
+                notifications.map((notif) => (
+                  <div
+                    key={notif.id}
+                    className={`px-4 py-3 border-b border-[var(--border)] last:border-0 flex gap-3 ${
+                      !notif.read ? "bg-[var(--secondary)]" : ""
+                    }`}
+                  >
+                    <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${notifTypeColor[notif.type] || "bg-blue-500"}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium leading-snug">{notif.title}</p>
+                      <p className="text-xs text-[var(--muted-foreground)] mt-0.5 leading-relaxed">{notif.message}</p>
+                      <p className="text-[10px] text-[var(--muted-foreground)] mt-1">
+                        {new Date(notif.created_at).toLocaleDateString("kk-KZ", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {profile?.plan === "vip" && (
           <Badge variant="premium" className="hidden sm:flex gap-1">
