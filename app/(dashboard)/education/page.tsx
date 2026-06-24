@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { GraduationCap, Clock, Eye, Crown, Lock, BookOpen, Sparkles } from "lucide-react";
@@ -120,33 +119,41 @@ export default async function EducationPage({
           <p className="text-sm text-[var(--muted-foreground)] mt-1">Жақында жаңа мақалалар жарияланады</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid sm:grid-cols-2 gap-5">
           {(articles as Article[]).map((article) => {
             const cat = CATEGORIES.find((c) => c.value === article.category);
             const isLocked = article.is_premium && !isVip;
+            const cardHref = isLocked ? "/premium" : `/education/${article.slug}`;
 
             return (
-              <div
+              <Link
                 key={article.id}
-                className={`rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden group transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${isLocked ? "opacity-90" : ""}`}
+                href={cardHref}
+                className="block rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden group hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
               >
                 {/* Cover */}
-                <div className={`relative h-48 bg-gradient-to-br ${cat?.color || "from-primary-500 to-violet-500"} flex items-center justify-center`}>
-                  <span className="text-7xl drop-shadow-lg">{cat?.emoji || "📄"}</span>
+                <div className={`relative h-44 overflow-hidden ${!article.cover_url ? `bg-gradient-to-br ${cat?.color || "from-primary-500 to-violet-500"}` : "bg-gray-100 dark:bg-gray-900"} flex items-center justify-center`}>
+                  {article.cover_url ? (
+                    <img
+                      src={article.cover_url}
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <span className="text-6xl drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      {cat?.emoji || "📄"}
+                    </span>
+                  )}
 
+                  {/* Lock overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center gap-2">
                       <Lock className="h-8 w-8 text-white" />
                       <p className="text-white text-sm font-semibold">VIP мазмұны</p>
-                      <Link
-                        href="/premium"
-                        className="px-4 py-1.5 rounded-lg bg-amber-400 text-amber-900 text-xs font-bold hover:bg-amber-300 transition-colors"
-                      >
-                        VIP алу — ₸990
-                      </Link>
                     </div>
                   )}
 
+                  {/* Premium badge */}
                   {article.is_premium && (
                     <div className="absolute top-3 left-3">
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-400/90 text-amber-900 text-xs font-bold">
@@ -155,6 +162,7 @@ export default async function EducationPage({
                     </div>
                   )}
 
+                  {/* Views */}
                   <div className="absolute top-3 right-3">
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/40 text-white text-xs">
                       <Eye className="h-3 w-3" /> {article.views}
@@ -162,12 +170,15 @@ export default async function EducationPage({
                   </div>
                 </div>
 
+                {/* Body */}
                 <div className="p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <Badge variant="secondary" className="text-xs">
-                      {cat?.emoji} {cat?.label || article.category}
-                    </Badge>
-                    <span className="text-xs text-[var(--muted-foreground)] flex items-center gap-1 ml-auto">
+                    {cat && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[var(--secondary)] text-xs font-medium">
+                        {cat.emoji} {cat.label}
+                      </span>
+                    )}
+                    <span className="text-xs text-[var(--muted-foreground)] flex items-center gap-1 ml-auto shrink-0">
                       <Clock className="h-3 w-3" />
                       {formatDate(article.created_at)}
                     </span>
@@ -183,23 +194,19 @@ export default async function EducationPage({
                     </p>
                   )}
 
-                  {isLocked ? (
-                    <Link
-                      href="/premium"
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600 hover:text-amber-700"
-                    >
-                      <Crown className="h-3.5 w-3.5" /> VIP алу →
-                    </Link>
-                  ) : (
-                    <Link
-                      href={`/education/${article.slug}`}
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 hover:text-primary-700"
-                    >
-                      <BookOpen className="h-3.5 w-3.5" /> Оқу →
-                    </Link>
-                  )}
+                  <div className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                    isLocked
+                      ? "bg-amber-500/10 text-amber-600"
+                      : "bg-primary-600/10 text-primary-600 group-hover:bg-primary-600 group-hover:text-white"
+                  }`}>
+                    {isLocked ? (
+                      <><Crown className="h-3.5 w-3.5" /> VIP алу</>
+                    ) : (
+                      <><BookOpen className="h-3.5 w-3.5" /> Оқу</>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

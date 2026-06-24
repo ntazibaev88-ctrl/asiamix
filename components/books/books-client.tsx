@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import { BookOpen, Star, Crown, Lock, ExternalLink, FileText, Search, X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import type { Book } from "@/types";
 
@@ -35,6 +34,7 @@ export function BooksClient({ books, isVip }: { books: Book[]; isVip: boolean })
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold">Кітаптар кітапханасы</h1>
@@ -59,6 +59,7 @@ export function BooksClient({ books, isVip }: { books: Book[]; isVip: boolean })
         </div>
       </div>
 
+      {/* Category filter */}
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setCategory("")}
@@ -91,81 +92,106 @@ export function BooksClient({ books, isVip }: { books: Book[]; isVip: boolean })
           <p className="text-[var(--muted-foreground)]">Кітаптар табылмады</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {filtered.map((book) => {
             const cat = CATEGORIES.find((c) => c.value === book.category);
             const isLocked = book.is_premium && !isVip;
+            const cardHref = isLocked
+              ? "/premium"
+              : Boolean(book.pdf_url)
+              ? `/books/${book.id}`
+              : book.buy_url || `/books/${book.id}`;
+            const isExternal = !isLocked && !book.pdf_url && Boolean(book.buy_url);
 
             return (
               <div
                 key={book.id}
-                className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden card-hover"
+                className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden group hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
               >
-                <div className="aspect-[3/4] relative bg-gradient-to-br from-primary-100 to-violet-100 dark:from-primary-950/50 dark:to-violet-950/50 flex items-center justify-center">
+                {/* Cover */}
+                <Link
+                  href={cardHref}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                  className="block relative aspect-[3/4] overflow-hidden bg-gradient-to-br from-primary-100 to-violet-100 dark:from-primary-950/50 dark:to-violet-950/50"
+                >
                   {book.cover_url ? (
                     <img
                       src={book.cover_url}
                       alt={book.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <BookOpen className="h-10 w-10 text-primary-300" />
+                    <div className="w-full h-full flex items-center justify-center">
+                      <BookOpen className="h-10 w-10 text-primary-300" />
+                    </div>
                   )}
+
+                  {/* Lock overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                       <Lock className="h-8 w-8 text-white" />
                     </div>
                   )}
+
+                  {/* VIP badge */}
                   {book.is_premium && (
                     <div className="absolute top-2 right-2">
-                      <Badge variant="premium"><Crown className="h-3 w-3" />VIP</Badge>
-                    </div>
-                  )}
-                  {Boolean(book.pdf_url) && (
-                    <div className="absolute bottom-2 left-2">
-                      <span className="text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                        <FileText className="h-2.5 w-2.5" />PDF
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/90 text-amber-900 text-[10px] font-bold">
+                        <Crown className="h-2.5 w-2.5" /> VIP
                       </span>
                     </div>
                   )}
-                </div>
 
-                <div className="p-3">
-                  <Badge variant="secondary" className="mb-1 text-[10px]">{cat?.label || book.category}</Badge>
-                  <h3 className="font-semibold text-sm mb-0.5 line-clamp-2">{book.title}</h3>
-                  <p className="text-xs text-[var(--muted-foreground)] mb-2 line-clamp-1">{book.author}</p>
-
-                  {book.rating != null && (
-                    <div className="flex items-center gap-1 mb-2">
-                      <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                      <span className="text-xs font-medium">{book.rating}</span>
+                  {/* PDF badge */}
+                  {Boolean(book.pdf_url) && !isLocked && (
+                    <div className="absolute bottom-2 left-2">
+                      <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded">
+                        <FileText className="h-2.5 w-2.5" /> PDF
+                      </span>
                     </div>
                   )}
 
-                  {isLocked ? (
-                    <Link
-                      href="/premium"
-                      className="text-xs text-primary-600 font-medium hover:text-primary-700 flex items-center gap-1"
-                    >
-                      <Crown className="h-3 w-3" /> VIP алу
-                    </Link>
-                  ) : book.pdf_url ? (
-                    <Link
-                      href={`/books/${book.id}`}
-                      className="text-xs text-primary-600 font-medium hover:text-primary-700 flex items-center gap-1"
-                    >
-                      <FileText className="h-3 w-3" /> Оқу
-                    </Link>
-                  ) : book.buy_url ? (
-                    <a
-                      href={book.buy_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-primary-600 font-medium hover:text-primary-700 flex items-center gap-1"
-                    >
-                      <ExternalLink className="h-3 w-3" /> Сатып алу
-                    </a>
-                  ) : null}
+                  {/* Rating overlay */}
+                  {book.rating != null && (
+                    <div className="absolute bottom-2 right-2">
+                      <span className="inline-flex items-center gap-1 text-[10px] bg-black/60 text-white px-1.5 py-0.5 rounded-full">
+                        ⭐ {book.rating}
+                      </span>
+                    </div>
+                  )}
+                </Link>
+
+                {/* Info */}
+                <div className="p-3 space-y-1">
+                  {cat && (
+                    <span className="text-[10px] text-[var(--muted-foreground)]">{cat.emoji} {cat.label}</span>
+                  )}
+                  <h3 className="font-semibold text-sm leading-snug line-clamp-2">{book.title}</h3>
+                  <p className="text-xs text-[var(--muted-foreground)] line-clamp-1">{book.author}</p>
+
+                  {book.pages && (
+                    <p className="text-xs text-[var(--muted-foreground)]">{book.pages} бет</p>
+                  )}
+
+                  <Link
+                    href={cardHref}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
+                    className={`mt-2 w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                      isLocked
+                        ? "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20"
+                        : "bg-primary-600 text-white hover:bg-primary-700"
+                    }`}
+                  >
+                    {isLocked ? (
+                      <><Crown className="h-3 w-3" /> VIP алу</>
+                    ) : isExternal ? (
+                      <><ExternalLink className="h-3 w-3" /> Сатып алу</>
+                    ) : (
+                      <><BookOpen className="h-3 w-3" /> Оқу</>
+                    )}
+                  </Link>
                 </div>
               </div>
             );
