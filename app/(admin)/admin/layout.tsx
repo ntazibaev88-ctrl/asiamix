@@ -43,9 +43,8 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  const ADMIN_EMAILS = ["ntazibaev88@gmail.com"];
-  const isAdmin = profile?.role === "admin" || ADMIN_EMAILS.includes(user.email || "");
-  if (!isAdmin) redirect("/dashboard");
+  const ADMIN_EMAIL = "ntazibaev88@gmail.com";
+  if (user.email !== ADMIN_EMAIL) redirect("/dashboard");
 
   return (
     <div className="min-h-screen flex bg-[var(--background)]">
