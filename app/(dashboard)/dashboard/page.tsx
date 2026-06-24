@@ -80,7 +80,7 @@ export default async function DashboardPage() {
   const todayTip = dailyTips[dayOfYear % dailyTips.length];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4 pb-6">
+    <div className="max-w-2xl mx-auto space-y-6 pb-6">
 
       {/* Announcement banner (admin-controlled) */}
       {announcement && (
