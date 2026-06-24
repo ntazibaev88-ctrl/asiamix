@@ -18,6 +18,14 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import type { UserProfile, Notification } from "@/types";
+import { useLanguage } from "@/contexts/language";
+import type { Lang } from "@/lib/i18n";
+
+const LANGS: { value: Lang; flag: string; label: string }[] = [
+  { value: "kk", flag: "🇰🇿", label: "Қаз" },
+  { value: "ru", flag: "🇷🇺", label: "Рус" },
+  { value: "en", flag: "🇺🇸", label: "Eng" },
+];
 
 interface DashboardHeaderProps {
   profile: UserProfile | null;
@@ -32,6 +40,7 @@ const notifTypeColor: Record<string, string> = {
 
 export function DashboardHeader({ profile }: DashboardHeaderProps) {
   const { theme, setTheme } = useTheme();
+  const { lang, setLang } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -99,6 +108,23 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
 
       {/* Right */}
       <div className="flex items-center gap-2">
+        {/* Language switcher */}
+        <div className="hidden sm:flex items-center gap-0.5 bg-[var(--secondary)] rounded-xl p-1">
+          {LANGS.map((l) => (
+            <button
+              key={l.value}
+              onClick={() => setLang(l.value)}
+              className={`px-2 py-1 rounded-lg text-xs font-medium transition-all ${
+                lang === l.value
+                  ? "bg-[var(--card)] text-[var(--foreground)] shadow-sm"
+                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              {l.flag} {l.label}
+            </button>
+          ))}
+        </div>
+
         {mounted && (
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
