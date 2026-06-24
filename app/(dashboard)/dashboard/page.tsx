@@ -195,7 +195,7 @@ export default async function DashboardPage() {
                 <span className="font-semibold text-primary-400 text-xs uppercase tracking-wide">{T("dashboard_tip_label")}</span>
               </div>
               <span className="text-xs text-primary-400 flex items-center gap-1 group-hover:gap-2 transition-all">
-                Барлығы <ArrowRight className="h-3 w-3" />
+                {T("dashboard_all")} <ArrowRight className="h-3 w-3" />
               </span>
             </div>
             <p className="text-sm leading-relaxed text-[var(--foreground)]">
@@ -213,7 +213,7 @@ export default async function DashboardPage() {
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto">
               <TrendingUp className="h-5 w-5 text-emerald-500" />
             </div>
-            <p className="text-xs font-semibold">Валюта</p>
+            <p className="text-xs font-semibold">{T("nav_currency")}</p>
           </div>
         </Link>
         <Link href="/calculator">
@@ -221,7 +221,7 @@ export default async function DashboardPage() {
             <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center mx-auto">
               <Calculator className="h-5 w-5 text-primary-500" />
             </div>
-            <p className="text-xs font-semibold">Калькулятор</p>
+            <p className="text-xs font-semibold">{T("nav_calculator")}</p>
           </div>
         </Link>
         <Link href="/learn">
@@ -229,7 +229,7 @@ export default async function DashboardPage() {
             <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center mx-auto">
               <BookOpenCheck className="h-5 w-5 text-violet-500" />
             </div>
-            <p className="text-xs font-semibold">Сабақтар</p>
+            <p className="text-xs font-semibold">{T("nav_learn")}</p>
           </div>
         </Link>
       </div>
@@ -286,11 +286,11 @@ export default async function DashboardPage() {
       {showNews && <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
         <div className="flex items-center justify-between px-5 pt-4 pb-3">
           <h2 className="font-semibold flex items-center gap-2">
-            <Newspaper className="h-4 w-4 text-slate-500" /> Қаржылық жаңалықтар
+            <Newspaper className="h-4 w-4 text-slate-500" /> {T("dashboard_news")}
           </h2>
           <Link href="/news">
             <Button variant="ghost" size="sm" className="text-xs gap-1">
-              Барлығы <ArrowRight className="h-3 w-3" />
+              {T("dashboard_all")} <ArrowRight className="h-3 w-3" />
             </Button>
           </Link>
         </div>
@@ -301,7 +301,7 @@ export default async function DashboardPage() {
                 <Globe className="h-4 w-4 text-white" />
               </div>
               <p className="text-sm font-semibold">Bloomberg</p>
-              <p className="text-xs text-[var(--muted-foreground)] mt-0.5">Халықаралық қаржы</p>
+              <p className="text-xs text-[var(--muted-foreground)] mt-0.5">{T("dashboard_news_intl")}</p>
             </div>
           </Link>
           <Link href="/news#kz">
@@ -309,7 +309,7 @@ export default async function DashboardPage() {
               <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-2">
                 <TrendingUp className="h-4 w-4 text-white" />
               </div>
-              <p className="text-sm font-semibold">Қазақстан</p>
+              <p className="text-sm font-semibold">{T("dashboard_news_kz")}</p>
               <p className="text-xs text-[var(--muted-foreground)] mt-0.5">KASE • Kapital.kz</p>
             </div>
           </Link>
