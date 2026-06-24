@@ -74,7 +74,7 @@ export default async function DashboardPage() {
   const challengeDesc = site["challenge_desc"] || "7 күн бойы күнделігіңе жаз.";
   const challengeProgress = Math.min(100, Number(site["challenge_progress"]) || 40);
   const showTips = site["show_tips_block"] !== "false";
-  const showChallenge = site["show_challenge_block"] !== "false";
+
   const showArticles = site["show_articles_block"] !== "false";
   const showNews = site["show_news_block"] !== "false";
 
@@ -234,22 +234,6 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Weekly Challenge */}
-      {showChallenge && <div className="rounded-2xl bg-gradient-to-br from-violet-600/10 to-primary-600/10 border border-violet-500/20 p-5">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-sm flex items-center gap-2">
-            🏆 {challengeTitle}
-          </h2>
-          <span className="text-xs font-bold text-primary-600">{challengeProgress}%</span>
-        </div>
-        <p className="text-sm text-[var(--muted-foreground)] mb-3 leading-relaxed">{challengeDesc}</p>
-        <div className="h-2 bg-[var(--secondary)] rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-primary-500 to-violet-500 rounded-full transition-all"
-            style={{ width: `${challengeProgress}%` }}
-          />
-        </div>
-      </div>}
 
       {/* Articles */}
       {showArticles && articles && articles.length > 0 && (
