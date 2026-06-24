@@ -32,9 +32,9 @@ const VIP_FEATURES = [
   "Ерте рұқсат мүмкіндіктері",
 ];
 
-const KASPI_PHONE = "+7 771 263 46 85";
-const KASPI_CARD = "4400 4303 6564 9653";
-const KASPI_RECIPIENT = "Арайлым С";
+const KASPI_PHONE = "+7 771 412 15 73";
+const KASPI_CARD = "4400 4303 3787 7838";
+const KASPI_RECIPIENT = "Fariza T";
 
 export default function PremiumPage() {
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
@@ -43,6 +43,7 @@ export default function PremiumPage() {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [referralCode, setReferralCode] = useState("");
+  const [email, setEmail] = useState("");
 
   useState(() => {
     const loadProfile = async () => {
@@ -76,6 +77,10 @@ export default function PremiumPage() {
   };
 
   const handleSubmitPayment = async () => {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Email дұрыс енгізіңіз");
+      return;
+    }
     if (!proofFile) {
       toast.error("Төлем дәлелін жүктеңіз");
       return;
@@ -108,7 +113,7 @@ export default function PremiumPage() {
         status: "pending",
         proof_url: publicUrl,
         kaspi_number: kaspiNumber || null,
-        notes: notes || null,
+        notes: `Email: ${email}${notes ? `\n${notes}` : ""}`,
       });
 
       if (error) throw error;
@@ -272,6 +277,21 @@ export default function PremiumPage() {
                 Сома: <strong className="text-[var(--foreground)]">₸990</strong> •
                 Хабарлама: <strong className="text-[var(--foreground)]">VIP Qadam</strong>
               </div>
+            </div>
+
+            {/* Email */}
+            <div className="space-y-1.5">
+              <Label>Сіздің Email *</Label>
+              <Input
+                type="email"
+                placeholder="example@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "border-red-400" : ""}
+              />
+              <p className="text-xs text-[var(--muted-foreground)]">
+                VIP белсендіру үшін аккаунтыңыздың email-ін жазыңыз
+              </p>
             </div>
 
             {/* Upload Proof */}
