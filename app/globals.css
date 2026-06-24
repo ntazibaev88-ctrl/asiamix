@@ -83,25 +83,26 @@
 
 /* Dark Mode */
 .dark {
-  --background: #080810;
+  --background: #0A0A0F;
   --foreground: #f0f0f5;
-  --card: #0f0f1a;
+  --card: #131320;
   --card-foreground: #f0f0f5;
-  --popover: #0f0f1a;
+  --popover: #131320;
   --popover-foreground: #f0f0f5;
-  --primary: #6366f1;
+  --primary: #6D5EF6;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a2e;
+  --secondary: #1c1c2e;
   --secondary-foreground: #e2e2e8;
   --muted: #111127;
   --muted-foreground: #9ca3af;
-  --accent: #1a1a40;
-  --accent-foreground: #818cf8;
+  --accent: #1e1e3a;
+  --accent-foreground: #a899ff;
   --border: #1f1f35;
   --input: #1f1f35;
-  --ring: #6366f1;
-  --surface: #0d0d1f;
+  --ring: #6D5EF6;
+  --surface: #0d0d1a;
   --surface-foreground: #b0b0c0;
+  --success: #00C896;
 }
 
 /* Base */
@@ -153,7 +154,7 @@ body {
 
 /* Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7);
+  background: linear-gradient(135deg, #6D5EF6, #8b5cf6, #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -228,12 +229,39 @@ body {
 
 /* Hero gradient */
 .hero-gradient {
-  background: radial-gradient(ellipse at 60% 0%, rgba(79, 70, 229, 0.15) 0%, transparent 60%),
+  background: radial-gradient(ellipse at 60% 0%, rgba(109, 94, 246, 0.15) 0%, transparent 60%),
               radial-gradient(ellipse at 0% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
 }
 .dark .hero-gradient {
-  background: radial-gradient(ellipse at 60% 0%, rgba(99, 102, 241, 0.2) 0%, transparent 60%),
-              radial-gradient(ellipse at 0% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 50% -10%, rgba(109, 94, 246, 0.25) 0%, transparent 55%),
+              radial-gradient(ellipse at 80% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
+              radial-gradient(ellipse at 10% 70%, rgba(0, 200, 150, 0.06) 0%, transparent 40%);
+}
+
+/* Glow utilities */
+.glow-violet {
+  box-shadow: 0 0 24px rgba(109, 94, 246, 0.5), 0 0 60px rgba(109, 94, 246, 0.2);
+}
+.glow-green {
+  box-shadow: 0 0 24px rgba(0, 200, 150, 0.5), 0 0 60px rgba(0, 200, 150, 0.2);
+}
+.glow-border-violet {
+  border-color: rgba(109, 94, 246, 0.6) !important;
+  box-shadow: 0 0 0 1px rgba(109, 94, 246, 0.3), 0 8px 40px rgba(109, 94, 246, 0.25), inset 0 0 40px rgba(109, 94, 246, 0.04);
+}
+.btn-glow {
+  box-shadow: 0 0 20px rgba(109, 94, 246, 0.45), 0 4px 12px rgba(109, 94, 246, 0.3);
+}
+.btn-glow:hover {
+  box-shadow: 0 0 32px rgba(109, 94, 246, 0.6), 0 8px 20px rgba(109, 94, 246, 0.35);
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
 }
 
 /* Sidebar */
@@ -256,4 +284,6 @@ body {
 .sidebar-link.active {
   background-color: var(--accent);
   color: var(--primary);
+  border-left: 2px solid var(--primary);
+  padding-left: calc(0.75rem - 2px);
 }
