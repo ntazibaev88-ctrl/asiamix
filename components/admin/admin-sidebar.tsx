@@ -16,10 +16,12 @@ import {
   Brain,
   Menu,
   X,
+  Settings2,
 } from "lucide-react";
 
 const adminLinks = [
   { href: "/admin", icon: LayoutDashboard, label: "Аналитика" },
+  { href: "/admin/site", icon: Settings2, label: "Сайт баптаулары" },
   { href: "/admin/users", icon: Users, label: "Пайдаланушылар" },
   { href: "/admin/payments", icon: CreditCard, label: "Төлемдер" },
   { href: "/admin/content", icon: GraduationCap, label: "Мақалалар" },
