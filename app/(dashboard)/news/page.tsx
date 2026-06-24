@@ -46,7 +46,7 @@ function parseRSS(xml: string, limit = 8): NewsItem[] {
 async function fetchRSS(url: string, limit = 8): Promise<NewsItem[]> {
   try {
     const res = await fetch(url, {
-      next: { revalidate: 1800 },
+      next: { revalidate: 21600 }, // 6h fallback; cron refreshes at 07:00/12:00/18:00 Almaty
       headers: {
         "User-Agent":
           "Mozilla/5.0 (compatible; QadamNews/1.0; +https://qadamkz.vercel.app)",
