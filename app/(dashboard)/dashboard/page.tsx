@@ -73,11 +73,20 @@ export default async function DashboardPage() {
   const challengeTitle = site["challenge_title"] || T("dashboard_challenge");
   const challengeDesc = site["challenge_desc"] || "7 күн бойы күнделігіңе жаз.";
   const challengeProgress = Math.min(100, Number(site["challenge_progress"]) || 40);
+  const showTips = site["show_tips_block"] !== "false";
+  const showChallenge = site["show_challenge_block"] !== "false";
+  const showArticles = site["show_articles_block"] !== "false";
+  const showNews = site["show_news_block"] !== "false";
 
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
-  const todayTip = dailyTips[dayOfYear % dailyTips.length];
+  let tipsArray = dailyTips;
+  try {
+    const parsed = JSON.parse(site["daily_tips"] || "[]");
+    if (Array.isArray(parsed) && parsed.length > 0) tipsArray = parsed;
+  } catch { /* use default */ }
+  const todayTip = tipsArray[dayOfYear % tipsArray.length];
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 pb-6">
@@ -176,7 +185,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Daily Tip — compact card with link */}
-      <Link href="/tips">
+      {showTips && <Link href="/tips">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600/15 to-violet-700/15 border border-primary-500/20 p-5 hover:border-primary-500/40 transition-colors group">
           <div className="absolute -top-8 -right-8 w-28 h-28 bg-primary-600/20 rounded-full blur-2xl pointer-events-none" />
           <div className="relative">
@@ -195,7 +204,7 @@ export default async function DashboardPage() {
             </p>
           </div>
         </div>
-      </Link>
+      </Link>}
 
       {/* Quick links row: Currency, Calculator, Learn */}
       <div className="grid grid-cols-3 gap-3">
@@ -226,7 +235,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Weekly Challenge */}
-      <div className="rounded-2xl bg-gradient-to-br from-violet-600/10 to-primary-600/10 border border-violet-500/20 p-5">
+      {showChallenge && <div className="rounded-2xl bg-gradient-to-br from-violet-600/10 to-primary-600/10 border border-violet-500/20 p-5">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-sm flex items-center gap-2">
             🏆 {challengeTitle}
@@ -240,10 +249,10 @@ export default async function DashboardPage() {
             style={{ width: `${challengeProgress}%` }}
           />
         </div>
-      </div>
+      </div>}
 
       {/* Articles */}
-      {articles && articles.length > 0 && (
+      {showArticles && articles && articles.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold flex items-center gap-2">
@@ -274,7 +283,7 @@ export default async function DashboardPage() {
       )}
 
       {/* News section */}
-      <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
+      {showNews && <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
         <div className="flex items-center justify-between px-5 pt-4 pb-3">
           <h2 className="font-semibold flex items-center gap-2">
             <Newspaper className="h-4 w-4 text-slate-500" /> Қаржылық жаңалықтар
@@ -305,7 +314,7 @@ export default async function DashboardPage() {
             </div>
           </Link>
         </div>
-      </div>
+      </div>}
 
     </div>
   );
