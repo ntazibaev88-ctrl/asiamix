@@ -5,7 +5,6 @@ import { formatCurrency, calculateProgress } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DailyBonus } from "@/components/dashboard/daily-bonus";
 import Link from "next/link";
 import {
   Target,
@@ -19,6 +18,7 @@ import {
   Calculator,
   Lightbulb,
   BookOpenCheck,
+  Globe,
 } from "lucide-react";
 import { t as translate, DEFAULT_LANG, LANG_COOKIE } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
@@ -244,8 +244,39 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Daily Bonus */}
-      <DailyBonus streak={streak} />
+      {/* News section */}
+      <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] overflow-hidden">
+        <div className="flex items-center justify-between px-5 pt-4 pb-3">
+          <h2 className="font-semibold flex items-center gap-2">
+            <Newspaper className="h-4 w-4 text-slate-500" /> Қаржылық жаңалықтар
+          </h2>
+          <Link href="/news">
+            <Button variant="ghost" size="sm" className="text-xs gap-1">
+              Барлығы <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        </div>
+        <div className="px-5 pb-5 grid grid-cols-2 gap-3">
+          <Link href="/news#bloomberg">
+            <div className="p-4 rounded-2xl bg-[var(--secondary)] hover:bg-[var(--border)] transition-colors card-hover">
+              <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center mb-2">
+                <Globe className="h-4 w-4 text-white" />
+              </div>
+              <p className="text-sm font-semibold">Bloomberg</p>
+              <p className="text-xs text-[var(--muted-foreground)] mt-0.5">Халықаралық қаржы</p>
+            </div>
+          </Link>
+          <Link href="/news#kz">
+            <div className="p-4 rounded-2xl bg-[var(--secondary)] hover:bg-[var(--border)] transition-colors card-hover">
+              <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-2">
+                <TrendingUp className="h-4 w-4 text-white" />
+              </div>
+              <p className="text-sm font-semibold">Қазақстан</p>
+              <p className="text-xs text-[var(--muted-foreground)] mt-0.5">KASE • Kapital.kz</p>
+            </div>
+          </Link>
+        </div>
+      </div>
 
       {/* VIP Banner */}
       {!isVip && (

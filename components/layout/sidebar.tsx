@@ -21,6 +21,7 @@ import {
   Lightbulb,
   Calculator,
   BookOpenCheck,
+  Newspaper,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -41,6 +42,7 @@ export function Sidebar() {
     { href: "/books", icon: BookOpen, labelKey: "nav_books" as const },
     { href: "/movies", icon: Film, labelKey: "nav_movies" as const },
     { href: "/journal", icon: BookMarked, labelKey: "nav_journal" as const },
+    { href: "/news", icon: Newspaper, labelKey: "nav_news" as const },
     { href: "/currency", icon: TrendingUp, labelKey: "nav_currency" as const },
     { href: "/tips", icon: Lightbulb, labelKey: "nav_tips" as const },
     { href: "/calculator", icon: Calculator, labelKey: "nav_calculator" as const },
