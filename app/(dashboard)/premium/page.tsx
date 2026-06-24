@@ -32,9 +32,9 @@ const VIP_FEATURES = [
   "Ерте рұқсат мүмкіндіктері",
 ];
 
-const KASPI_PHONE = "+7 771 412 15 73";
-const KASPI_CARD = "4400 4303 3787 7838";
-const KASPI_RECIPIENT = "Fariza T";
+const DEFAULT_KASPI_PHONE = "+7 771 412 15 73";
+const DEFAULT_KASPI_CARD = "4400 4303 3787 7838";
+const DEFAULT_KASPI_RECIPIENT = "Fariza T";
 
 export default function PremiumPage() {
   const [step, setStep] = useState<"info" | "payment" | "success">("info");
@@ -44,29 +44,38 @@ export default function PremiumPage() {
   const [loading, setLoading] = useState(false);
   const [referralCode, setReferralCode] = useState("");
   const [email, setEmail] = useState("");
+  const [kaspiPhone, setKaspiPhone] = useState(DEFAULT_KASPI_PHONE);
+  const [kaspiCard, setKaspiCard] = useState(DEFAULT_KASPI_CARD);
+  const [kaspiRecipient, setKaspiRecipient] = useState(DEFAULT_KASPI_RECIPIENT);
 
   useState(() => {
-    const loadProfile = async () => {
+    const loadData = async () => {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const [{ data: { user } }, { data: settings }] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase.from("site_settings").select("key, value").in("key", ["kaspi_phone", "kaspi_card", "kaspi_recipient", "referral_code"]),
+      ]);
+      if (settings) {
+        const map: Record<string, string> = {};
+        for (const row of settings) map[row.key] = row.value;
+        if (map["kaspi_phone"]) setKaspiPhone(map["kaspi_phone"]);
+        if (map["kaspi_card"]) setKaspiCard(map["kaspi_card"]);
+        if (map["kaspi_recipient"]) setKaspiRecipient(map["kaspi_recipient"]);
+      }
       if (!user) return;
-      const { data } = await supabase
-        .from("profiles")
-        .select("referral_code")
-        .eq("id", user.id)
-        .single();
-      if (data) setReferralCode(data.referral_code);
+      const { data: profile } = await supabase.from("profiles").select("referral_code").eq("id", user.id).single();
+      if (profile) setReferralCode(profile.referral_code);
     };
-    loadProfile();
+    loadData();
   });
 
   const handleCopyPhone = () => {
-    navigator.clipboard.writeText(KASPI_PHONE);
+    navigator.clipboard.writeText(kaspiPhone);
     toast.success("Телефон нөмірі көшірілді!");
   };
 
   const handleCopyCard = () => {
-    navigator.clipboard.writeText(KASPI_CARD);
+    navigator.clipboard.writeText(kaspiCard);
     toast.success("Карта нөмірі көшірілді!");
   };
 
@@ -255,7 +264,7 @@ export default function PremiumPage() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-xs text-[var(--muted-foreground)]">Телефон нөміріне:</div>
-                  <div className="text-lg font-bold font-mono">{KASPI_PHONE}</div>
+                  <div className="text-lg font-bold font-mono">{kaspiPhone}</div>
                 </div>
                 <Button variant="outline" size="icon-sm" onClick={handleCopyPhone}>
                   <Copy className="h-3.5 w-3.5" />
@@ -265,8 +274,8 @@ export default function PremiumPage() {
               <div className="border-t border-[var(--border)] pt-3 flex items-center justify-between gap-3">
                 <div>
                   <div className="text-xs text-[var(--muted-foreground)]">Немесе картаға:</div>
-                  <div className="text-lg font-bold font-mono">{KASPI_CARD}</div>
-                  <div className="text-xs text-[var(--muted-foreground)]">Алушы: {KASPI_RECIPIENT}</div>
+                  <div className="text-lg font-bold font-mono">{kaspiCard}</div>
+                  <div className="text-xs text-[var(--muted-foreground)]">Алушы: {kaspiRecipient}</div>
                 </div>
                 <Button variant="outline" size="icon-sm" onClick={handleCopyCard}>
                   <Copy className="h-3.5 w-3.5" />
