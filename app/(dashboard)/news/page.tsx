@@ -167,7 +167,7 @@ export default async function NewsPage() {
             <Newspaper className="h-5 w-5" />
             <h1 className="text-xl font-bold">Қаржылық жаңалықтар</h1>
           </div>
-          <p className="text-sm text-white/60">Bloomberg • Kapital.kz • Kursiv.media — 30 минут сайын жаңарады</p>
+          <p className="text-sm text-white/60">Bloomberg • Kapital.kz • Kursiv.media</p>
         </div>
       </div>
 

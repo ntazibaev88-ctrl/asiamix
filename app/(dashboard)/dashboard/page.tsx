@@ -50,19 +50,29 @@ export default async function DashboardPage() {
   const lang: Lang = (["kk", "ru", "en"].includes(langCookie ?? "") ? langCookie : DEFAULT_LANG) as Lang;
   const T = (key: Parameters<typeof translate>[1]) => translate(lang, key);
 
-  const [{ data: profile }, { data: goals }, { data: savings }, { data: articles }] =
+  const [{ data: profile }, { data: goals }, { data: savings }, { data: articles }, { data: siteSettingsRows }] =
     await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).single(),
       supabase.from("goals").select("*").eq("user_id", user.id).eq("status", "active")
         .order("created_at", { ascending: false }).limit(3),
       supabase.from("savings_plans").select("*").eq("user_id", user.id).limit(2),
       supabase.from("articles").select("id, title, excerpt, category, slug").eq("published", true).limit(4),
+      supabase.from("site_settings").select("key, value"),
     ]);
+
+  const site: Record<string, string> = {};
+  for (const row of siteSettingsRows ?? []) site[row.key] = row.value;
 
   const name = profile?.full_name?.split(" ")[0] || "Пайдаланушы";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? T("greeting_morning") : hour < 17 ? T("greeting_day") : T("greeting_evening");
   const streak = 7;
+  const dashSubtitle = site["dashboard_subtitle"] || T("dashboard_subtitle");
+  const announcement = site["announcement"] || "";
+  const announcementColor = site["announcement_color"] || "blue";
+  const challengeTitle = site["challenge_title"] || T("dashboard_challenge");
+  const challengeDesc = site["challenge_desc"] || "7 күн бойы күнделігіңе жаз.";
+  const challengeProgress = Math.min(100, Number(site["challenge_progress"]) || 40);
 
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
@@ -72,10 +82,25 @@ export default async function DashboardPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-4 pb-6">
 
+      {/* Announcement banner (admin-controlled) */}
+      {announcement && (
+        <div className={`px-4 py-3 rounded-2xl border text-sm font-medium ${
+          announcementColor === "amber"
+            ? "bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-200"
+            : announcementColor === "emerald"
+            ? "bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/30 dark:border-emerald-800 dark:text-emerald-200"
+            : announcementColor === "red"
+            ? "bg-red-50 border-red-200 text-red-800 dark:bg-red-950/30 dark:border-red-800 dark:text-red-200"
+            : "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-200"
+        }`}>
+          📢 {announcement}
+        </div>
+      )}
+
       {/* Greeting */}
       <div>
         <h1 className="text-2xl font-bold">{greeting}, {name}! 👋</h1>
-        <p className="text-sm text-[var(--muted-foreground)] mt-0.5">{T("dashboard_subtitle")}</p>
+        <p className="text-sm text-[var(--muted-foreground)] mt-0.5">{dashSubtitle}</p>
       </div>
 
       {/* Stats */}
@@ -198,6 +223,23 @@ export default async function DashboardPage() {
             <p className="text-xs font-semibold">Сабақтар</p>
           </div>
         </Link>
+      </div>
+
+      {/* Weekly Challenge */}
+      <div className="rounded-2xl bg-gradient-to-br from-violet-600/10 to-primary-600/10 border border-violet-500/20 p-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-sm flex items-center gap-2">
+            🏆 {challengeTitle}
+          </h2>
+          <span className="text-xs font-bold text-primary-600">{challengeProgress}%</span>
+        </div>
+        <p className="text-sm text-[var(--muted-foreground)] mb-3 leading-relaxed">{challengeDesc}</p>
+        <div className="h-2 bg-[var(--secondary)] rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-primary-500 to-violet-500 rounded-full transition-all"
+            style={{ width: `${challengeProgress}%` }}
+          />
+        </div>
       </div>
 
       {/* Articles */}
