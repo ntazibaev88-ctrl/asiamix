@@ -19,6 +19,7 @@ export const translations = {
     nav_tips: "Кеңестер",
     nav_calculator: "Калькулятор",
     nav_learn: "Сабақтар",
+    nav_news: "Жаңалықтар",
     nav_logout: "Шығу",
     // Header
     header_search: "Іздеу...",
@@ -88,6 +89,7 @@ export const translations = {
     nav_tips: "Советы",
     nav_calculator: "Калькулятор",
     nav_learn: "Уроки",
+    nav_news: "Новости",
     nav_logout: "Выйти",
     header_search: "Поиск...",
     header_profile: "Профиль",
@@ -152,6 +154,7 @@ export const translations = {
     nav_tips: "Tips",
     nav_calculator: "Calculator",
     nav_learn: "Lessons",
+    nav_news: "News",
     nav_logout: "Sign out",
     header_search: "Search...",
     header_profile: "Profile",
