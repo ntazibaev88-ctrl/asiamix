@@ -43,6 +43,25 @@ function parseRSS(xml: string, limit = 8): NewsItem[] {
   return items;
 }
 
+const FINANCE_KEYWORDS = [
+  // Kazakh
+  "банк", "инвестиция", "қаржы", "тенге", "биржа", "акция", "облигация",
+  "экономика", "кредит", "депозит", "ипотека", "бюджет", "инфляция", "валюта",
+  // Russian
+  "финанс", "инвестиц", "акци", "облигаци", "рынок", "биржа", "налог", "курс",
+  "ипотек", "бюджет", "инфляц", "экономик", "кредит", "депозит", "валют",
+  // Codes / English
+  "kase", "bloomberg", "market", "finance", "stock", "bond", "economy", "gdp",
+  "currency", "invest", "fund", "asset", "budget", "inflation", "forex", "rate",
+  // Kazakhstan abbreviations
+  "нбк", "нб рк", "мнэ", "ввп",
+];
+
+function isFinanceNews(item: NewsItem): boolean {
+  const text = `${item.title} ${item.description}`.toLowerCase();
+  return FINANCE_KEYWORDS.some((kw) => text.includes(kw));
+}
+
 async function fetchRSS(url: string, limit = 8): Promise<NewsItem[]> {
   try {
     const res = await fetch(url, {
@@ -121,14 +140,15 @@ function EmptyState({ label }: { label: string }) {
 export default async function NewsPage() {
   const [bloomberg, kapital, kursiv] = await Promise.all([
     fetchRSS("https://feeds.bloomberg.com/markets/news.rss", 8),
-    fetchRSS("https://kapital.kz/rss/", 8),
-    fetchRSS("https://kursiv.media/rss/", 6),
+    fetchRSS("https://kapital.kz/rss/", 20),
+    fetchRSS("https://kursiv.media/rss/", 15),
   ]);
 
-  // Merge Kazakhstan sources, deduplicate by title
+  // Merge Kazakhstan sources, keep only finance news, deduplicate by title
   const seen = new Set<string>();
   const kazakhNews: NewsItem[] = [];
   for (const item of [...kapital, ...kursiv]) {
+    if (!isFinanceNews(item)) continue;
     const key = item.title.slice(0, 60);
     if (!seen.has(key)) {
       seen.add(key);

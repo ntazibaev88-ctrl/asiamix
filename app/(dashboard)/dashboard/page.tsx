@@ -4,19 +4,16 @@ import { redirect } from "next/navigation";
 import { formatCurrency, calculateProgress } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import {
   Target,
   PiggyBank,
-  Crown,
   ArrowRight,
   Flame,
   Plus,
   Newspaper,
   TrendingUp,
   Calculator,
-  Lightbulb,
   BookOpenCheck,
   Globe,
 } from "lucide-react";
@@ -63,7 +60,6 @@ export default async function DashboardPage() {
     ]);
 
   const name = profile?.full_name?.split(" ")[0] || "Пайдаланушы";
-  const isVip = profile?.plan === "vip";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? T("greeting_morning") : hour < 17 ? T("greeting_day") : T("greeting_evening");
   const streak = 7;
@@ -77,18 +73,9 @@ export default async function DashboardPage() {
     <div className="max-w-2xl mx-auto space-y-4 pb-6">
 
       {/* Greeting */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">{greeting}, {name}! 👋</h1>
-          <p className="text-sm text-[var(--muted-foreground)] mt-0.5">{T("dashboard_subtitle")}</p>
-        </div>
-        {isVip ? (
-          <Badge variant="premium">✨ VIP</Badge>
-        ) : (
-          <Link href="/premium">
-            <Button variant="gradient" size="sm"><Crown className="h-4 w-4" />VIP</Button>
-          </Link>
-        )}
+      <div>
+        <h1 className="text-2xl font-bold">{greeting}, {name}! 👋</h1>
+        <p className="text-sm text-[var(--muted-foreground)] mt-0.5">{T("dashboard_subtitle")}</p>
       </div>
 
       {/* Stats */}
@@ -192,7 +179,7 @@ export default async function DashboardPage() {
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto">
               <TrendingUp className="h-5 w-5 text-emerald-500" />
             </div>
-            <p className="text-xs font-semibold">Валюта бағамы</p>
+            <p className="text-xs font-semibold">Валюта</p>
           </div>
         </Link>
         <Link href="/calculator">
@@ -278,27 +265,6 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* VIP Banner */}
-      {!isVip && (
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 to-violet-700 text-white p-5">
-          <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-white/10 rounded-full pointer-events-none" />
-          <div className="absolute -top-6 -left-6 w-20 h-20 bg-white/5 rounded-full pointer-events-none" />
-          <div className="relative flex items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <Crown className="h-5 w-5 text-amber-300" />
-                <span className="font-bold text-lg">{T("dashboard_vip_title")}</span>
-              </div>
-              <p className="text-xs opacity-75">{T("dashboard_vip_desc")}</p>
-            </div>
-            <Link href="/premium">
-              <Button className="shrink-0 bg-white/20 hover:bg-white/30 text-white border-0 whitespace-nowrap font-semibold" size="sm">
-                <Crown className="h-4 w-4 text-amber-300" /> {T("dashboard_vip_btn")}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
