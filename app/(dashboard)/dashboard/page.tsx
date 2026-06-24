@@ -89,7 +89,7 @@ export default async function DashboardPage() {
   const todayTip = tipsArray[dayOfYear % tipsArray.length];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 pb-6">
+    <div className="max-w-2xl mx-auto space-y-8 pb-8">
 
       {/* Announcement banner (admin-controlled) */}
       {announcement && (
@@ -207,29 +207,29 @@ export default async function DashboardPage() {
       </Link>}
 
       {/* Quick links row: Currency, Calculator, Learn */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-4">
         <Link href="/currency">
-          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto">
-              <TrendingUp className="h-5 w-5 text-emerald-500" />
+          <div className="p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto">
+              <TrendingUp className="h-6 w-6 text-emerald-500" />
             </div>
-            <p className="text-xs font-semibold">{T("nav_currency")}</p>
+            <p className="text-sm font-semibold">{T("nav_currency")}</p>
           </div>
         </Link>
         <Link href="/calculator">
-          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center mx-auto">
-              <Calculator className="h-5 w-5 text-primary-500" />
+          <div className="p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-primary-500/10 flex items-center justify-center mx-auto">
+              <Calculator className="h-6 w-6 text-primary-500" />
             </div>
-            <p className="text-xs font-semibold">{T("nav_calculator")}</p>
+            <p className="text-sm font-semibold">{T("nav_calculator")}</p>
           </div>
         </Link>
         <Link href="/learn">
-          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center mx-auto">
-              <BookOpenCheck className="h-5 w-5 text-violet-500" />
+          <div className="p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-violet-500/10 flex items-center justify-center mx-auto">
+              <BookOpenCheck className="h-6 w-6 text-violet-500" />
             </div>
-            <p className="text-xs font-semibold">{T("nav_learn")}</p>
+            <p className="text-sm font-semibold">{T("nav_learn")}</p>
           </div>
         </Link>
       </div>
