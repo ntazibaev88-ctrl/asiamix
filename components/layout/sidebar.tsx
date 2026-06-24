@@ -17,6 +17,10 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  TrendingUp,
+  Lightbulb,
+  Calculator,
+  BookOpenCheck,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -37,6 +41,10 @@ export function Sidebar() {
     { href: "/books", icon: BookOpen, labelKey: "nav_books" as const },
     { href: "/movies", icon: Film, labelKey: "nav_movies" as const },
     { href: "/journal", icon: BookMarked, labelKey: "nav_journal" as const },
+    { href: "/currency", icon: TrendingUp, labelKey: "nav_currency" as const },
+    { href: "/tips", icon: Lightbulb, labelKey: "nav_tips" as const },
+    { href: "/calculator", icon: Calculator, labelKey: "nav_calculator" as const },
+    { href: "/learn", icon: BookOpenCheck, labelKey: "nav_learn" as const },
   ];
 
   const bottomItems = [
