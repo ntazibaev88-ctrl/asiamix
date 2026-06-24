@@ -6,9 +6,6 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DailyBonus } from "@/components/dashboard/daily-bonus";
-import { CurrencyRates } from "@/components/dashboard/currency-rates";
-import { Presentations } from "@/components/dashboard/presentations";
-import { FinancialCalculator } from "@/components/dashboard/financial-calculator";
 import Link from "next/link";
 import {
   Target,
@@ -18,6 +15,10 @@ import {
   Flame,
   Plus,
   Newspaper,
+  TrendingUp,
+  Calculator,
+  Lightbulb,
+  BookOpenCheck,
 } from "lucide-react";
 import { t as translate, DEFAULT_LANG, LANG_COOKIE } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
@@ -31,7 +32,6 @@ const dailyTips = [
   { tip: "Апта сайын кем дегенде 1 қаржы мақаласын оқыңыз. Білім — ең жақсы инвестиция.", emoji: "📚" },
   { tip: "Қаржылық жастықша жасаңыз: 3–6 айлық шығындарыңызды депозитке салыңыз.", emoji: "🛡️" },
 ];
-
 
 const categoryIcons: Record<string, string> = {
   house: "🏠", car: "🚗", business: "💼", education: "🎓",
@@ -72,6 +72,7 @@ export default async function DashboardPage() {
   const start = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
   const todayTip = dailyTips[dayOfYear % dailyTips.length];
+
   return (
     <div className="max-w-2xl mx-auto space-y-4 pb-6">
 
@@ -109,9 +110,7 @@ export default async function DashboardPage() {
           </div>
         </Link>
         <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] text-center">
-          <div className="text-2xl font-bold text-orange-500 flex items-center justify-center gap-1">
-            {streak}
-          </div>
+          <div className="text-2xl font-bold text-orange-500">{streak}</div>
           <div className="text-xs text-[var(--muted-foreground)] mt-0.5 flex items-center justify-center gap-1">
             <Flame className="h-3 w-3 text-orange-500" /> {T("dashboard_streak")}
           </div>
@@ -164,30 +163,55 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      {/* Daily Tip */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600/15 to-violet-700/15 border border-primary-500/20 p-5">
-        <div className="absolute -top-8 -right-8 w-28 h-28 bg-primary-600/20 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-violet-600/15 rounded-full blur-xl pointer-events-none" />
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-base">🔥</span>
-            <span className="font-semibold text-primary-400 text-sm tracking-wide uppercase text-xs">{T("dashboard_tip_label")}</span>
+      {/* Daily Tip — compact card with link */}
+      <Link href="/tips">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600/15 to-violet-700/15 border border-primary-500/20 p-5 hover:border-primary-500/40 transition-colors group">
+          <div className="absolute -top-8 -right-8 w-28 h-28 bg-primary-600/20 rounded-full blur-2xl pointer-events-none" />
+          <div className="relative">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span>🔥</span>
+                <span className="font-semibold text-primary-400 text-xs uppercase tracking-wide">{T("dashboard_tip_label")}</span>
+              </div>
+              <span className="text-xs text-primary-400 flex items-center gap-1 group-hover:gap-2 transition-all">
+                Барлығы <ArrowRight className="h-3 w-3" />
+              </span>
+            </div>
+            <p className="text-sm leading-relaxed text-[var(--foreground)]">
+              <span className="text-xl mr-2">{todayTip.emoji}</span>
+              {todayTip.tip}
+            </p>
           </div>
-          <p className="text-sm leading-relaxed text-[var(--foreground)]">
-            <span className="text-xl mr-2">{todayTip.emoji}</span>
-            {todayTip.tip}
-          </p>
         </div>
+      </Link>
+
+      {/* Quick links row: Currency, Calculator, Learn */}
+      <div className="grid grid-cols-3 gap-3">
+        <Link href="/currency">
+          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-2">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto">
+              <TrendingUp className="h-5 w-5 text-emerald-500" />
+            </div>
+            <p className="text-xs font-semibold">Валюта бағамы</p>
+          </div>
+        </Link>
+        <Link href="/calculator">
+          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-2">
+            <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center mx-auto">
+              <Calculator className="h-5 w-5 text-primary-500" />
+            </div>
+            <p className="text-xs font-semibold">Калькулятор</p>
+          </div>
+        </Link>
+        <Link href="/learn">
+          <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover text-center space-y-2">
+            <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center mx-auto">
+              <BookOpenCheck className="h-5 w-5 text-violet-500" />
+            </div>
+            <p className="text-xs font-semibold">Сабақтар</p>
+          </div>
+        </Link>
       </div>
-
-      {/* Currency Rates */}
-      <CurrencyRates titleLabel={T("currency_title")} />
-
-      {/* Financial Calculator */}
-      <FinancialCalculator />
-
-      {/* Presentations */}
-      <Presentations />
 
       {/* Articles */}
       {articles && articles.length > 0 && (
@@ -204,7 +228,7 @@ export default async function DashboardPage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             {articles.map((article) => (
-              <Link key={article.id} href="/education">
+              <Link key={article.id} href={`/education/${article.slug}`}>
                 <div className="p-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] card-hover h-full flex flex-col gap-2">
                   <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 font-medium w-fit">
                     {categoryLabels[article.category] || article.category}
