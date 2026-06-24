@@ -21,8 +21,8 @@ export function useLanguage() {
   }, []);
 
   const setLang = useCallback((newLang: Lang) => {
-    document.cookie = `${LANG_COOKIE}=${newLang};path=/;max-age=31536000`;
-    window.location.reload();
+    const currentPath = window.location.pathname;
+    window.location.href = `/api/set-lang?lang=${newLang}&redirect=${encodeURIComponent(currentPath)}`;
   }, []);
 
   const t = useCallback(
