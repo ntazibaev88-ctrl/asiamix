@@ -109,7 +109,7 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
       {/* Right */}
       <div className="flex items-center gap-2">
         {/* Language switcher */}
-        <div className="hidden sm:flex items-center gap-0.5 bg-[var(--secondary)] rounded-xl p-1">
+        <div className="flex items-center gap-0.5 bg-[var(--secondary)] rounded-xl p-1">
           {LANGS.map((l) => (
             <button
               key={l.value}
@@ -120,7 +120,8 @@ export function DashboardHeader({ profile }: DashboardHeaderProps) {
                   : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
             >
-              {l.flag} {l.label}
+              <span className="sm:hidden">{l.flag}</span>
+              <span className="hidden sm:inline">{l.flag} {l.label}</span>
             </button>
           ))}
         </div>
