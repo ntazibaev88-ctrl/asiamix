@@ -20,15 +20,35 @@ import {
 import { t as translate, DEFAULT_LANG, LANG_COOKIE } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 
-const dailyTips = [
-  { tip: "Кірісіңіздің 20%-ін жинаққа салыңыз. 50/30/20 ережесі: 50% қажеттілік, 30% тілек, 20% жинақ.", emoji: "💡" },
-  { tip: "Депозит ашу — ақшаңызды жұмысқа жіберудің ең қауіпсіз жолы. Қазақстанда жылдық 14–16% пайыз бар.", emoji: "🏦" },
-  { tip: "Шығындарыңызды жазып отырыңыз. Не жұмсайтыныңызды білмей, жинауға болмайды.", emoji: "📊" },
-  { tip: "Кредит картасының қарызын толығымен өтеңіз. Айлық пайыз жылдық 30–40%-ке жетуі мүмкін.", emoji: "💳" },
-  { tip: "Алтынға инвестиция — инфляциядан қорғаудың классикалық әдісі. Ұлттық Банктен монета сатып алуға болады.", emoji: "🥇" },
-  { tip: "Апта сайын кем дегенде 1 қаржы мақаласын оқыңыз. Білім — ең жақсы инвестиция.", emoji: "📚" },
-  { tip: "Қаржылық жастықша жасаңыз: 3–6 айлық шығындарыңызды депозитке салыңыз.", emoji: "🛡️" },
-];
+const dailyTipsByLang = {
+  kk: [
+    { tip: "Кірісіңіздің 20%-ін жинаққа салыңыз. 50/30/20 ережесі: 50% қажеттілік, 30% тілек, 20% жинақ.", emoji: "💡" },
+    { tip: "Депозит ашу — ақшаңызды жұмысқа жіберудің ең қауіпсіз жолы. Қазақстанда жылдық 14–16% пайыз бар.", emoji: "🏦" },
+    { tip: "Шығындарыңызды жазып отырыңыз. Не жұмсайтыныңызды білмей, жинауға болмайды.", emoji: "📊" },
+    { tip: "Кредит картасының қарызын толығымен өтеңіз. Айлық пайыз жылдық 30–40%-ке жетуі мүмкін.", emoji: "💳" },
+    { tip: "Алтынға инвестиция — инфляциядан қорғаудың классикалық әдісі. Ұлттық Банктен монета сатып алуға болады.", emoji: "🥇" },
+    { tip: "Апта сайын кем дегенде 1 қаржы мақаласын оқыңыз. Білім — ең жақсы инвестиция.", emoji: "📚" },
+    { tip: "Қаржылық жастықша жасаңыз: 3–6 айлық шығындарыңызды депозитке салыңыз.", emoji: "🛡️" },
+  ],
+  ru: [
+    { tip: "Откладывайте 20% от дохода. Правило 50/30/20: 50% нужды, 30% желания, 20% накопления.", emoji: "💡" },
+    { tip: "Депозит — самый безопасный способ заставить деньги работать. В Казахстане ставки 14–16% годовых.", emoji: "🏦" },
+    { tip: "Записывайте расходы. Невозможно копить, не зная куда уходят деньги.", emoji: "📊" },
+    { tip: "Полностью погашайте долг по кредитной карте. Месячный процент может достигать 30–40% годовых.", emoji: "💳" },
+    { tip: "Инвестиции в золото — классический способ защиты от инфляции. Монеты можно купить в Нацбанке.", emoji: "🥇" },
+    { tip: "Читайте хотя бы 1 финансовую статью в неделю. Знания — лучшая инвестиция.", emoji: "📚" },
+    { tip: "Создайте финансовую подушку: отложите расходы на 3–6 месяцев на депозит.", emoji: "🛡️" },
+  ],
+  en: [
+    { tip: "Save 20% of your income. The 50/30/20 rule: 50% needs, 30% wants, 20% savings.", emoji: "💡" },
+    { tip: "A deposit is the safest way to make your money work. Kazakhstan banks offer 14–16% annual rates.", emoji: "🏦" },
+    { tip: "Track your expenses. You can't save money if you don't know where it's going.", emoji: "📊" },
+    { tip: "Pay off your credit card balance in full. Monthly interest can reach 30–40% annually.", emoji: "💳" },
+    { tip: "Investing in gold is a classic hedge against inflation. Coins are available at the National Bank.", emoji: "🥇" },
+    { tip: "Read at least 1 financial article per week. Knowledge is the best investment.", emoji: "📚" },
+    { tip: "Build an emergency fund: save 3–6 months of expenses in a deposit account.", emoji: "🛡️" },
+  ],
+};
 
 const categoryIcons: Record<string, string> = {
   house: "🏠", car: "🚗", business: "💼", education: "🎓",
@@ -63,25 +83,21 @@ export default async function DashboardPage() {
   const site: Record<string, string> = {};
   for (const row of siteSettingsRows ?? []) site[row.key] = row.value;
 
-  const name = profile?.full_name?.split(" ")[0] || "Пайдаланушы";
+  const name = profile?.full_name?.split(" ")[0] || T("dashboard_user_fallback");
   const hour = new Date().getHours();
   const greeting = hour < 12 ? T("greeting_morning") : hour < 17 ? T("greeting_day") : T("greeting_evening");
   const streak = 7;
   const dashSubtitle = site["dashboard_subtitle"] || T("dashboard_subtitle");
   const announcement = site["announcement"] || "";
   const announcementColor = site["announcement_color"] || "blue";
-  const challengeTitle = site["challenge_title"] || T("dashboard_challenge");
-  const challengeDesc = site["challenge_desc"] || "7 күн бойы күнделігіңе жаз.";
-  const challengeProgress = Math.min(100, Number(site["challenge_progress"]) || 40);
   const showTips = site["show_tips_block"] !== "false";
-
   const showArticles = site["show_articles_block"] !== "false";
   const showNews = site["show_news_block"] !== "false";
 
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
-  let tipsArray = dailyTips;
+  let tipsArray = dailyTipsByLang[lang];
   try {
     const parsed = JSON.parse(site["daily_tips"] || "[]");
     if (Array.isArray(parsed) && parsed.length > 0) tipsArray = parsed;
