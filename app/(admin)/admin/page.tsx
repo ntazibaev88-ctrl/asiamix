@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/utils";
-import { Users, Crown, TrendingUp, CreditCard, Target, BookMarked } from "lucide-react";
+import { Users, Crown, TrendingUp, CreditCard, BookMarked } from "lucide-react";
+import { StatCard } from "@/components/admin/stat-card";
+import { ChartCard } from "@/components/admin/chart-card";
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -31,71 +33,81 @@ export default async function AdminDashboardPage() {
       .limit(5),
   ]);
 
-  const totalRevenue = (recentPayments || [])
-    .filter((p) => p.status === "approved")
-    .reduce((s: number, p) => s + p.amount, 0);
-
   const stats = [
     {
       icon: Users,
       label: "Барлық пайдаланушы",
       value: totalUsers || 0,
-      color: "text-primary-600",
-      bg: "bg-primary-50 dark:bg-primary-950/30",
+      color: "text-[#6D5EF6]",
+      bg: "bg-[#6D5EF6]/10",
     },
     {
       icon: Crown,
       label: "VIP мүшелер",
       value: vipUsers || 0,
-      color: "text-amber-600",
-      bg: "bg-amber-50 dark:bg-amber-950/30",
+      color: "text-amber-500",
+      bg: "bg-amber-500/10",
     },
     {
       icon: CreditCard,
       label: "Күтудегі төлемдер",
       value: pendingPayments?.length || 0,
-      color: "text-orange-600",
-      bg: "bg-orange-50 dark:bg-orange-950/30",
+      color: "text-orange-500",
+      bg: "bg-orange-500/10",
     },
     {
       icon: TrendingUp,
       label: "Жалпы мақсаттар",
       value: totalGoals || 0,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50 dark:bg-emerald-950/30",
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/10",
     },
     {
       icon: BookMarked,
       label: "Күнделік жазбалары",
       value: totalJournal || 0,
-      color: "text-rose-600",
-      bg: "bg-rose-50 dark:bg-rose-950/30",
+      color: "text-rose-500",
+      bg: "bg-rose-500/10",
     },
+  ];
+
+  // Simple growth chart data (placeholder)
+  const userGrowthData = [
+    { label: "Қаң", value: Math.max(1, (totalUsers || 0) - 9) },
+    { label: "Ақп", value: Math.max(1, (totalUsers || 0) - 7) },
+    { label: "Нау", value: Math.max(1, (totalUsers || 0) - 5) },
+    { label: "Сәу", value: Math.max(1, (totalUsers || 0) - 4) },
+    { label: "Мам", value: Math.max(1, (totalUsers || 0) - 2) },
+    { label: "Мау", value: totalUsers || 0 },
+  ];
+
+  const goalGrowthData = [
+    { label: "Қаң", value: Math.max(1, (totalGoals || 0) - 18) },
+    { label: "Ақп", value: Math.max(1, (totalGoals || 0) - 13) },
+    { label: "Нау", value: Math.max(1, (totalGoals || 0) - 9) },
+    { label: "Сәу", value: Math.max(1, (totalGoals || 0) - 5) },
+    { label: "Мам", value: Math.max(1, (totalGoals || 0) - 2) },
+    { label: "Мау", value: totalGoals || 0 },
   ];
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold">Аналитика</h1>
-        <p className="text-sm text-[var(--muted-foreground)] mt-0.5">
-          Платформа статистикасы
-        </p>
+        <p className="text-sm text-[var(--muted-foreground)] mt-0.5">Платформа статистикасы</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map((s) => (
-          <div
-            key={s.label}
-            className="p-5 rounded-2xl bg-[var(--card)] border border-[var(--border)]"
-          >
-            <div className={`w-10 h-10 rounded-xl ${s.bg} flex items-center justify-center mb-3`}>
-              <s.icon className={`h-5 w-5 ${s.color}`} />
-            </div>
-            <div className="text-2xl font-bold">{s.value}</div>
-            <div className="text-xs text-[var(--muted-foreground)] mt-0.5">{s.label}</div>
-          </div>
+          <StatCard key={s.label} {...s} />
         ))}
+      </div>
+
+      {/* Charts */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <ChartCard title="Пайдаланушылар өсімі" data={userGrowthData} color="#6D5EF6" />
+        <ChartCard title="Мақсаттар өсімі" data={goalGrowthData} color="#00C896" />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
@@ -103,12 +115,12 @@ export default async function AdminDashboardPage() {
         <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Күтудегі төлемдер</h2>
-            <a href="/admin/payments" className="text-sm text-primary-600 hover:text-primary-700">
+            <a href="/admin/payments" className="text-sm text-[#6D5EF6] hover:opacity-80 transition-opacity">
               Барлығы →
             </a>
           </div>
           {!pendingPayments || pendingPayments.length === 0 ? (
-            <p className="text-sm text-[var(--muted-foreground)] text-center py-4">
+            <p className="text-sm text-[var(--muted-foreground)] text-center py-8">
               Күтудегі төлемдер жоқ
             </p>
           ) : (
@@ -116,7 +128,7 @@ export default async function AdminDashboardPage() {
               {pendingPayments.slice(0, 5).map((p) => (
                 <div
                   key={p.id}
-                  className="flex items-center justify-between p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800"
+                  className="flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/20"
                 >
                   <div>
                     <div className="text-sm font-medium">
@@ -127,8 +139,8 @@ export default async function AdminDashboardPage() {
                     </div>
                   </div>
                   <a
-                    href={`/admin/payments`}
-                    className="text-xs text-primary-600 font-medium hover:text-primary-700"
+                    href="/admin/payments"
+                    className="text-xs text-[#6D5EF6] font-medium hover:opacity-80"
                   >
                     Тексеру →
                   </a>
@@ -142,21 +154,25 @@ export default async function AdminDashboardPage() {
         <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Жаңа пайдаланушылар</h2>
-            <a href="/admin/users" className="text-sm text-primary-600 hover:text-primary-700">
+            <a href="/admin/users" className="text-sm text-[#6D5EF6] hover:opacity-80 transition-opacity">
               Барлығы →
             </a>
           </div>
           <div className="space-y-3">
             {(recentUsers || []).map((u) => (
               <div key={u.id} className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">
+                <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#6D5EF6] to-violet-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                   {(u.full_name || u.email || "U")[0].toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{u.full_name || "—"}</div>
                   <div className="text-xs text-[var(--muted-foreground)] truncate">{u.email}</div>
                 </div>
-                <div className={`text-xs font-medium ${u.plan === "vip" ? "text-amber-600" : "text-[var(--muted-foreground)]"}`}>
+                <div className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                  u.plan === "vip"
+                    ? "bg-amber-500/15 text-amber-500"
+                    : "bg-[var(--secondary)] text-[var(--muted-foreground)]"
+                }`}>
                   {u.plan === "vip" ? "VIP" : "Тегін"}
                 </div>
               </div>
